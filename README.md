@@ -10,19 +10,26 @@ Home Assistant 是一款免费的开源家庭自动化软件 ([Home Assistant - 
 
 ## 功能需求
 
-- **设备管理**：支持发现、添加、删除等操作，实现对各类智能设备（如灯、传感器、摄像头等）的集中管理。
+- **设备管理**：
+  - 支持设备添加、删除、编辑、分组操作。
+  - *设备发现。自动发现环境中可添加的设备。
+  - 实现对各类智能设备（如灯、传感器、摄像头等）的单独和分组管理。
 - **远程控制**：提供友好的 Web 界面和移动端接口，允许用户随时随地查看和控制设备状态。
-- **自动化与场景**：支持定时任务和基于事件的自动化脚本，实现对灯光、气候等设备的智能控制 ([Home Assistant - Wikipedia](https://en.wikipedia.org/wiki/Home_Assistant#:~:text=Information%20from%20all%20devices%20and,entertainment%20systems%20and%20smart%20home))。
+- **自动化与场景**：
+  - 支持场景模式的创建、编辑和一键切换。
+  - *支持定时任务和基于事件的自动化脚本，触发灯光、气候等设备或对应的场景 ([Home Assistant - Wikipedia](https://en.wikipedia.org/wiki/Home_Assistant#:~:text=Information%20from%20all%20devices%20and,entertainment%20systems%20and%20smart%20home))。
 - **实时监测**：通过 MQTT 等协议获取设备状态，实现数据的实时上报与可视化展示。
 - **数据可视化**：提供仪表盘等可视化工具，用于展示设备状态、历史数据和环境信息。
-- **安全与权限**：支持用户分级和权限管理，保证系统安全并满足多人协作需求。
-- **日志与告警**：记录运行日志，支持异常检测和告警通知，提升系统可靠性。
+- **安全与权限**：支持用户分级和权限管理，保证系统安全。
+- \* **日志与告警**：记录运行日志，支持异常检测和告警通知，提升系统可靠性。
+
+( `*` 标识的为扩展需求)
 
 ## 技术栈
 
 - **前端**：Vue.js (渐进式 JavaScript 框架，用于构建交互式用户界面 ([Vue.js - The Progressive JavaScript Framework | Vue.js](https://vuejs.org/#:~:text=The%20Progressive%20JavaScript%20Framework)))。
 - **后端**：Node.js (Express) (跨平台 JavaScript 运行时环境 ([Node.js — Run JavaScript Everywhere](https://nodejs.org/en#:~:text=Node.js%C2%AE%20is%20a%20free%2C%20open,command%20line%20tools%20and%20scripts))，便于构建高性能服务器)。
-- **数据库**：MongoDB (跨平台文档型数据库 ([MongoDB - Wikipedia](https://en.wikipedia.org/wiki/MongoDB#:~:text=MongoDB%20is%20a%20source,it%20supports%20features%20like))，支持存储灵活的 JSON 文档)。
+- **数据库**：Mysql 
 - **通信协议**：MQTT (轻量级发布/订阅物联网消息协议 ([MQTT - The Standard for IoT Messaging](https://mqtt.org/#:~:text=MQTT%20is%20an%20OASIS%20standard,a%20wide%20variety%20of%20industries))，适用于远程设备通信)。
 - 以上技术栈可根据实际开发需求进行调整。
 - **自动化平台参考**：
@@ -73,15 +80,7 @@ flowchart TB
     end
 
     subgraph 数据存储
-        E1[(MongoDB 文档库)]
-        E2[(Redis 缓存)]
-        E3[(时序数据库 可选)]
-    end
-
-    subgraph 第三方集成
-        F1["Home Assistant API"]
-        F2["Xiaomi IoT 平台"]
-        F3["其他品牌云端"]
+        E1[(数据库 Mysql)]
     end
 
     A1 ---|HTTP/REST| C1
@@ -95,11 +94,6 @@ flowchart TB
     D2 --- D1
     D1 --- Devices[各品牌智能设备]
     C3 --- E1
-    C3 --- E2
-    C4 --- E3
-    C3 --- F1
-    C3 --- F2
-    C3 --- F3
 ```
 
 ## 安装与部署
