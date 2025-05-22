@@ -49,8 +49,6 @@ Yatmosphere（融合“Yat”与 “Atmosphere”）是一款面向家庭全屋�
 2. 安装依赖
 
    ```bash
-   # 启动MQTT Broker
-   docker run -d --name emqx -p 1883:1883 -p 8083:8083 emqx/emqx:latest
    # 后端
    cd backend && npm install
    # 前端
@@ -61,15 +59,17 @@ Yatmosphere（融合“Yat”与 “Atmosphere”）是一款面向家庭全屋�
    ```bash
    cp .env.example .env
    # 编辑 .env，填写数据库与 MQTT 信息
-   # 创建虚拟环境
+   # 创建python环境
    cd gateway
    conda create -n yatmosphere python=3.11.5
    conda activate yatmosphere
-   pip install -r requirements.txt  # 包含paho-mqtt/pyyaml
+   pip install -r requirements.txt
    ```
 4. 启动服务
 
    ```bash
+   # 启动MQTT Broker
+   docker run -d --name emqx -p 1883:1883 -p 8083:8083 emqx/emqx:latest
    # 后端
    cd backend && npm run dev
    # 前端
