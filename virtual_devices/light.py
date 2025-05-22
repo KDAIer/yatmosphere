@@ -28,25 +28,35 @@ class Light(Device):
     }
     
   def handle_command(self, command):
-    # 处理命令
-    try:
-     # 解析命令
-     if command['action'] == 'set_power':
-        self.data['power'] = (command['power'] == 'on') # 设置灯的开关状态
-        self.handle_response(0, "成功", command)
-        self.handle_state(self.data)
-     elif command['action'] == 'set_brightness': # 设置灯的亮度
-        self.data['brightness'] = int(command['brightness']) 
-        self.handle_response(0, "成功", command)
-        self.handle_state(self.data)
-     elif command['action'] == 'set_color': # 设置灯的颜色
-        self.data['color']['r'] = int(command['color']['r']) 
-        self.data['color']['g'] = int(command['color']['g'])  
-        self.data['color']['b'] = int(command['color']['b'])
-        self.handle_response(0, "成功", command)
-        self.handle_state(self.data)
-     else:
-        self.handle_response(400, "未知命令", command)
-    except Exception as e:
-      print(f"处理命令时发生错误: {e}")
-      self.handle_response(500, "处理命令时发生错误", command)
+      try:
+          # 保持原有逻辑，但调整数据格式
+          if command['action'] == 'set_power':
+              self.data['power'] = command['value'] == 'on'
+              self._send_status()
+              
+          elif command['action'] == 'set_brightness':
+              self.data['brightness'] = command['value']
+              self._send_status()
+              
+          elif command['action'] == 'set_color':
+              self.data['color'] = command['value']
+              self._send_status()
+              
+          self.handle_response(0, "success", command)
+          
+      except Exception as e:
+          self.handle_response(500, str(e), command)
+  
+  def _send_status(self):
+      """发送标准化状态消息"""
+      status = {
+          "msg_id": int(time.time() * 1000),
+          "timestamp": int(time.time()),
+          "device_type": "light",
+          "device_id": self.device_id,
+          "msg_type": "status",
+          "power": "on" if self.data['power'] else "off",
+          "brightness": self.data['brightness'],
+          "color": self.data['color']
+      }
+      self.client.publish(self.state_topic, json.dumps(status))
