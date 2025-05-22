@@ -1,0 +1,38 @@
+services:
+  # EMQX 服务
+  emqx:
+    image: emqx/emqx:${EMQX_VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}_emqx
+    restart: always
+    ports:
+      - "1883:1883"    # MQTT 协议端口
+      - "8883:8883"    # MQTT/SSL 端口
+      - "18083:18083"  # 管理控制台端口
+    volumes:
+      - ./mqtt/emqx.conf:/opt/emqx/etc/emqx.conf
+      - ./mqtt/acl.conf:/opt/emqx/etc/acl.conf
+      - ./scripts/init.sh:/docker-entrypoint.d/init.sh
+    environment:
+      - EMQX_DASHBOARD__DEFAULT_USERNAME=${EMQX_ADMIN_USER}
+      - EMQX_DASHBOARD__DEFAULT_PASSWORD=${EMQX_ADMIN_PASSWORD}
+    networks:
+      - backend
+
+  # mqtt调试工具
+  mqtt-tools:
+    image: eclipse-mosquitto:2.0
+    container_name: mqtt-tools
+    entrypoint: ["sleep", "infinity"]
+    networks:
+      - backend
+
+  # 其他服务
+  
+
+networks:
+  # 前端网络
+  frontend:
+    driver: bridge
+  # 后端网络
+  backend:
+    driver: bridge
