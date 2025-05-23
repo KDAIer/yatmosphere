@@ -24,7 +24,7 @@
             v-model="password"
             placeholder="请输入密码"
             required
-            minlength="6"
+            minlength="3"
           />
         </div>
 
@@ -98,6 +98,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const router = useRouter()
 const isLogin = ref(true)
@@ -138,30 +139,85 @@ const generateInviteCode = () => {
   return 'FAM-' + Math.random().toString(36).substring(2, 8).toUpperCase()
 }
 
-// 登录处理
-const handleLogin = () => {
-  // 简单表单验证
+const handleLogin = async () => {
   if (!username.value || !password.value) {
     errorMessage.value = '请填写所有字段'
     return
   }
 
-  // 模拟 API 请求
-  isLoading.value = true
-  errorMessage.value = ''
+  try {
+    isLoading.value = true
+    errorMessage.value = ''
 
-  setTimeout(() => {
-    // 这里应该调用真实的后端接口
-    if (username.value === 'admin' && password.value === '123456') {
-      // 登录成功，存储 token（实际应使用 Vuex/Pinia）
-      localStorage.setItem('authToken', 'demo-token')
-      router.push('/') // 跳转到首页
-    } else {
-      errorMessage.value = '用户名或密码错误'
+    const response = await axios.post('/auth/login', {
+      account: username.value,
+      password: password.value
+    }, {
+      headers: { 'Content-Type': 'application/json' }
+    })
+
+    if (response.data && response.data.data.token) {
+      localStorage.setItem('authToken', response.data.data.token)
+      router.push('/dashboard')
     }
+  } 
+    catch (error) {
+    if (error.response) {
+      errorMessage.value = error.response.data.message || '登录失败，请检查凭证'
+    } else if (error.request) {
+      errorMessage.value = '服务器无响应，请检查网络连接'
+    } else {
+      errorMessage.value = '请求发送失败：' + error.message
+    }
+  } finally {
     isLoading.value = false
-  }, 1000)
+  }
 }
+
+// // 登录处理
+// const handleLogin = () => {
+//   // 简单表单验证
+//   if (!username.value || !password.value) {
+//     errorMessage.value = '请填写所有字段'
+//     return
+//   }
+
+//   // 模拟 API 请求
+//   isLoading.value = true
+//   errorMessage.value = ''
+
+//   setTimeout(() => {
+//     // 这里应该调用真实的后端接口
+//     if (username.value === 'admin' && password.value === '123456') {
+//       // 登录成功，存储 token（实际应使用 Vuex/Pinia）
+//       localStorage.setItem('authToken', 'demo-token')
+//       router.push('/') // 跳转到首页
+//     } else {
+//       errorMessage.value = '用户名或密码错误'
+//     }
+//     isLoading.value = false
+//   }, 1000)
+// }
+
+// 可选：注册函数
+// const handleRegister = async (registerData) => {
+//     // 表单验证
+//   if (!username.value || !password.value) {
+//     errorMessage.value = '请填写所有字段'
+//     return
+//   }
+
+//   if (userType.value === 'member' && !inviteCode.value) {
+//     errorMessage.value = '请输入家庭邀请码'
+//     return
+//   }
+//   try {
+//     const response = await axios.post('/auth/register', registerData)
+//     return response.data
+//   } catch (error) {
+//     throw new Error(error.response?.data?.message || '注册失败')
+//   }
+// }
 
 // 注册处理
 const handleRegister = () => {
