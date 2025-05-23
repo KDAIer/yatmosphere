@@ -99,29 +99,31 @@ sequenceDiagram
 
 | **主题类型**               | **格式**        | 
 |---------------------------|-----------------|
-| 设备状态请求/上报           | `device/<device_id>/status` |
+| 设备状态上报               | `device/<device_id>/status` |
 | 后端下发指令               | `device/<device_id>/command` |
 | 设备响应指令               | `device/<device_id>/response` | 
 
 ### 2. 消息格式规范（JSON）
 
-- status
-
-#### 2.1 设备状态上报（status）
+#### 2.1 设备状态主动上报（status）
 
 ```json
 {
-  "msg_id": "uuidv4",       // 消息唯一标识
-  "timestamp": 1630000000,  // UNIX时间戳
+  "msg_id": "uuidv4",
+  "timestamp": 1630000000,
   "device_type": "light",
   "device_id": "light_001",
-  "msg_type": "command",
-  "action": "set_power",
-  "value": "on"
+  "msg_type": "status",
+  "power": "on",
+  "brightness": 80,
+  "color": "#ffffff"
 }
 ```
 
 #### 2.2 后端下发指令（command）
+
+- 设置参数
+
 ```json
 {
   "msg_id": "uuidv4",       // 消息唯一标识
@@ -129,8 +131,21 @@ sequenceDiagram
   "device_type": "light",
   "device_id": "light_001",
   "msg_type": "command",
-  "action": "set_power",
+  "action": "set_power", // 设置开/关
   "value": "on"
+}
+```
+
+- 状态查询 (响应用 **msg_type: status**)
+
+```json
+{
+  "msg_id": "uuidv4",
+  "timestamp": 1630000000,
+  "device_type": "light",
+  "device_id": "light_001",
+  "msg_type": "command",
+  "action": "get_status" // 状态查询
 }
 ```
 
@@ -156,6 +171,16 @@ sequenceDiagram
 | 404    | 设备离线              |
 | 500    | 设备内部错误          |
 
+### 4. 支持的 command 指令 (`device/<device_id>/command`时)
+
+#### 4.1 智能灯 light
+
+| action           | 说明         | value类型 | 示例值      |
+|------------------|--------------|----------|-------------|
+| set_power        | 设置开关      | string   | "on"/"off"  |
+| set_brightness   | 设置亮度      | int      | 0~100       |
+| set_color        | 设置颜色      | object   | {"r":255,"g":255,"b":255}   |
+| get_status       | 查询当前状态  | 无       |             |
 
 ## 五、项目结构（暂定）
 
@@ -191,10 +216,11 @@ docker run -d --name emqx -p 1883:1883 -p 8083:8083 emqx/emqx:latest
 
 # 终端2 - 启动网关
 cd yatmosphere/gateway
-pip install paho-mqtt pyyaml
+pip install -r requirements.txt
 python src/main.py
 
 # 终端3 - 启动虚拟设备
+cd yatmosphere
 python virtual_devices/light.py --device_id light_001
 ```
 
