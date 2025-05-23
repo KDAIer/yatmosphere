@@ -55,6 +55,8 @@ class Gateway:
         # 订阅所有设备命令主题
         # device/+/command 匹配任意设备ID的命令
         self.mqtt_client.subscribe("device/+/command")
+        # 订阅注册主题
+        self.mqtt_client.subscribe("device/register")
         
         # 启动消息循环（阻塞式）
         self.mqtt_client.loop_forever()
