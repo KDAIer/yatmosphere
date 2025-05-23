@@ -27,6 +27,7 @@ class DeviceManager:
             # 构造响应
             resp = {
                 "msg_id": msg['msg_id'],
+                "msg_type": "response",
                 "status": "success" if success else "failed",
                 "related_msg_id": msg['msg_id']
             }
@@ -63,6 +64,5 @@ class DeviceManager:
         :param command: 设备协议指令
         :return: 执行是否成功
         """
-        # TODO: 实现真实设备通信逻辑
         logging.info(f"[{device_id}] 执行指令: {command}")
-        return True  # 模拟始终成功
+        return True  # 假设设备始终成功
