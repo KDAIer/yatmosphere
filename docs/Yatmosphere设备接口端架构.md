@@ -99,9 +99,11 @@ sequenceDiagram
 
 | **主题类型**               | **格式**        | 
 |---------------------------|-----------------|
-| 设备状态上报               | `device/<device_id>/status` |
+| 设备状态上报               | `device/<device_id>/status`  |
 | 后端下发指令               | `device/<device_id>/command` |
-| 设备响应指令               | `device/<device_id>/response` | 
+| 设备响应指令               | `device/<device_id>/response`| 
+| 设备注册                   | `device/register`            |
+| 设备注册响应               | `device/registered`          |
 
 ### 2. 消息格式规范（JSON）
 
@@ -162,6 +164,38 @@ sequenceDiagram
 }
 ```
 
+#### 2.4 设备注册（register）
+
+- 注册请求 (backend → gateway)
+
+```json
+{
+  "msg_id": "req_123",
+  "msg_type": "register",
+  "device_id": "light_001",  // 后端生成
+  "device_type": "light",
+  "params": {               // 设备初始参数
+    "power": "off",
+    "brightness": 50
+  }
+}
+```
+
+#### 2.5 设备注册响应（registered）
+
+- 注册响应 (gateway → backend)
+
+```json
+{
+  "msg_id": "resp_456",
+  "msg_type": "registered",
+  "status": "success",      // success/failed
+  "device_id": "light_001",
+  "control_topic": "device/light_001/command",
+  "error_msg": ""           // 失败时填写
+}
+```
+
 ### 3. 错误码规范
 | 错误码 | 说明                  |
 |--------|----------------------|
@@ -187,20 +221,22 @@ sequenceDiagram
 ```
 yatmosphere/
 ├── backend/                   # 后端系统
-│   ├── src/
-│   │   └── app.js             # 主入口
+│   └── src/
+│       └── app.js             # 主入口
 ├── gateway/                   # 设备接口端
-│   ├── src/
-│   │   ├── main.py            # 主程序，初始化、事件循环
-│   │   ├── mqtt_client.py     # MQTT客户端，负责与MQTT Broker的通信
-│   │   ├── device_manager.py  # 设备管理
-│   │   └── protocols/         # 协议转换    
-│   │       └── ...
-│   └── config/
-│       └── devices.yaml       # 设备配置文件
+│   └── src/
+│       ├── main.py            # 主程序，初始化、事件循环
+│       ├── mqtt_client.py     # MQTT客户端，负责与MQTT Broker的通信
+│       ├── device_manager.py  # 设备管理
+│       └── protocols/         # 协议转换    
+│           └── ...
 ├── virtual_devices/           # 模拟设备
+│   ├── const.py               # mqtt配置
+│   ├── virtual_device.py      # 模拟设备基类
 │   ├── light.py               # 智能灯
 │   └── ...                
+├── config/                    # 配置文件
+│   └── ... 
 └── frontend/                  # 前端
     └── ...
 ```
