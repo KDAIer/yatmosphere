@@ -21,9 +21,9 @@ class Device(metaclass=abc.ABCMeta):
     self.device_type = device_type
 
     # 设备主题
-    self.state_topic = f'yatmosphere/device/{self.device_id}/state'
-    self.command_topic = f'yatmosphere/device/{self.device_id}/command'
-    self.response_topic = f'yatmosphere/device/{self.device_id}/response'
+    self.state_topic = f'device/{self.device_id}/status'
+    self.command_topic = f'device/{self.device_id}/command'
+    self.response_topic = f'device/{self.device_id}/response'
 
     # 设备数据
     self.data = {}
