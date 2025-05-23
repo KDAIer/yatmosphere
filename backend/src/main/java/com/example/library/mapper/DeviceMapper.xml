@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.library.mapper.DeviceMapper">
+
+    <resultMap id="deviceResultMap" type="com.example.library.pojo.entity.Device">
+        <id column="id" property="id"/>
+        <result column="device_name" property="deviceName"/>
+        <result column="isbn" property="isbn"/>
+        <result column="category" property="category"/>
+        <result column="borrowed" property="borrowed"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <select id="selectDeviceByName" resultMap="deviceResultMap" resultType="com.example.library.pojo.entity.Device">
+        SELECT
+            *
+        FROM
+            device b
+        WHERE
+            b.device_name = #{name};  -- 替换为具体的设备名
+    </select>
+
+
+</mapper>
