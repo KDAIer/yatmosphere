@@ -60,9 +60,9 @@ class Device(metaclass=abc.ABCMeta):
   def handle_command(self, command):
     pass
 
+  @abc.abstractmethod
   def handle_state(self, state):
-    self.client.publish(self.state_topic, json.dumps(state))
-    print(f"{self.device_id}已发布状态：{state}")
+    pass
 
   def handle_response(self, error_code, error_message, payload=None):
     status = "success" if error_code == 0 else "error"

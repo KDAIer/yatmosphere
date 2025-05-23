@@ -247,11 +247,11 @@ mosquitto_pub -h localhost -t "device/light_001/command" -m '{
 - 预期响应：
 ```json
 device/light_001/response {
-  "msg_id": 1001,
+  "msg_id": 1002,
   "msg_type": "response",
   "status": "success",
   "related_msg_id": 1001,
-  "timestamp": 1630000001
+  "timestamp": 1630000001 //时间戳，根据测试时UNIX时间戳生成
 }
 ```
 
