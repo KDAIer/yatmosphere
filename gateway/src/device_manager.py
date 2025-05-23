@@ -19,19 +19,20 @@ class DeviceManager:
         # 动态获取协议转换器
         converter = self.protocol_factory(device_type)
         
-        if msg['msg_type'] == 'command':
-            # 协议转换
-            device_cmd = converter.to_device_protocol(msg)
-            success = self._send_to_device(device_id, device_cmd)
+        
+        # if msg['msg_type'] == 'command':
+        # 协议转换
+        device_cmd = converter.to_device_protocol(msg)
+        self._send_to_device(device_id, device_cmd)
             
-            # 构造响应
-            resp = {
-                "msg_id": msg['msg_id'],
-                "msg_type": "response",
-                "status": "success" if success else "failed",
-                "related_msg_id": msg['msg_id']
-            }
-            self.mqtt.publish(f"device/{device_id}/response", json.dumps(resp))
+            # # 构造响应
+            # resp = {
+            #     "msg_id": msg['msg_id'],
+            #     "msg_type": "response",
+            #     "status": "success" if success else "failed",
+            #     "related_msg_id": msg['msg_id']
+            # }
+            # self.mqtt.publish(f"device/{device_id}/response", json.dumps(resp))
 
     def _handle_command(self, device_id: str, command: dict):
         """
