@@ -24,6 +24,4 @@ public class Record extends BaseEntity {
     String user_name;
     Date borrow_time;
     Date return_time;
-
-
 }

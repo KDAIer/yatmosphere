@@ -14,7 +14,7 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
+drop database if exists library;
 CREATE DATABASE IF NOT EXISTS library;
 --
 -- Table structure for table `permission`
@@ -23,16 +23,16 @@ use library;
 DROP TABLE IF EXISTS `permission`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `permission` (
   `id` bigint NOT NULL COMMENT '主键',
   `permission_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '权限名',
   `permission_value` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '权限值',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='权限表';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 --
 -- Dumping data for table `permission`
 --
@@ -109,20 +109,40 @@ CREATE TABLE `user` (
   `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户姓名',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
+  `invite_code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邀请码',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+ALTER TABLE user ADD UNIQUE INDEX idx_account_unique (account);
+CREATE TABLE `user_event` (
+                        `id` bigint NOT NULL COMMENT '主键',
+                        `account` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '账户名',
+                        `event` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '事件',
+                        PRIMARY KEY (id),
+                        FOREIGN KEY (account) REFERENCES user(account) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 --
 -- Dumping data for table `user`
 --
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1818533804097191937,'admin','$2a$10$WQ3TRwDD9.Mp7uJB.J1wZeyp6rcUCvp6clVQ9ro8CuhGGZpuHpIbm','admin','2024-07-31 14:27:00','2024-07-31 14:27:00');
-INSERT INTO `user` VALUES (2818533804097191937,'@180','$2a$10$MPPPO3yg/eu6v.ABgficAetyLM9bo5l9zl1DBconSZH8/o9PyPaKu','zyh','2024-07-31 14:27:00','2024-07-31 14:27:00');
+INSERT INTO `user` VALUES (1818533804097191937,'admin','$2a$10$WQ3TRwDD9.Mp7uJB.J1wZeyp6rcUCvp6clVQ9ro8CuhGGZpuHpIbm','admin','2024-07-31 14:27:00','2024-07-31 14:27:00','FAM-SM31Q1');
+INSERT INTO `user` VALUES (2818533804097191937,'@180','$2a$10$MPPPO3yg/eu6v.ABgficAetyLM9bo5l9zl1DBconSZH8/o9PyPaKu','zyh','2024-07-31 14:27:00','2024-07-31 14:27:00','FAM-SM31Q1');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+LOCK TABLES `user_event` WRITE;
+/*!40000 ALTER TABLE `user_event` DISABLE KEYS */;
+INSERT INTO `user_event` VALUES (181853380409719,'admin','吃饭');
+INSERT INTO `user_event` VALUES (081853380409719,'admin','玩火影忍者');
+/*!40000 ALTER TABLE `user_event` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
 
 --
 -- Table structure for table `user_role`
