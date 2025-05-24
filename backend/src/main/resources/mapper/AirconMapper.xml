@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.library.mapper.AirconMapper">
+
+    <resultMap id="airconResultMap" type="com.example.library.pojo.entity.Aircon">
+        <id column="id" property="id"/>
+        <result column="device_id" property="deviceId"/>
+        <result column="device_name" property="deviceName"/>
+        <result column="category" property="category"/>
+        <result column="status" property="status"/>
+        <result column="detail" property="detail"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="temperature" property="temperature"/>
+        <result column="mode" property="mode"/>
+        <result column="fan_level" property="fanLevel"/>
+        <result column="timer" property="timer"/>
+    </resultMap>
+
+    <select id="selectAllAircons" resultMap="airconResultMap">
+        SELECT
+            a.id,
+            a.device_id,
+            d.device_name,
+            d.category,
+            d.status,
+            d.detail,
+            d.create_time,
+            d.update_time,
+            a.temperature,
+            a.mode,
+            a.fan_level,
+            a.timer
+        FROM aircon a
+                 LEFT JOIN device d ON a.device_id = d.device_id
+    </select>
+</mapper>

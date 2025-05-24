@@ -199,7 +199,7 @@ UNLOCK TABLES;
 -- INSERT INTO `aircon_status` VALUES (123123125,21,'123-457','灯泡',0,'2024-07-31 14:27:00','2024-07-31 14:27:00');
 -- /*!40000 ALTER TABLE `device` ENABLE KEYS */;
 -- UNLOCK TABLES;
-DROP table if exists aricon;
+DROP TABLE IF EXISTS aircon;
 CREATE TABLE aircon (
                                id INT PRIMARY KEY,
                                temperature INT NOT NULL,
@@ -208,15 +208,15 @@ CREATE TABLE aircon (
                                mode VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL CHECK (mode IN ('制冷','制热','除湿','送风')),
                                status BOOLEAN NOT NULL DEFAULT FALSE,
                                fan_level INT NOT NULL CHECK (fan_level BETWEEN 1 AND 5),
-                               timer_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+                               timer INT NOT NULL DEFAULT 0,
                                FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE
 #                                FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE
 );
 --                                name VARCHAR(10) NOT NULL,
 
 INSERT INTO aircon (
-    id, temperature, device_id, mode, status, fan_level, timer_enabled
-) VALUES (111, 22, 'AC001', '制冷', FALSE, 3, FALSE );
+    id, temperature, device_id, mode, status, fan_level, timer
+) VALUES (111, 22, 'AC001', '制冷', FALSE, 3, 0 );
 
 DROP TABLE if exists `light`;
 CREATE TABLE `light` (
