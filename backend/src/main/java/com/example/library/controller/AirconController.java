@@ -24,15 +24,15 @@ public class AirconController {
         return airconService.getAllAircons();
     }
 
-    // @PostMapping("/increase")
-    // @Operation(summary = "升高温度", description = "根据deviceName升高温度0.5度")
-    // public Boolean increaseTemperature(@RequestParam String deviceName) {
-    //     return airconService.increaseTemperature(deviceName);
-    // }
+     @PostMapping("/inc")
+     @Operation(summary = "升高温度", description = "根据deviceName升高温度0.5度")
+     public Boolean increaseTemperature(@RequestParam String deviceName) {
+         return airconService.increaseTemperature(deviceName);
+     }
 
-    // @PostMapping("/decrease")
-    // @Operation(summary = "降低温度", description = "根据deviceName降低温度0.5度")
-    // public Boolean decreaseTemperature(@RequestParam String deviceName) {
-    //     return airconService.decreaseTemperature(deviceName);
-    // }
+     @PostMapping("/dec")
+     @Operation(summary = "降低温度", description = "根据deviceName降低温度0.5度")
+     public Boolean decreaseTemperature(@RequestParam String deviceName) {
+         return airconService.decreaseTemperature(deviceName);
+     }
 }

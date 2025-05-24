@@ -17,4 +17,14 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
     public List<Aircon> getAllAircons() {
         return airconMapper.selectAllAircons();
     }
+
+    @Override
+    public boolean increaseTemperature(String deviceName) {
+        return airconMapper.increaseTemperatureByDeviceName(deviceName) > 0;
+    }
+
+    @Override
+    public boolean decreaseTemperature(String deviceName) {
+        return airconMapper.decreaseTemperatureByDeviceName(deviceName) > 0;
+    }
 }

@@ -202,7 +202,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS aircon;
 CREATE TABLE aircon (
                                id INT PRIMARY KEY,
-                               temperature INT NOT NULL,
+                               temperature DOUBLE NOT NULL,
                                device_id VARCHAR(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备id',
 
                                mode VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL CHECK (mode IN ('制冷','制热','除湿','送风')),
@@ -216,7 +216,7 @@ CREATE TABLE aircon (
 
 INSERT INTO aircon (
     id, temperature, device_id, mode, status, fan_level, timer
-) VALUES (111, 22, 'AC001', '制冷', FALSE, 3, 0 );
+) VALUES (111, 22.0, 'AC001', '制冷', FALSE, 3, 0 );
 
 DROP TABLE if exists `light`;
 CREATE TABLE `light` (

@@ -12,9 +12,10 @@ import lombok.EqualsAndHashCode;
 @UniqCheck
 @TableName("aircon")
 public class Aircon extends Device {
-    @TableField("fan_level")
-    private Integer temperature;
-    @TableField("fan_level")
+
+    @TableField("temperature")
+    private Double temperature; // 改为Double
+    @TableField("mode")
     private String mode;
     @TableField("fan_level")
     private Integer fanLevel;

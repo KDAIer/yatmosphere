@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface AirconService extends BaseService<Aircon> {
     List<Aircon> getAllAircons();
+    boolean increaseTemperature(String deviceName);
+    boolean decreaseTemperature(String deviceName);
 }
