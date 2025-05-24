@@ -5,9 +5,10 @@
     <resultMap id="deviceResultMap" type="com.example.library.pojo.entity.Device">
         <id column="id" property="id"/>
         <result column="device_name" property="deviceName"/>
-        <result column="isbn" property="isbn"/>
+        <result column="device_id" property="deviceId"/>
         <result column="category" property="category"/>
-        <result column="borrowed" property="borrowed"/>
+        <result column="status" property="status"/>
+        <result column="detail" property="detail"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
@@ -19,6 +20,9 @@
         WHERE
             b.device_name = #{name};  -- 替换为具体的设备名
     </select>
-
+    <select id="selectAllDevices" resultMap="deviceResultMap">--
+        SELECT device_id, device_name, status, category ,detail FROM device
+--            SELECT * FROM
+    </select>
 
 </mapper>

@@ -155,44 +155,110 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `device`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
+-- CREATE TABLE `device` (
+--                          `id` bigint NOT NULL COMMENT '主键',
+--                          `device_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备名',
+--                          `isbn` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ISBN号',
+--                          `category` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类别',
+--                          `borrowed` boolean NOT NULL COMMENT '借阅状态',
+--                          `create_time` datetime NOT NULL COMMENT '创建时间',
+--                          `update_time` datetime NOT NULL COMMENT '更新时间',
+--                          PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备表';
+
+
 CREATE TABLE `device` (
-                         `id` bigint NOT NULL COMMENT '主键',
-                         `device_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备名',
-                         `isbn` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ISBN号',
-                         `category` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类别',
-                         `borrowed` boolean NOT NULL COMMENT '借阅状态',
-                         `create_time` datetime NOT NULL COMMENT '创建时间',
-                         `update_time` datetime NOT NULL COMMENT '更新时间',
-                         PRIMARY KEY (`id`)
+                          `id` INT NOT NULL COMMENT '主键',
+                          `device_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备名',
+                          `device_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ISBN号',
+                          `category` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类别',
+                          `status` boolean NOT NULL COMMENT '状态', #0为开启1为关闭
+                          `create_time` datetime NOT NULL COMMENT '创建时间',
+                          `update_time` datetime NOT NULL COMMENT '更新时间',
+                          `detail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详情',
+                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备表';
+
+
 
 LOCK TABLES `device` WRITE;
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
-INSERT INTO `device` VALUES (123123124,'空调1','123-456','空调',1,'2024-07-31 14:27:00','2024-07-31 14:27:00');
-INSERT INTO `device` VALUES (123123125,'灯泡1','123-457','灯泡',0,'2024-07-31 14:27:00','2024-07-31 14:27:00');
-/*!40000 ALTER TABLE `device` ENABLE KEYS */;
+INSERT INTO device VALUES (111, '客厅空调', 'AC001', '空调', 1, '2024-07-31 14:27:00', '2024-07-31 14:27:00', '22°C 制冷模式');
+INSERT INTO device VALUES (112, '智能门锁', 'LK002', '门锁', 0, '2024-07-31 14:27:00', '2024-07-31 14:27:00', '已锁定');
+INSERT INTO device VALUES (113, '安防系统', 'SF003', '安防', 1, '2024-07-31 14:27:00', '2024-07-31 14:27:00', '布防中');
+INSERT INTO device VALUES (114, '客厅灯', 'LT004', '灯', 1, '2024-07-31 14:27:00', '2024-07-31 14:27:00', '亮度75%');
+INSERT INTO device VALUES (115, '厨房灯', 'KT005', '灯', 0, '2024-07-31 14:27:00', '2024-07-31 14:27:00', '关闭');
+INSERT INTO device VALUES (116, '卧室灯', 'BD006', '灯', 1, '2024-07-31 14:27:00', '2024-07-31 14:27:00', '暖光模式');
+
+/*!40000 ALTER TABLE `device` DISABLE KEYS */;
 UNLOCK TABLES;
+
+-- LOCK TABLES `aircon_status` WRITE;
+-- /*!40000 ALTER TABLE `device` DISABLE KEYS */;
+-- INSERT INTO `aircon_status` VALUES (123123124,25,'123-456','空调',1,'2024-07-31 14:27:00','2024-07-31 14:27:00');
+-- INSERT INTO `aircon_status` VALUES (123123125,21,'123-457','灯泡',0,'2024-07-31 14:27:00','2024-07-31 14:27:00');
+-- /*!40000 ALTER TABLE `device` ENABLE KEYS */;
+-- UNLOCK TABLES;
+DROP table if exists aricon;
+CREATE TABLE aircon (
+                               id INT PRIMARY KEY,
+                               temperature INT NOT NULL,
+                               device_id VARCHAR(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备id',
+
+                               mode VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL CHECK (mode IN ('制冷','制热','除湿','送风')),
+                               status BOOLEAN NOT NULL DEFAULT FALSE,
+                               fan_level INT NOT NULL CHECK (fan_level BETWEEN 1 AND 5),
+                               timer_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+                               FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE
+#                                FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE
+);
+--                                name VARCHAR(10) NOT NULL,
+
+INSERT INTO aircon (
+    id, temperature, device_id, mode, status, fan_level, timer_enabled
+) VALUES (111, 22, 'AC001', '制冷', FALSE, 3, FALSE );
+
+DROP TABLE if exists `light`;
+CREATE TABLE `light` (
+                         `id` INT PRIMARY KEY,
+                         `device_id` VARCHAR(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `status` BOOLEAN DEFAULT 1,
+                         `brightness` INT DEFAULT 80,
+                         `color_temp` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '自然',
+                         FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE
+#                          FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE
+);
+
+
+
+
+
+
+INSERT INTO light (id, device_id, status, brightness, color_temp) VALUES
+                                                                      (114, 'LT004', 1, 75, '自然'),
+                                                                      (115, 'KT005', 0, 0, '自然'),
+                                                                      (116, 'BD006', 1, 80, '暖光');
 
 
 DROP TABLE IF EXISTS `record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-# CREATE TABLE `record` (
-#                          `id` bigint NOT NULL COMMENT '主键',
-#                          `device_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备名',
-#                          `user_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '借设备人',
-#                          `borrow_time` datetime NOT NULL COMMENT '结束时间',
-#                          `return_time` datetime NOT NULL COMMENT '记录时间',
-#                          `create_time` datetime NOT NULL COMMENT '创建时间',
-#                          `update_time` datetime NOT NULL COMMENT '更新时间',
-#                          PRIMARY KEY (`id`)
-# ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表';
+CREATE TABLE `record` (
+                          `id` bigint NOT NULL COMMENT '主键',
+                          `device_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备名',
+                          `user_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '借设备人',
+                          `borrow_time` datetime NOT NULL COMMENT '结束时间',
+                          `return_time` datetime NOT NULL COMMENT '记录时间',
+                          `create_time` datetime NOT NULL COMMENT '创建时间',
+                          `update_time` datetime NOT NULL COMMENT '更新时间',
+                          PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表';
 
-# LOCK TABLES `record` WRITE;
-# /*!40000 ALTER TABLE `record` DISABLE KEYS */;
-# INSERT INTO `record` VALUES (123123124,'','admin','2024-07-31 14:27:00','2024-08-31 14:27:00','2024-07-31 14:27:00','2024-07-31 14:27:00');
-# /*!40000 ALTER TABLE `record` ENABLE KEYS */;
-# UNLOCK TABLES;
+-- # LOCK TABLES `record` WRITE;
+-- # /*!40000 ALTER TABLE `record` DISABLE KEYS */;
+-- # INSERT INTO `record` VALUES (123123124,'','admin','2024-07-31 14:27:00','2024-08-31 14:27:00','2024-07-31 14:27:00','2024-07-31 14:27:00');
+-- # /*!40000 ALTER TABLE `record` ENABLE KEYS */;
+-- # UNLOCK TABLES;
 
 
 

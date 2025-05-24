@@ -3,6 +3,9 @@ package com.example.library.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.library.pojo.entity.Device;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author zyh
@@ -16,5 +19,7 @@ public interface DeviceMapper extends BaseMapper<Device> {
      */
     Device selectDeviceByName(@Param("name") String name);
 
+//    @Select("SELECT * FROM device")
+    List<Device> selectAllDevices();
 
 }

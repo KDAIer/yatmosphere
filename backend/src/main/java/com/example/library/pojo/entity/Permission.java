@@ -18,6 +18,5 @@ public class Permission extends BaseEntity {
 
     @UniqColumn(message = "已存在相同权限值")
     String permissionValue;
-
 //    String requestUrl;
 }

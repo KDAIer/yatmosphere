@@ -16,11 +16,21 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @UniqCheck
 public class Device extends BaseEntity {
+//    @UniqColumn(message = "已存在重复设备")
+//    private Integer id;
 
-    String deviceName;
-    @UniqColumn(message="已存在重复设备")
-    String isbn;
-    String category;
+    private String deviceName;
 
-    Boolean borrowed;
+    @UniqColumn(message = "已存在重复设备")
+    private String deviceId; // 对应数据库字段 device_id，不是 isbn
+
+    private String category;
+
+    private Boolean status; // 0=开启，1=关闭
+
+    private String detail;
+
+//    private java.time.LocalDateTime createTime;
+//
+//    private java.time.LocalDateTime updateTime;
 }

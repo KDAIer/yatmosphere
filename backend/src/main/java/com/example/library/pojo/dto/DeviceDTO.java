@@ -15,14 +15,17 @@ import lombok.EqualsAndHashCode;
 public class DeviceDTO extends BaseDTO {
     @Schema(description = "设备名")
     @NotBlank(message = "设备名不能为空")
-    String device_name;
-    @Schema(description = "ISBN")
-    @NotBlank(message = "ISBN号不能为空")
-    String isbn;
+    String deviceName;
+    @Schema(description = "device_id")
+    @NotBlank(message = "device_id不能为空")
+    String deviceId;
     @Schema(description = "类别")
 
     String category;
-    @Schema(description = "是否被借")
-    Boolean borrowed;
+    @Schema(description = "是否开启")
+    Boolean status;
+
+    @Schema(description = "描述")
+    String details;
 
 }

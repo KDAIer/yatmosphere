@@ -32,62 +32,62 @@ import org.springframework.web.bind.annotation.*;
 public class RecordController extends BaseExtController <Record, RecordDTO, RecordService> {
     @Resource
     private RecordServiceImpl recordService;
-
-    @Override
-    @PostMapping("/save")
-    @Operation(summary = "新增", description = "传入新增对象")
-    public Boolean save(@Valid @RequestBody RecordDTO dto) {
-
-        Record record = recordPropertySet(dto);
-        return service.save(record);
-    }
-
-    @Override
-    @PostMapping("/update")
-    @Operation(summary = "续借", description = "传入修改对象")
-    public Boolean update(@Valid @RequestBody RecordDTO dto) {
-        Record record = recordPropertySet(dto);
-        return service.updateById(record);
-    }
-
-    @Override
-    @GetMapping("/detail")
-    @Operation(summary = "查看详情", description = "传入主键ID")
-    public Record detail(@Parameter(name = "主键", required = true) @RequestParam Long id) {
-        return service.getById(id);
-    }
-
-
-    @GetMapping("/userRecord")
-    @Operation(summary = "查看详情", description = "传入人名")
-    public Record detail(@Parameter(name = "name", required = true) @RequestParam String name) {
-        return recordService.getRecordByUserName(name);
-
-    }
-
-    @Override
-    @PostMapping("/page")
-    @Parameters({
-            @Parameter(name = "current", description = "当前页", in = ParameterIn.QUERY, schema = @Schema(type = "int"), required = true),
-            @Parameter(name = "size", description = "每页的数量", in = ParameterIn.QUERY, schema = @Schema(type = "int"), required = true)
-    })
-    @Operation(summary = "分页条件查询", description = "传入查询对象")
-    public IPage<Record> page(@RequestBody(required = false) Record entity, @Parameter(hidden = true) PageQuery query) {
-        return service.page(PageQueryUtil.getPage(query), entity, query.getQueryType());
-    }
-
-    @Override
-    @PostMapping("/remove")
-    @Operation(summary = "删除", description = "传入ID主键")
-    public Boolean remove(@Parameter(name = "主键", required = true) @RequestParam Long id) {
-        return service.removeById(id);
-    }
-
-//    @GetMapping("/borrow")
-//    @Operation(summary = "查询借阅信息", description = "传入用户名")
-//    public Record getBorrow(@Parameter(name = "设备名", required = true) @RequestParam String name) {
-//        return recordMapper.selectRecordByName(name);
+//
+//    @Override
+//    @PostMapping("/save")
+//    @Operation(summary = "新增", description = "传入新增对象")
+//    public Boolean save(@Valid @RequestBody RecordDTO dto) {
+//
+//        Record record = recordPropertySet(dto);
+//        return service.save(record);
 //    }
+//
+//    @Override
+//    @PostMapping("/update")
+//    @Operation(summary = "续借", description = "传入修改对象")
+//    public Boolean update(@Valid @RequestBody RecordDTO dto) {
+//        Record record = recordPropertySet(dto);
+//        return service.updateById(record);
+//    }
+//
+//    @Override
+//    @GetMapping("/detail")
+//    @Operation(summary = "查看详情", description = "传入主键ID")
+//    public Record detail(@Parameter(name = "主键", required = true) @RequestParam Long id) {
+//        return service.getById(id);
+//    }
+//
+//
+//    @GetMapping("/userRecord")
+//    @Operation(summary = "查看详情", description = "传入人名")
+//    public Record detail(@Parameter(name = "name", required = true) @RequestParam String name) {
+//        return recordService.getRecordByUserName(name);
+//
+//    }
+//
+//    @Override
+//    @PostMapping("/page")
+//    @Parameters({
+//            @Parameter(name = "current", description = "当前页", in = ParameterIn.QUERY, schema = @Schema(type = "int"), required = true),
+//            @Parameter(name = "size", description = "每页的数量", in = ParameterIn.QUERY, schema = @Schema(type = "int"), required = true)
+//    })
+//    @Operation(summary = "分页条件查询", description = "传入查询对象")
+//    public IPage<Record> page(@RequestBody(required = false) Record entity, @Parameter(hidden = true) PageQuery query) {
+//        return service.page(PageQueryUtil.getPage(query), entity, query.getQueryType());
+//    }
+//
+//    @Override
+//    @PostMapping("/remove")
+//    @Operation(summary = "删除", description = "传入ID主键")
+//    public Boolean remove(@Parameter(name = "主键", required = true) @RequestParam Long id) {
+//        return service.removeById(id);
+//    }
+//
+////    @GetMapping("/borrow")
+////    @Operation(summary = "查询借阅信息", description = "传入用户名")
+////    public Record getBorrow(@Parameter(name = "设备名", required = true) @RequestParam String name) {
+////        return recordMapper.selectRecordByName(name);
+////    }
 
     private Record recordPropertySet(RecordDTO dto) {
         Record record = new Record();
