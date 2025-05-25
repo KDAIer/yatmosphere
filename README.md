@@ -11,7 +11,7 @@ Yatmosphere（融合“Yat”与 “Atmosphere”）是一款面向家庭全屋�
 - **环境监测**：温湿度、光照、PM2.5/CO₂ 等多维传感器数据采集
 - **自动联动**：基于预设规则或 AI 算法，自动调节空调、照明、窗帘、净化器等
 - **远程操控**：Web 与移动端双客户端实时监控·远程控制
-- **高可扩展**：模块化架构，支持多品牌、多协议（MQTT、Zigbee、BLE…）
+- **高可扩展**：模块化架构，支持多品牌
 
 ---
 
@@ -29,11 +29,11 @@ Yatmosphere（融合“Yat”与 “Atmosphere”）是一款面向家庭全屋�
 
 | 层级       | 技术/工具                        |
 | ---------- | -------------------------------- |
-| 前端 UI    | Vue 3 / React (Optional)         |
-| 后端服务   | Node.js + Express / Python Flask |
-| 通信协议   | MQTT (Mosquitto/EMQX)            |
-| 数据库     | MySQL / MongoDB                  |
-| 容器化部署 | Docker / docker-compose          |
+| 前端 UI    | Vue 3          |
+| 后端服务   | Spring Boot |
+| 通信协议   | MQTT             |
+| 数据库     | MySQL                  |
+| 容器化部署 | Docker           |
 | 文档与协作 | GitHub / WPS 协作文档            |
 
 ---
@@ -49,10 +49,8 @@ Yatmosphere（融合“Yat”与 “Atmosphere”）是一款面向家庭全屋�
 2. 安装依赖
 
    ```bash
-   # 后端
-   cd backend && npm install
    # 前端
-   cd ../frontend && npm install
+   cd frontend && npm install
    ```
 3. 配置环境
 
@@ -71,9 +69,9 @@ Yatmosphere（融合“Yat”与 “Atmosphere”）是一款面向家庭全屋�
    # 启动MQTT Broker
    docker run -d --name emqx -p 1883:1883 -p 8083:8083 emqx/emqx:latest
    # 后端
-   cd backend && npm run dev
+   cd backend && mvn spring-boot:run
    # 前端
-   cd ../frontend && npm run serve
+   cd frontend && npm run dev
    ```
 
 ---
