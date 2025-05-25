@@ -109,6 +109,7 @@ CREATE TABLE `user` (
   `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户姓名',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
+  `user_type` VARCHAR(20) NOT NULL COMMENT '用户类型：admin或member',
   `invite_code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邀请码',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
@@ -128,8 +129,8 @@ CREATE TABLE `user_event` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1818533804097191937,'admin','$2a$10$WQ3TRwDD9.Mp7uJB.J1wZeyp6rcUCvp6clVQ9ro8CuhGGZpuHpIbm','admin','2024-07-31 14:27:00','2024-07-31 14:27:00','FAM-SM31Q1');
-INSERT INTO `user` VALUES (2818533804097191937,'@180','$2a$10$MPPPO3yg/eu6v.ABgficAetyLM9bo5l9zl1DBconSZH8/o9PyPaKu','zyh','2024-07-31 14:27:00','2024-07-31 14:27:00','FAM-SM31Q1');
+INSERT INTO `user` VALUES (1818533804097191937,'admin','$2a$10$WQ3TRwDD9.Mp7uJB.J1wZeyp6rcUCvp6clVQ9ro8CuhGGZpuHpIbm','admin','2024-07-31 14:27:00','2024-07-31 14:27:00','admin','FAM-SM31Q1');
+INSERT INTO `user` VALUES (2818533804097191937,'@180','$2a$10$MPPPO3yg/eu6v.ABgficAetyLM9bo5l9zl1DBconSZH8/o9PyPaKu','zyh','2024-07-31 14:27:00','2024-07-31 14:27:00','admin','FAM-SM31Q1');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
