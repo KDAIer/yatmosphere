@@ -42,6 +42,4 @@ public class BaseController<T extends BaseEntity, S extends BaseService<T>> {
 		return service.page(PageQueryUtil.getPage(query), entity, query.getQueryType());
 	}
 
-
-
 }

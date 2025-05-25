@@ -67,8 +67,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         }
         persistHandle(entity, true);
         return true;
-
-
     }
 
     @Override
@@ -143,8 +141,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         loginVO.setAccount(targetUser.getAccount());
         loginVO.setToken(jwtTokenUtil.generateUserToken(targetUser));
         return loginVO;
-
-
 
     }
 
