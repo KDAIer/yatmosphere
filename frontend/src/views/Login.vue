@@ -160,6 +160,9 @@ try {
 
   if (response.data?.data && response.data.data.token) {
     localStorage.setItem('authToken', response.data.data.token)
+    localStorage.setItem('userType', response.data.data.userType || 'member')
+    localStorage.setItem('username', username.value)
+    successMessage.value = '登录成功！'
     router.push('/dashboard')
   } else {
     // 后端返回了错误，比如 data 是 null
@@ -208,6 +211,10 @@ const handleRegister = async () => {
     })
     console.log('[Debug] 注册响应:', response.data)
     if (response.data && response.data.data.success) {
+      localStorage.setItem('authToken', response.data.data.token)
+      localStorage.setItem('userType', userType.value)
+      localStorage.setItem('username', username.value)
+      
       if (userType.value === 'admin') {
         inviteCodeGenerated.value = payload.inviteCode
         successMessage.value = '注册成功！请妥善保存您的家庭邀请码：' + payload.inviteCode

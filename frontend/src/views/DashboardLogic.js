@@ -25,8 +25,16 @@ const toggleTheme = () => {
   document.documentElement.setAttribute('data-theme', theme.value)
 }
 
+// 读取角色
+const role = ref(localStorage.getItem('userType') || '')
+// 计算角色中文
+const username = computed(() => {
+  if (role.value === 'admin') return '管理员'
+  if (role.value === 'member') return '普通用户'
+  return '未知身份'
+})
 // 用户数据
-const username = ref('管理员')
+// const username = ref('管理员')
 const activeArea = ref(null)
 
 // 区域配置
@@ -58,9 +66,9 @@ const useTimeUpdater = () => {
   onMounted(() => {
     console.log('Dashboard 组件已挂载，启动时间更新')
     updateTime() // 立即更新一次
-    
+
     const timer = setInterval(updateTime, 1000)
-    
+
     // 清理定时器
     onUnmounted(() => {
       console.log('清除时间更新定时器')
