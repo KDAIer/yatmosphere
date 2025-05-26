@@ -240,6 +240,7 @@ import {
   triggerParticleEffect,
   useTimeUpdater, // 导入时间更新组合函数
   FontAwesomeIcon,
+  roleName,
   faFan,
   faHouse,
   faUtensils,
@@ -249,8 +250,8 @@ import {
   faShieldAlt,
   faExclamationTriangle,
   faWifi,
-  roleName,
 } from './DashboardLogic.js'
+
 // 调用时间更新组合函数
 useTimeUpdater()
 

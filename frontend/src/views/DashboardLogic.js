@@ -1,5 +1,6 @@
 // src/composables/DashboardLogic.js
 import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
+import axios from 'axios'
 import AirConditioner from '@/components/AirConditioner.vue'
 import LivingRoomControl from '@/components/LivingRoomControl.vue'
 import KitchenControl from '@/components/KitchenControl.vue'
@@ -16,6 +17,7 @@ import {
   faExclamationTriangle,
   faWifi,
 } from '@fortawesome/free-solid-svg-icons'
+
 
 // 主题状态
 const theme = ref(localStorage.getItem('theme') || 'light')
@@ -36,8 +38,7 @@ const roleName = computed(() => {
   if (role.value === 'member') return '普通用户'
   return '未知身份'
 })
-
-// 用户数据
+// // 用户数据
 // const username = ref('管理员')
 const activeArea = ref(null)
 
@@ -54,7 +55,8 @@ const areas = ref([
 const currentTime = ref('')
 
 // 创建一个组合函数来处理时间更新
-const useTimeUpdater = () => {
+// 创建组合函数：处理时间更新 + 请求家庭成员数据
+export const useTimeUpdater = () => {
   const updateTime = () => {
     const now = new Date()
     currentTime.value = now.toLocaleTimeString('zh-CN', {
@@ -63,26 +65,50 @@ const useTimeUpdater = () => {
       second: '2-digit',
       hour12: false,
     })
-    //console.log('时间更新:', currentTime.value)
   }
 
-  // 在组件挂载时启动时间更新
-  onMounted(() => {
-    console.log('Dashboard 组件已挂载，启动时间更新')
-    updateTime() // 立即更新一次
+  const getCurrentAccount = () => {
+    return localStorage.getItem('account') || 'admin' // 示例：从本地获取当前账号
+  }
 
+  const loadFamilyMembers = async () => {
+    const account = getCurrentAccount()
+    console.log('加载家庭成员，当前账号:', account)
+    try {
+      const res = await axios.get('/api/family-members', {
+        params: { account }
+      })
+      // 检查响应状态
+      if (res.data.status === 200) {
+        familyMembers.value = res.data.data.map((member, index) => ({
+          ...member,
+          id: index // 为 v-for 添加唯一 key
+        }))
+        console.log('家庭成员加载成功:', familyMembers.value)
+      } else {
+        console.error('家庭成员请求失败:', res.data.msg)
+      }
+    } catch (err) {
+      console.error('家庭成员请求异常:', err)
+    }
+  }
+
+  onMounted(() => {
+    console.log('Dashboard 组件已挂载，启动时间更新与数据加载')
+    updateTime()
     const timer = setInterval(updateTime, 1000)
 
-    // 清理定时器
+    // 加载家庭成员
+    loadFamilyMembers()
+
     onUnmounted(() => {
       console.log('清除时间更新定时器')
       clearInterval(timer)
     })
   })
 
-  return { currentTime }
+  return { currentTime, familyMembers }
 }
-
 // 环境数据
 const environmentData = reactive({
   time: { label: '时间', value: currentTime },
@@ -111,15 +137,28 @@ const allDevices = ref([
 ])
 
 // 家庭成员
-const familyMembers = ref([
-  { id: 1, name: '黄集瑞', isAdmin: true, isHome: true, todos: ['玩火影忍者', '和学妹贴贴'] },
-  { id: 2, name: '黄集瑞的学妹', isAdmin: false, isHome: true, todos: ['和黄集瑞贴贴', '和黄集瑞打游戏'] },
-  { id: 3, name: '张小明', isAdmin: false, isHome: false, todos: [] },
-])
 
-const toggleHomeStatus = (member) => {
+export const familyMembers = ref([])
+export const toggleHomeStatus = (member) => {
   member.isHome = !member.isHome
 }
+// 示例：从本地存储或状态管理中获取当前账号
+const getCurrentAccount = () => {
+  // 假设你登录后保存了账号
+  return localStorage.getItem('account') || 'admin'
+}
+
+
+
+// const familyMembers = ref([
+//   { id: 1, name: '黄集瑞', isAdmin: true, isHome: true, todos: ['玩火影忍者', '和学妹贴贴'] },
+//   { id: 2, name: '黄集瑞的学妹', isAdmin: false, isHome: true, todos: ['和黄集瑞贴贴', '和黄集瑞打游戏'] },
+//   { id: 3, name: '张小明', isAdmin: false, isHome: false, todos: [] },
+// ])
+
+// const toggleHomeStatus = (member) => {
+//   member.isHome = !member.isHome
+// }
 
 // 区域切换
 const toggleArea = (areaId) => {
@@ -224,8 +263,8 @@ export {
   environmentData,
   scenes,
   allDevices,
-  familyMembers,
-  toggleHomeStatus,
+  // familyMembers,
+  // toggleHomeStatus,
   toggleArea,
   getAreaComponent,
   handleDeviceAction,
@@ -234,7 +273,7 @@ export {
   logout,
   activeParticle,
   triggerParticleEffect,
-  useTimeUpdater, // 导出时间更新组合函数
+  // useTimeUpdater, // 导出时间更新组合函数
   FontAwesomeIcon,
   faFan,
   faHouse,
