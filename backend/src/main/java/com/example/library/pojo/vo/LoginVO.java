@@ -16,4 +16,6 @@ public class LoginVO {
     String token;
 
     String role;
+
+    String inviteCode;
 }

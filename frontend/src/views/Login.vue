@@ -161,7 +161,7 @@ try {
   if (response.data?.data && response.data.data.token) {
     localStorage.setItem('authToken', response.data.data.token)
     localStorage.setItem('username', username.value)
-    localStorage.setItem('role',  userType.value || 'member')
+    localStorage.setItem('role', response.data.data.role || 'member')
     successMessage.value = '登录成功！'
     router.push('/dashboard')
   } else {
@@ -213,7 +213,7 @@ const handleRegister = async () => {
     if (response.data && response.data.data.success) {
       localStorage.setItem('authToken', response.data.data.token)
       localStorage.setItem('username', username.value)
-      localStorage.setItem('role', userType.value)
+      localStorage.setItem('role', response.data.data.role)
       successMessage.value = '注册成功！'
       
       if (userType.value === 'admin') {

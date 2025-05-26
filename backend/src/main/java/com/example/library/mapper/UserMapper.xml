@@ -8,6 +8,8 @@
         <result column="name" property="name"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
+        <result column="user_type" property="userType"/>
+        <result column="invite_code" property="inviteCode"/>
         <collection property="roleList" ofType="com.example.library.pojo.entity.Role">
             <id column="r_id" property="id"/>
             <result column="role_name" property="roleName"/>
@@ -21,7 +23,7 @@
     </resultMap>
 
     <select id="selectUserByAccount" resultMap="userResultMap">
-        select u.id, u.account, u.password, u.name, u.create_time, u.update_time,
+        select u.id, u.account, u.password, u.name, u.create_time, u.update_time, u.user_type,u.invite_code,
                r.id r_id, r.role_code, r.role_name, p.id p_id, p.permission_name, p.permission_value from user u
         left join user_role ur on u.id = ur.user_id
         left join role r on r.id = ur.role_id
