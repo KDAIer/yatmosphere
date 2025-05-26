@@ -26,13 +26,17 @@ const toggleTheme = () => {
 }
 
 // 读取角色
-const role = ref(localStorage.getItem('userType') || '')
+const role = ref(localStorage.getItem('role') || '')
+// 读取用户名
+const username = ref(localStorage.getItem('username') || '未知用户')
+
 // 计算角色中文
-const username = computed(() => {
+const roleName = computed(() => {
   if (role.value === 'admin') return '管理员'
   if (role.value === 'member') return '普通用户'
   return '未知身份'
 })
+
 // 用户数据
 // const username = ref('管理员')
 const activeArea = ref(null)
@@ -212,6 +216,7 @@ export {
   theme,
   toggleTheme,
   username,
+  roleName,
   activeArea,
   areas,
   quickDevices,

@@ -160,8 +160,8 @@ try {
 
   if (response.data?.data && response.data.data.token) {
     localStorage.setItem('authToken', response.data.data.token)
-    localStorage.setItem('userType', response.data.data.userType || 'member')
     localStorage.setItem('username', username.value)
+    localStorage.setItem('role',  userType.value || 'member')
     successMessage.value = '登录成功！'
     router.push('/dashboard')
   } else {
@@ -212,8 +212,9 @@ const handleRegister = async () => {
     console.log('[Debug] 注册响应:', response.data)
     if (response.data && response.data.data.success) {
       localStorage.setItem('authToken', response.data.data.token)
-      localStorage.setItem('userType', userType.value)
       localStorage.setItem('username', username.value)
+      localStorage.setItem('role', userType.value)
+      successMessage.value = '注册成功！'
       
       if (userType.value === 'admin') {
         inviteCodeGenerated.value = payload.inviteCode
