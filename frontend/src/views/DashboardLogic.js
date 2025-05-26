@@ -83,7 +83,8 @@ export const useTimeUpdater = () => {
   })
 
   const getCurrentAccount = () => {
-    const account = localStorage.getItem('account')
+    //const account = localStorage.getItem('account')
+    const account = localStorage.getItem('username')
     if (!account) {
       console.warn('未在 localStorage 中找到 account，使用默认值 admin')
     }
