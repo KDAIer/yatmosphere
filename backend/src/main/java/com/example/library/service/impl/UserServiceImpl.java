@@ -184,6 +184,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         loginVO.setId(targetUser.getId());
         loginVO.setAccount(targetUser.getAccount());
         loginVO.setToken(jwtTokenUtil.generateUserToken(targetUser));
+        loginVO.setRole(targetUser.getUserType());
+        loginVO.setInviteCode(targetUser.getInviteCode());
         return loginVO;
 //<<<<<<< HEAD
 //

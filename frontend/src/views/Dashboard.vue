@@ -10,7 +10,7 @@
           <font-awesome-icon :icon="theme === 'light' ? 'moon' : 'sun'" />
           {{ theme === 'light' ? '黑夜模式' : '白天模式' }}
         </button>
-        <span>当前用户：{{ username }}</span>
+        <span>当前用户：{{ username }} {{ roleName }}</span>
         <button @click="logout" class="logout-btn">退出登录</button>
       </div>
     </header>
@@ -249,8 +249,8 @@ import {
   faShieldAlt,
   faExclamationTriangle,
   faWifi,
+  roleName,
 } from './DashboardLogic.js'
-
 // 调用时间更新组合函数
 useTimeUpdater()
 
