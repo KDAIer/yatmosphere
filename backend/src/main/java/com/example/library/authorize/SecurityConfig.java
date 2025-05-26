@@ -35,7 +35,7 @@ public class SecurityConfig {
 
         // 允许匿名访问注册接口
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("/auth/login", "/auth/register").permitAll()
+                .requestMatchers("/auth/login", "/auth/register","/api/family-members").permitAll()
                 .anyRequest().authenticated());
         http.csrf(AbstractHttpConfigurer::disable);
         http.exceptionHandling(handler -> handler.authenticationEntryPoint(new AuthEntryHandler())
