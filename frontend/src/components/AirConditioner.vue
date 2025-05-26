@@ -106,13 +106,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import axios from 'axios'
+import { defineProps } from 'vue'
+
+const props = defineProps({
+  visible: Boolean
+})
 
 const isPowerOn = ref(true)
 const currentTemp = ref(22)
 const currentMode = ref('cool')
 const selectedDevice = ref(null)
 const devices = ref([])
+
 const isEcoMode = ref(false)
 const fanSpeed = ref(3)
 const timerOption = ref('0')
@@ -125,6 +132,40 @@ const modes = [
   { name: '除湿', value: 'dry', icon: '💧' },
   { name: '送风', value: 'fan', icon: '🌪️' },
 ]
+
+const fetchDevices = async () => {
+  try {
+    const res = await axios.get('/aircon/getall')
+    // 注意：设备数组在 res.data.data
+    devices.value = (res.data.data || []).map(item => ({
+      id: item.deviceId,
+      name: item.deviceName
+    }))
+    if (devices.value.length > 0) {
+      selectedDevice.value = devices.value[0].id
+    }
+
+    console.log('接口返回', res.data.data)
+    console.log('devices', devices.value)
+  } catch (e) {
+    console.error('获取空调设备失败', e)
+  }
+}
+console.log('fetchDevices', devices.value)
+// 监听visible，弹窗显示时加载设备
+// watch(() => props.visible, (val) => {
+//   if (val) {
+//     fetchDevices()
+//   }
+// })
+
+import { onMounted } from 'vue'
+onMounted(() => {
+  fetchDevices()
+})
+
+
+// onMounted(fetchDevices)
 
 const togglePower = () => {
   isPowerOn.value = !isPowerOn.value
@@ -156,6 +197,9 @@ const setCustomTimer = () => {
 </script>
 
 <style scoped>
+@import '/src/assets/base.css';
+
+
 .flat-air-control {
   background: white;
   border-radius: 12px;
@@ -253,10 +297,11 @@ const setCustomTimer = () => {
   padding: 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
-  background: white;
+  background: var(--color-device-card-bg);
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
+  color: var(--text-color);
 }
 
 .mode-btn:hover {
@@ -265,7 +310,7 @@ const setCustomTimer = () => {
 
 .mode-btn.active {
   border-color: #3182ce;
-  background: #e3f2fd;
+  background: rgb(49, 130, 206, 0.1);
 }
 
 .mode-icon {
@@ -273,13 +318,18 @@ const setCustomTimer = () => {
   display: block;
   margin-bottom: 0.5rem;
 }
+.mode-name {
+  font-size: 1rem;
+  color: var(--text-color);
+}
 
 /* 设备选择器样式 */
 .device-selector {
   margin-bottom: 1.5rem;
   padding: 0.5rem;
-  background: #f5f5f5;
+  background: var(--color-device-card-bg);
   border-radius: 8px;
+
 }
 
 .device-selector select {

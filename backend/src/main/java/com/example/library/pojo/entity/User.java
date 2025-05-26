@@ -34,6 +34,12 @@ public class User extends BaseEntity implements UserDetails {
 
     String name;
 
+    @TableField("user_type")
+    private String userType; // 新增字段
+
+    @TableField("invite_code")
+    private String inviteCode;
+
     @TableField(exist = false)
     List<Role> roleList;
 
@@ -47,13 +53,15 @@ public class User extends BaseEntity implements UserDetails {
             return authorityList;
         }
         if (!CollectionUtils.isEmpty(roleList)) {
-            List<GrantedAuthority> roleAuthorities = roleList.stream().map(item ->
-                    new SimpleGrantedAuthority(CommonConstant.SPRING_SECURITY_ROLE_PREFIX.concat(item.getRoleCode())))
+            List<GrantedAuthority> roleAuthorities = roleList.stream()
+                    .map(item -> new SimpleGrantedAuthority(
+                            CommonConstant.SPRING_SECURITY_ROLE_PREFIX.concat(item.getRoleCode())))
                     .collect(Collectors.toList());
             authorityList.addAll(roleAuthorities);
         }
         if (!CollectionUtils.isEmpty(permissionList)) {
-            List<GrantedAuthority> permissionAuthorities = permissionList.stream().map(item -> new SimpleGrantedAuthority(item.getPermissionValue())).collect(Collectors.toList());
+            List<GrantedAuthority> permissionAuthorities = permissionList.stream()
+                    .map(item -> new SimpleGrantedAuthority(item.getPermissionValue())).collect(Collectors.toList());
             authorityList.addAll(permissionAuthorities);
         }
         return authorityList;

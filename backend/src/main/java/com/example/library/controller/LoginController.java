@@ -1,5 +1,7 @@
 package com.example.library.controller;
 
+import com.example.library.pojo.vo.Result;
+import com.example.library.etc.ServiceException;
 import com.example.library.pojo.dto.RegisterDTO;
 import com.example.library.pojo.dto.LoginDTO;
 import com.example.library.pojo.vo.LoginVO;
@@ -27,14 +29,21 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "用户注册", description = "用户注册接口")
-    public Boolean register(@Valid @RequestBody RegisterDTO dto) {
-        return userService.register(dto);
+    public Result<Boolean> register(@Valid @RequestBody RegisterDTO registerDTO) {
+        try {
+            boolean success = userService.register(registerDTO);
+            if (success) {
+                return Result.success(true); // data里放Boolean
+            } else {
+                return Result.fail("注册失败");
+            }
+        } catch (RuntimeException e) {
+            return Result.fail(e.getMessage());
+        }
     }
 
     @GetMapping("/")
     public String health() {
         return "OK";
     }
-
 }

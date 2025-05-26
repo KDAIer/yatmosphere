@@ -1,23 +1,25 @@
+/* src/assets/main.css */
 @import './base.css';
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   font-weight: normal;
 }
 
+/* 链接颜色适配主题 */
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--color-text); /* 使用主题文字颜色 */
   transition: 0.4s;
   padding: 3px;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: var(--color-border); /* 使用主题边框颜色作为悬停背景 */
   }
 }
 
@@ -25,11 +27,12 @@ a,
   body {
     display: flex;
     place-items: center;
+    margin: 0;
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    display: block; /* 移除网格布局，适配 Dashboard.vue 的全宽结构 */
+    padding: 0;
+    width: 100%;
   }
 }

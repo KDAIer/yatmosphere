@@ -359,7 +359,7 @@ const activateScene = (sceneId) => {
 .device-selector {
   margin-bottom: 1.5rem;
   padding: 0.5rem;
-  background: #f5f5f5;
+  background: var(--color-device-card-bg);
   border-radius: 8px;
 }
 
@@ -515,7 +515,7 @@ const activateScene = (sceneId) => {
   align-items: center;
   padding: 0.5rem;
   border-radius: 6px;
-  background-color: #f9f9f9;
+  background-color: var(--color-device-card-bg);
 }
 
 .outlet-info {

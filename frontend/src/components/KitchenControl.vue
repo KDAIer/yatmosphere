@@ -619,7 +619,7 @@ const formatTime = (seconds) => {
 
 .device-card,
 .sensor-card {
-  background-color: #fff;
+  background-color: var(--color-device-card-bg);
   padding: 1rem;
   border-radius: 12px;
   text-align: center;
@@ -646,6 +646,7 @@ const formatTime = (seconds) => {
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: var(--text-color);
 }
 
 .toggle-btn {
@@ -726,7 +727,7 @@ const formatTime = (seconds) => {
 .device-card.expanded {
   margin-bottom: 1.5rem;
   padding: 1.2rem;
-  background: white;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -748,7 +749,7 @@ const formatTime = (seconds) => {
   display: grid;
   gap: 1.5rem;
   padding: 1rem;
-  background: #f5f9ff;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
   margin-bottom: 1.5rem;
 }
@@ -812,23 +813,25 @@ const formatTime = (seconds) => {
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
+  
 }
 
 .section-title {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  color: #37474f;
+  color: var(--text-color);
   margin: 0 0 1rem;
   font-size: 1.1rem;
 }
 
 .section-icon {
-  color: #7f8c8d;
+  color: var(--text-color);
 }
 
 .inventory-list {
   margin-bottom: 1rem;
+  background: var(--color-device-card-bg);
 }
 
 .inventory-item {
@@ -836,9 +839,10 @@ const formatTime = (seconds) => {
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
-  background: #f8faff;
+  background: var(--color-device-card-bg);
   border-radius: 8px;
   margin-bottom: 0.5rem;
+  
 }
 
 .item-info {
@@ -848,12 +852,13 @@ const formatTime = (seconds) => {
 }
 
 .food-icon {
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.5);
   width: 20px;
 }
 
 .item-name {
   font-weight: 500;
+  color: var(--text-color);
 }
 
 .expiry-indicator {
@@ -895,7 +900,7 @@ const formatTime = (seconds) => {
 }
 
 .inventory-modal {
-  background: white;
+  background: var(--color-device-card-bg);
   padding: 2rem;
   border-radius: 12px;
   width: 400px;
@@ -949,7 +954,7 @@ const formatTime = (seconds) => {
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #f5f9ff;
+  background: var(--color-device-card-bg); /* 修改：从 #f5f9ff 改为主题变量 */
   border-radius: 8px;
 }
 
@@ -958,7 +963,7 @@ const formatTime = (seconds) => {
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
-  color: #4a90e2;
+  color: var(--color-text); /* 修改：从 #4a90e2 改为主题变量 */
 }
 
 .oven-controls {
@@ -990,6 +995,7 @@ const formatTime = (seconds) => {
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  color: var(--color-text); /* 新增：确保文字使用主题变量 */
 }
 
 .speed-selector {
@@ -1056,7 +1062,7 @@ const formatTime = (seconds) => {
 
 .start-btn {
   background: #4caf50;
-  color: white;
+  color:var(--color-text);
   padding: 0.8rem 1.5rem;
   border: none;
   border-radius: 25px;
@@ -1100,7 +1106,7 @@ const formatTime = (seconds) => {
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
-  background: #f8faff;
+  background: var(--color-device-card-bg);
   border-radius: 8px;
   margin-bottom: 0.5rem;
   transition: all 0.2s;
@@ -1117,6 +1123,7 @@ const formatTime = (seconds) => {
   display: grid;
   gap: 1.5rem;
   padding: 1rem;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* 模式选择网格 */
@@ -1124,6 +1131,7 @@ const formatTime = (seconds) => {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
+  
 }
 
 .mode-card {
@@ -1133,18 +1141,19 @@ const formatTime = (seconds) => {
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
+  background: rgba(0, 0, 0, 0.1);
   
   svg {
     font-size: 1.8rem;
-    color: #666;
+    color: rgba(0, 0, 0, 0.1);
     margin-bottom: 0.5rem;
   }
 
   &.active {
-    border-color: #ff6b6b;
-    background: #fff0f0;
+    border-color:rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0,1.0);
     svg {
-      color: #ff6b6b;
+      color:rgba(255, 0, 0,1.0);
     }
   }
 
@@ -1154,11 +1163,15 @@ const formatTime = (seconds) => {
   }
 }
 
+
+
+
 /* 温度时间控制卡片 */
 .temp-time-card {
-  background: #f8f9fa;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
   padding: 1.5rem;
+
 }
 
 .control-group {
@@ -1166,13 +1179,14 @@ const formatTime = (seconds) => {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin-bottom: 1.5rem;
+  
 }
 
 .input-field {
   label {
     display: block;
     margin-bottom: 0.8rem;
-    color: #444;
+    color: var(--text-color);
     font-weight: 500;
   }
 }
@@ -1187,7 +1201,7 @@ const formatTime = (seconds) => {
     height: 36px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background: white;
+    background: var(--color-device-card-bg);
     cursor: pointer;
     transition: all 0.2s;
     
@@ -1229,7 +1243,7 @@ const formatTime = (seconds) => {
     border: 1px solid #eee;
     border-radius: 8px;
     text-align: left;
-    background: white;
+    background: var(--color-device-card-bg);
     cursor: pointer;
     transition: all 0.2s;
     
@@ -1299,7 +1313,7 @@ const formatTime = (seconds) => {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
-  background: white;
+  background: var(--color-device-card-bg);
   
   h4 {
     color: #0891b2;
@@ -1328,7 +1342,7 @@ const formatTime = (seconds) => {
   display: grid;
   gap: 1rem;
   padding: 1rem;
-  background: #f8fafc;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
 }
 
@@ -1338,7 +1352,7 @@ const formatTime = (seconds) => {
   gap: 0.8rem;
   padding: 0.8rem;
   border-radius: 8px;
-  background: white;
+  background: var(--color-device-card-bg);
   transition: all 0.2s;
   
   &.low {
@@ -1429,13 +1443,13 @@ const formatTime = (seconds) => {
 
 /* 风速控制 */
 .speed-control {
-  background: #f8f9fa;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
   padding: 1.5rem;
 }
 
 .section-title {
-  color: #2c3e50;
+  color: var(--color-text);
   margin: 0 0 1.5rem;
   font-size: 1.1rem;
   display: flex;
@@ -1508,7 +1522,7 @@ const formatTime = (seconds) => {
 
 /* 智能控制 */
 .smart-control {
-  background: #fff;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -1533,7 +1547,7 @@ const formatTime = (seconds) => {
   
   label {
     display: block;
-    color: #2c3e50;
+    color: var(--color-text);
     margin-bottom: 0.5rem;
     font-weight: 500;
   }
@@ -1552,14 +1566,14 @@ const formatTime = (seconds) => {
 
 /* 滤网状态 */
 .filter-status {
-  background: #fff;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
 }
 
 .status-card {
-  background: #f8f9fa;
+  background: var(--color-device-card-bg);
   border-radius: 12px;
   padding: 2rem;
 }
@@ -1573,7 +1587,7 @@ const formatTime = (seconds) => {
   
   h5 {
     margin: 0;
-    color: #2c3e50;
+    color: var(--color-text);
     font-size: 1.1rem;
   }
 }

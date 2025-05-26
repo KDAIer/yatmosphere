@@ -229,16 +229,17 @@ watch(
 }
 
 .control-card {
-  background: #f8fafc;
+  background: var(--color-device-card-bg);
   border-radius: 10px;
   padding: 1.2rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  color: var(--color-text);
 }
 
 .section-title {
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: var(--color-text);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -256,7 +257,7 @@ watch(
   align-items: center;
   padding: 1rem 0.5rem;
   border-radius: 8px;
-  background: white;
+  background: var(--color-device-card-bg);
   border: 1px solid #e2e8f0;
   transition: all 0.2s;
 }
@@ -268,7 +269,7 @@ watch(
 
 .device-item.active {
   border-color: #3182ce;
-  background: #e3f2fd;
+  background: var(--color-device-card-active-bg);
 }
 
 .device-icon {
@@ -392,6 +393,8 @@ watch(
 .environment-control {
   display: grid;
   gap: 1rem;
+  background: var(--color-device-card-bg); 
+  
 }
 
 .env-item {
@@ -399,14 +402,16 @@ watch(
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
-  background: white;
+  background: var(--color-device-card-bg);
   border-radius: 8px;
   border: 1px solid #e2e8f0;
+  
 }
 
 .env-item span {
   font-size: 0.9rem;
   font-weight: 500;
+  
 }
 
 .env-buttons {

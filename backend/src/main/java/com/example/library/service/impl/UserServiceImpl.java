@@ -16,8 +16,7 @@ import com.example.library.service.UserService;
 import com.example.library.util.JwtTokenUtil;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,10 +32,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.example.library.pojo.dto.RegisterDTO;
 
+import javax.security.auth.login.AccountExpiredException;
+
+import static cn.hutool.core.lang.Console.print;
+
 /**
  * @author WangYi
  * @create 2024/7/30
  */
+
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implements UserService, UserDetailsService {
     @Resource
@@ -67,6 +71,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         }
         persistHandle(entity, true);
         return true;
+//<<<<<<< HEAD
+//=======
+//
+//>>>>>>> 2a9e10a63fd57a2146a6822c7d4cac315e689fac
     }
 
     @Override
@@ -91,6 +99,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
+        System.out.println("[Debug] loadUserByUsername 查出的密码：" + user.getPassword());
         return user;
     }
 
@@ -121,15 +130,50 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         }
     }
 
+    /**
+     * 调试用：测试明文密码和数据库加密密码是否匹配，并打印结果
+     * 
+     * @param account     用户账号
+     * @param rawPassword 用户输入的明文密码
+     */
+    public void debugPasswordMatch(String account, String rawPassword) {
+        User user = baseMapper.selectUserByAccount(account);
+        if (user == null) {
+            System.out.println("[Debug] 用户不存在: " + account);
+            return;
+        }
+
+        String encodedPassword = user.getPassword();
+        boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
+        String encoded = passwordEncoder.encode(rawPassword);
+        System.out.println("[Debug] 账号: " + account);
+        System.out.println("[Debug] 输入密码: " + rawPassword);
+        System.out.println("[Debug] 明文密码加密后结果: " + encoded);
+        System.out.println("[Debug] 数据库加密密码: " + encodedPassword);
+        System.out.println("[Debug] 密码匹配结果: " + matches);
+    }
+
     @Override
     public LoginVO login(LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginDTO.getAccount(), loginDTO.getPassword());
+        // 调试打印密码是否匹配，方便排查
+        debugPasswordMatch(loginDTO.getAccount(), loginDTO.getPassword());
 
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginDTO.getAccount(),
+                loginDTO.getPassword());
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(token);
-        } catch (Exception e) {
+        } catch (LockedException e) {
+            throw new ServiceException("账号已被锁定，请联系管理员");
+        } catch (DisabledException e) {
+            throw new ServiceException("账号被禁用");
+        } catch (CredentialsExpiredException e) {
+            throw new ServiceException("密码已过期");
+        } catch (BadCredentialsException e) {
             throw new ServiceException("用户名或密码错误");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("登录失败，请稍后再试");
         }
         if (authentication == null) {
             throw new ServiceException("用户名或密码错误");
@@ -141,22 +185,44 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         loginVO.setAccount(targetUser.getAccount());
         loginVO.setToken(jwtTokenUtil.generateUserToken(targetUser));
         return loginVO;
-
+//<<<<<<< HEAD
+//
+//=======
+//>>>>>>> 2a9e10a63fd57a2146a6822c7d4cac315e689fac
     }
 
     @Override
     @Transactional
     public Boolean register(RegisterDTO dto) {
-        // 检查账号唯一性
+        // 1. 校验账号是否重复
         if (lambdaQuery().eq(User::getAccount, dto.getAccount()).count() > 0) {
             throw new ServiceException("账号已存在");
         }
 
+        // 2. 构建用户对象
         User user = new User();
         user.setAccount(dto.getAccount());
         user.setPassword(dto.getPassword());
         user.setName(dto.getName() != null ? dto.getName() : dto.getAccount());
+        user.setInviteCode(dto.getInviteCode());
+        user.setUserType(dto.getUserType());
 
+        // 3. 根据 userType 判断逻辑
+        if ("member".equalsIgnoreCase(dto.getUserType())) {
+            // 校验邀请码存在性
+            long count = lambdaQuery()
+                    .eq(User::getInviteCode, dto.getInviteCode())
+                    .eq(User::getUserType, "admin")
+                    .count();
+            if (count == 0) {
+                throw new ServiceException("无效的邀请码");
+            }
+        } else if (!"admin".equalsIgnoreCase(dto.getUserType())) {
+            throw new ServiceException("不支持的用户类型");
+        }
+
+        // 4. 保存用户
         return this.save(user);
     }
+
 }

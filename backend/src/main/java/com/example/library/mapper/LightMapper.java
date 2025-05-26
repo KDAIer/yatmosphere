@@ -15,7 +15,7 @@ public interface LightMapper extends BaseMapper<Light> {
     @Update("""
         UPDATE light l
         LEFT JOIN device d ON l.device_id = d.device_id
-        SET d.status = true,l.status = d.status
+        SET d.status = true,l.status = true
         WHERE d.device_name = #{deviceName}
         """)
     int turnOnLight(@Param("deviceName") String deviceName);
@@ -24,7 +24,7 @@ public interface LightMapper extends BaseMapper<Light> {
     @Update("""
         UPDATE light l
         LEFT JOIN device d ON l.device_id = d.device_id
-        SET d.status = false,l.status = d.status
+        SET d.status = false,l.status = false
         WHERE d.device_name = #{deviceName}
         """)
     int turnOffLight(@Param("deviceName") String deviceName);
