@@ -24,6 +24,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +34,13 @@ import java.util.stream.Collectors;
  */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
+
+    private static final List<String> WHITE_LIST = Arrays.asList(
+            "/auth/login",
+            "/auth/register",
+            "/api/family-members"
+    );
+
     @Resource
     private JwtTokenUtil jwtTokenUtil;
 
@@ -40,12 +49,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (! StringUtils.hasText(jwtToken)) {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+
+        // ✅ 白名单路径直接放行
+        if (WHITE_LIST.contains(requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        // ✅ 检查 Authorization 头
+        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!StringUtils.hasText(jwtToken)) {
+            filterChain.doFilter(request, response); // ⚠️ 也可直接拒绝返回 401，看需求
+            return;
+        }
+
+        // ✅ 从 token 中解析用户信息
         UserJwtInfo userJwtInfo = jwtTokenUtil.getUserJwtInfo(jwtToken);
         UserDetails targetUser = userDetailsService.loadUserByUsername(userJwtInfo.getAccount());
         if (targetUser == null) {
@@ -53,11 +74,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(targetUser, null,
-                targetUser.getAuthorities().stream().map(item ->
-                        new SimpleGrantedAuthority(item.getAuthority())).collect(Collectors.toList()));
+        // ✅ 将认证信息写入上下文
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                targetUser, null, targetUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
 }
+
