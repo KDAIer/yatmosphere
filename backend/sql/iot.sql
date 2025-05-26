@@ -53,8 +53,8 @@ CREATE TABLE `role` (
   `id` bigint NOT NULL COMMENT '主键',
   `role_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '角色名',
   `role_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '角色码',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -107,8 +107,8 @@ CREATE TABLE `user` (
   `account` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '账户名',
   `password` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
   `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户姓名',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '更新时间',
   `user_type` VARCHAR(20) NOT NULL COMMENT '用户类型：admin或member',
   `invite_code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邀请码',
   PRIMARY KEY (`id`)
@@ -189,13 +189,13 @@ DROP TABLE IF EXISTS `device`;
 
 
 CREATE TABLE `device` (
-                          `id` INT NOT NULL COMMENT '主键',
+                          `id` INT AUTO_INCREMENT COMMENT '主键',
                           `device_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备名',
                           `device_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ISBN号',
                           `category` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类别',
                           `status` boolean NOT NULL COMMENT '状态', #0为开启1为关闭
-                          `create_time` datetime NOT NULL COMMENT '创建时间',
-                          `update_time` datetime NOT NULL COMMENT '更新时间',
+                          `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                          `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                           `detail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详情',
                           PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备表';
@@ -222,7 +222,7 @@ UNLOCK TABLES;
 -- UNLOCK TABLES;
 DROP TABLE IF EXISTS aircon;
 CREATE TABLE aircon (
-                               id INT PRIMARY KEY,
+                               id INT AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
                                temperature DOUBLE NOT NULL,
                                device_id VARCHAR(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备id',
 

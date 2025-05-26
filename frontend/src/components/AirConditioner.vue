@@ -145,7 +145,7 @@ const fetchDevices = async () => {
       selectedDevice.value = devices.value[0].id
     }
 
-    console.log('接口返回', res.data.data)
+    console.log('接口返回', res.data)
     console.log('devices', devices.value)
   } catch (e) {
     console.error('获取空调设备失败', e)
@@ -165,7 +165,7 @@ onMounted(() => {
 })
 
 
-// onMounted(fetchDevices)
+onMounted(fetchDevices)
 
 const togglePower = () => {
   isPowerOn.value = !isPowerOn.value

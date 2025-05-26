@@ -2,6 +2,7 @@ package com.example.library.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.library.pojo.entity.Device;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -18,6 +19,15 @@ public interface DeviceMapper extends BaseMapper<Device> {
      * @return
      */
     Device selectDeviceByName(@Param("name") String name);
+    @Select("SELECT * FROM device WHERE device_id = #{deviceId}")
+    Device selectById(String deviceId);
+
+
+    @Insert("""
+    INSERT INTO device (device_id, device_name, category, status, detail)
+    VALUES (#{deviceId}, #{deviceName}, #{category}, #{status}, #{detail})
+    """)
+    int insertDevice(Device device);
 
 //    @Select("SELECT * FROM device")
     List<Device> selectAllDevices();

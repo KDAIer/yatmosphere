@@ -2,6 +2,7 @@ package com.example.library.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.library.pojo.entity.Aircon;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.Select;
@@ -10,6 +11,12 @@ import java.util.List;
 
 public interface AirconMapper extends BaseMapper<Aircon> {
     List<Aircon> selectAllAircons();
+
+    @Insert("""
+    INSERT INTO aircon (device_id, temperature, mode, fan_level, timer)
+    VALUES (#{deviceId}, #{temperature}, #{mode}, #{fanLevel}, #{timer})
+    """)
+    int insertAircon(Aircon aircon);
 
     // 升高温度
     @Update("""

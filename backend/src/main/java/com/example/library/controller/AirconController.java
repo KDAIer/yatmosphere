@@ -18,6 +18,13 @@ public class AirconController {
     @Resource
     private AirconService airconService;
 
+
+    @PostMapping("/add")
+    @Operation(summary = "新增空调", description = "新增空调（设备+空调表）")
+    public Boolean addAircon(@RequestBody Aircon aircon) {
+        return airconService.addAircon(aircon);
+    }
+
     @GetMapping("/getall")
     @Operation(summary = "查看所有空调", description = "查看所有空调")
     public List<Aircon> getAllAircons() {

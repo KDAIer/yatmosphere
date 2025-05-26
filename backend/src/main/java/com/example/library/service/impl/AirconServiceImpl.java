@@ -2,8 +2,12 @@ package com.example.library.service.impl;
 
 import com.example.library.common.service.impl.BaseServiceImpl;
 import com.example.library.mapper.AirconMapper;
+import com.example.library.mapper.DeviceMapper;
 import com.example.library.pojo.entity.Aircon;
+import com.example.library.pojo.entity.Device;
+import com.example.library.pojo.vo.Result;
 import com.example.library.service.AirconService;
+import com.example.library.service.DeviceService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,9 @@ import java.util.regex.Pattern;
 public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> implements AirconService {
     @Resource
     private AirconMapper airconMapper;
+    @Resource
+    private DeviceMapper deviceMapper;
+
 
     @Override
     public List<Aircon> getAllAircons() {
@@ -25,7 +32,26 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
 
     @Override
     @Transactional
+    public boolean addAircon(Aircon aircon) {
+        // 先插入device表
+        Device device = new Device();
+        device.setDeviceId(aircon.getDeviceId());
+        device.setDeviceName(aircon.getDeviceName());
+        device.setCategory(aircon.getCategory());
+        device.setStatus(aircon.getStatus());
+        device.setDetail(aircon.getDetail());
+        int deviceResult = deviceMapper.insertDevice(device);
+
+        // 再插入aircon表
+        int airconResult = airconMapper.insertAircon(aircon);
+
+        return deviceResult > 0 && airconResult > 0;
+    }
+
+    @Override
+    @Transactional
     public boolean increaseTemperature(String deviceName) {
+
         int updated = airconMapper.increaseTemperatureByDeviceName(deviceName);
         // 查询当前温度和原detail
         Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);
@@ -56,6 +82,7 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
 
     private String formatDetail(Double temperature, String mode) {
         // 只保留整数部分
+        System.out.println("formatDetail temperature = " + temperature + ", mode = " + mode);
         DecimalFormat df = new DecimalFormat("#.0");
         return df.format(temperature) + "℃ " + mode + "模式";
     }
