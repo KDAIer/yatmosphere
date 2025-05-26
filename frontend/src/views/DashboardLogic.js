@@ -21,6 +21,11 @@ import {
 
 // 主题状态
 const theme = ref(localStorage.getItem('theme') || 'light')
+
+// 立即设置初始主题（模块加载时执行）
+document.documentElement.setAttribute('data-theme', theme.value);
+console.log('Initial theme set:', theme.value);
+
 const toggleTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
   localStorage.setItem('theme', theme.value)
