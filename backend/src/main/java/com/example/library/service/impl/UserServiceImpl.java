@@ -15,6 +15,7 @@ import com.example.library.service.UserRoleService;
 import com.example.library.service.UserService;
 import com.example.library.util.JwtTokenUtil;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
@@ -226,5 +227,20 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserMapper> implement
         // 4. 保存用户
         return this.save(user);
     }
+    @Autowired
+    private UserMapper userMapper;
+
+    @Override
+    public User getUserByAccount(String account) {
+        return userMapper.selectUserByAccount(account);
+    }
+
+    @Override
+    public List<User> getUsersByInviteCode(String inviteCode) {
+        return userMapper.selectUsersByInviteCode(inviteCode);
+        // 或者用 MyBatis-Plus 方式：
+        // return userMapper.selectList(new QueryWrapper<User>().eq("invite_code", inviteCode));
+    }
+
 
 }

@@ -46,6 +46,9 @@ public class User extends BaseEntity implements UserDetails {
     @TableField(exist = false)
     List<Permission> permissionList;
 
+    @TableField(exist = false)
+    private List<UserEvent> todos;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorityList = new ArrayList<>();

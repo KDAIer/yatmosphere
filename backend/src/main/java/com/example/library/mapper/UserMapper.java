@@ -5,6 +5,8 @@ import com.example.library.pojo.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * @author ZYH
  * @create 2024/7/30
@@ -12,7 +14,6 @@ import org.apache.ibatis.annotations.Select;
 public interface UserMapper extends BaseMapper<User> {
     /**
      * 按账号名查询用户信息
-     * 
      * @param account
      * @return
      */
@@ -20,4 +21,8 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("SELECT * FROM user WHERE invite_code = #{inviteCode}")
     User selectByInviteCode(String inviteCode);
+
+    @Select("SELECT * FROM user WHERE invite_code = #{inviteCode}")
+    List<User> selectUsersByInviteCode(@Param("inviteCode") String inviteCode);
+
 }
