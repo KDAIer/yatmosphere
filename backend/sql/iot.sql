@@ -197,7 +197,8 @@ CREATE TABLE `device` (
                           `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                           `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                           `detail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详情',
-                          PRIMARY KEY (`id`)
+                          PRIMARY KEY (`id`),
+                          UNIQUE KEY (`device_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备表';
 
 
@@ -230,7 +231,8 @@ CREATE TABLE aircon (
                                status BOOLEAN NOT NULL DEFAULT FALSE,
                                fan_level INT NOT NULL CHECK (fan_level BETWEEN 1 AND 5),
                                timer INT NOT NULL DEFAULT 0,
-                               FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE
+                               FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE,
+                               UNIQUE KEY (`device_id`)
 #                                FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE
 );
 --                                name VARCHAR(10) NOT NULL,

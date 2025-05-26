@@ -1,6 +1,7 @@
 package com.example.library.service.impl;
 
 import com.example.library.common.service.impl.BaseServiceImpl;
+import com.example.library.etc.ServiceException;
 import com.example.library.mapper.AirconMapper;
 import com.example.library.mapper.DeviceMapper;
 import com.example.library.pojo.entity.Aircon;
@@ -33,6 +34,11 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
     @Override
     @Transactional
     public boolean addAircon(Aircon aircon) {
+        // 先查deviceId是否已存在
+        Device exist = deviceMapper.selectById(aircon.getDeviceId());
+        if (exist != null) {
+            throw new ServiceException("设备ID已存在，不能重复添加！");
+        }
         // 先插入device表
         Device device = new Device();
         device.setDeviceId(aircon.getDeviceId());
