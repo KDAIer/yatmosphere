@@ -33,16 +33,13 @@ const toggleTheme = () => {
 }
 
 // 读取角色
-const role = ref(localStorage.getItem('role') || '')
+const role = ref('')
 // 读取用户名
-const username = ref(localStorage.getItem('username') || '未知用户')
+const username = ref('')
 
-// 计算角色中文
-const roleName = computed(() => {
-  if (role.value === 'admin') return '管理员'
-  if (role.value === 'member') return '普通用户'
-  return '未知身份'
-})
+const roleName = ref('')
+
+
 // // 用户数据
 // const username = ref('管理员')
 const activeArea = ref(null)
@@ -72,9 +69,28 @@ export const useTimeUpdater = () => {
     })
   }
 
-  const getCurrentAccount = () => {
-    return localStorage.getItem('account') || 'admin' // 示例：从本地获取当前账号
+  const getCurrentRole = () => {
+    const role = localStorage.getItem('role')
+    return role || 'admin' // 默认角色为 admin
   }
+  role.value = getCurrentRole()
+  // 计算角色中文
+  roleName.value = computed(() => {
+    console.log('role.value的值是', role.value)
+    if (role.value === 'admin') return '管理员'
+    if (role.value === 'member') return '普通用户'
+    return '未知身份'
+  })
+
+  const getCurrentAccount = () => {
+    const account = localStorage.getItem('account')
+    if (!account) {
+      console.warn('未在 localStorage 中找到 account，使用默认值 admin')
+    }
+    return account || 'admin'
+  }
+
+  username.value = getCurrentAccount()
 
   const loadFamilyMembers = async () => {
     const account = getCurrentAccount()
