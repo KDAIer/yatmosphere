@@ -34,29 +34,38 @@ class Gateway:
     def handle_mqtt_message(self, topic: str, payload: str):
         """
         MQTT消息统一入口处理
-        :param topic: MQTT主题，格式为 device/<device_id>/<action>
+        :param topic: MQTT主题，格式为 device/<device_id>/<action> 或 device/<action>
         :param payload: 消息内容(JSON字符串)
         """
-        # 提取设备ID（主题第二段）
-        # 示例：device/light_001/command -> light_001
-        device_id = topic.split('/')[1]
-        
         try:
-            # 将消息路由到设备管理器
-            self.device_mgr.process_message(device_id, payload)
+            # 设备注册处理
+            if topic == "device/register":
+                self.device_mgr._handle_registration(payload)
+                return
+            # 设备注销处理
+            elif topic == "device/unregister":
+                self.device_mgr._handle_unregistration(payload)
+                return
+            
+            # 设备命令处理
+            parts = topic.split('/')
+            if len(parts) >= 3 and parts[0] == 'device':
+                # 示例：device/light_001/command -> light_001
+                device_id = parts[1]
+                self.device_mgr.process_message(device_id, payload)
+                
         except Exception as e:
-            logging.error(f"设备{device_id}消息处理异常: {str(e)}")
+            logging.error(f"消息处理失败: {topic} - {str(e)}")
 
     def start(self):
         """启动网关服务"""
         # 建立MQTT连接
         self.mqtt_client.connect()
         
-        # 订阅所有设备命令主题
-        # device/+/command 匹配任意设备ID的命令
-        self.mqtt_client.subscribe("device/+/command")
-        # 订阅注册主题
-        self.mqtt_client.subscribe("device/register")
+        # 订阅所有主题
+        self.mqtt_client.subscribe("device/+/command")  # 命令请求，device/+/command 匹配任意设备ID的命令
+        self.mqtt_client.subscribe("device/register")   # 注册请求
+        self.mqtt_client.subscribe("device/unregister") # 注销请求
         
         # 启动消息循环（阻塞式）
         self.mqtt_client.loop_forever()

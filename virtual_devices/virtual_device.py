@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from const import Yatmosphere_MQTT_BROKER, Yatmosphere_MQTT_PORT
+from virtual_devices.const import Yatmosphere_MQTT_BROKER, Yatmosphere_MQTT_PORT
 import abc
 import json
 import argparse
@@ -27,6 +27,20 @@ class Device(metaclass=abc.ABCMeta):
 
     # 设备数据
     self.data = {}
+
+    # 设备加载
+    self._running = True
+
+  def run(self):
+    # 设备主循环
+    while self._running:
+        self.client.loop_forever()
+        # 用虚函数为个别设备添加定期上报等逻辑 TODO
+
+  # 删除设备
+  def stop(self):
+      self._running = False
+      self.client.disconnect()
 
   def setClient(self):
     self.client.on_connect = self.on_connect
@@ -68,8 +82,8 @@ class Device(metaclass=abc.ABCMeta):
     status = "success" if error_code == 0 else "error"
     # 处理响应
     response = {
-      "msg_id": payload['msg_id'] + 1,
-      'timestamp': int(time.time() * 1000),
+      "msg_id": int(time.time() * 1000),
+      'timestamp': int(time.time()),
       'msg_type': 'response',
       'status': status,
       'related_msg_id': payload['msg_id'],
