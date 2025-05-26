@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from virtual_device import Device
+from virtual_devices.virtual_device import Device
 import json
 import argparse
 import time
@@ -14,11 +14,7 @@ class Light(Device):
     self.data = {
       'power': True,  # 灯的开关状态(True:"on", False:"off")
       'brightness': 100,  # 灯的亮度(0-100)
-      'color':{
-        'r': 255,  # 红色分量(0-255)
-        'g': 255,  # 绿色分量(0-255)
-        'b': 255   # 蓝色分量(0-255)
-      }
+      'colorTemp': '暖光' # 灯的色温(暖光, 自然, 冷光)
     }
     
   def handle_command(self, command):
@@ -32,9 +28,21 @@ class Light(Device):
               self.data['brightness'] = command['value']
               self.handle_state()
               
-          elif command['action'] == 'set_color':
-              self.data['color'] = command['value']
+          elif command['action'] == 'set_color_temp':
+              color_temps = ['暖光', '自然', '冷光']
+              if command['value'] in color_temps:
+                  self.data['colorTemp'] = command['value']
+                  self.handle_state()
+              else:
+                  self.handle_response(400, f"无效色温：{command['value']}", command)
+                  return
+
+          elif command['action'] == 'get_status':
               self.handle_state()
+
+          else:
+              self.handle_response(400, f"未知命令{command['action']}", command)
+              return
               
           self.handle_response(0, "success", command)
           
@@ -51,15 +59,6 @@ class Light(Device):
           "msg_type": "status",
           "power": "on" if self.data['power'] else "off",
           "brightness": self.data['brightness'],
-          "color": self.data['color']
+          "colorTemp": self.data['colorTemp']
       }
       self.client.publish(self.state_topic, json.dumps(status))
-
-# 程序参数接收
-parser = argparse.ArgumentParser(description='Yatmosphere Virtual Light')
-parser.add_argument('--device_id', type=str, required=True, help='Device ID')
-args = parser.parse_args()
-
-# 创建虚拟设备实例
-device = Light(device_id=args.device_id)
-device.client.loop_forever()

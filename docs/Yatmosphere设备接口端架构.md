@@ -97,25 +97,28 @@ sequenceDiagram
 
 ### 1. MQTT主题设计
 
-| **主题类型**               | **格式**        | 
-|---------------------------|-----------------|
-| 设备状态上报               | `device/<device_id>/status`  |
-| 后端下发指令               | `device/<device_id>/command` |
-| 设备响应指令               | `device/<device_id>/response`| 
-| 设备注册                   | `device/register`            |
-| 设备注册响应               | `device/registered`          |
+| **主题类型**     | **格式**                        | **说明**             |
+|------------------|---------------------------------|----------------------|
+| 设备状态上报     | `device/<device_id>/status`      | 设备主动/被动上报状态 |
+| 后端下发指令     | `device/<device_id>/command`     | 控制/查询设备        |
+| 设备响应指令     | `device/<device_id>/response`    | 设备命令执行响应     |
+| 设备注册         | `device/register`                | 注册新设备           |
+| 设备注册响应     | `device/registered`              | 注册结果通知         |
+| 设备注销         | `device/unregister`              | 注销设备            |
+| 设备注销响应     | `device/unregistered`            | 注销结果通知         |
 
 ### 2. 消息格式规范（JSON）
 
 #### 2.1 设备状态主动上报（status）
 
+- 状态响应 (gateway → backend)
+
 ```json
 {
   "msg_id": "uuidv4",
-  "timestamp": 1630000000,
+  "msg_type": "status",
   "device_type": "light",
   "device_id": "light_001",
-  "msg_type": "status",
   "power": "on",
   "brightness": 80,
   "color": "#ffffff"
@@ -124,38 +127,38 @@ sequenceDiagram
 
 #### 2.2 后端下发指令（command）
 
-- 设置参数
+- 设置参数 (backend → gateway)
 
 ```json
 {
   "msg_id": "uuidv4",       // 消息唯一标识
-  "timestamp": 1630000000,  // UNIX时间戳
+  "msg_type": "command",
   "device_type": "light",
   "device_id": "light_001",
-  "msg_type": "command",
   "action": "set_power", // 设置开/关
   "value": "on"
 }
 ```
 
-- 状态查询 (响应用 **msg_type: status**)
+- 状态查询 (响应用 **msg_type: status**) (backend → gateway)
 
 ```json
 {
   "msg_id": "uuidv4",
-  "timestamp": 1630000000,
+  "msg_type": "command",
   "device_type": "light",
   "device_id": "light_001",
-  "msg_type": "command",
   "action": "get_status" // 状态查询
 }
 ```
 
 #### 2.3 设备响应指令（response）
+
+- 指令响应 (gateway → backend)
+
 ```json
 {
   "msg_id": "uuidv4",       // 消息唯一标识
-  "timestamp": 1630000000,  // UNIX时间戳
   "msg_type": "response",
   "status": "success",      // success/failed
   "related_msg_id": "uuidv4", // 关联的command消息ID
@@ -172,12 +175,8 @@ sequenceDiagram
 {
   "msg_id": "req_123",
   "msg_type": "register",
-  "device_id": "light_001",  // 后端生成
-  "device_type": "light",
-  "params": {               // 设备初始参数
-    "power": "off",
-    "brightness": 50
-  }
+  "device_id": "light_001",
+  "device_type": "light"
 }
 ```
 
@@ -189,9 +188,35 @@ sequenceDiagram
 {
   "msg_id": "resp_456",
   "msg_type": "registered",
-  "status": "success",      // success/failed
   "device_id": "light_001",
-  "control_topic": "device/light_001/command",
+  "status": "success",      // success/failed
+  "related_msg_id": "req_123", // 关联的command消息ID
+  "error_msg": ""           // 失败时填写
+}
+```
+
+#### 2.6 设备注销（unregister）
+
+- 注销请求 (backend → gateway)
+
+```json
+{
+  "msg_id": "req_789",
+  "msg_type": "unregister",
+  "device_id": "light_001"
+}
+```
+
+#### 2.7 设备注销响应（unregistered）
+
+- 注销响应 (gateway → backend)
+
+```json
+{
+  "msg_id": "resp_790",
+  "msg_type": "unregistered",
+  "device_id": "light_001",
+  "status": "success",      // success/failed
   "error_msg": ""           // 失败时填写
 }
 ```
@@ -213,7 +238,19 @@ sequenceDiagram
 |------------------|--------------|----------|-------------|
 | set_power        | 设置开关      | string   | "on"/"off"  |
 | set_brightness   | 设置亮度      | int      | 0~100       |
-| set_color        | 设置颜色      | object   | {"r":255,"g":255,"b":255}   |
+| set_color_temp        | 设置色温      | string   | "暖光"/"自然"/"冷光"   |
+| get_status       | 查询当前状态  | 无       |             |
+
+#### 4.2 智能空调
+
+| action           | 说明         | value类型 | 示例值      |
+|------------------|--------------|----------|-------------|
+| set_power        | 设置开关      | string   | "on"/"off"  |
+| set_temperature  | 设置温度      | int      | 16~30       |
+| set_mode   | 设置模式      | string      | "制冷"/"制热"/"除湿"/"送风"       |
+| set_eco        | 设置节能模式      | string   | "on"/"off"    |
+| set_fan_level  | 设置风速        | int      | 1~5         |
+| set_timer      | 设置定时器      | int      | >=0 (分钟)         |
 | get_status       | 查询当前状态  | 无       |             |
 
 ## 五、项目结构（暂定）
@@ -251,24 +288,38 @@ yatmosphere/
 docker run -d --name emqx -p 1883:1883 -p 8083:8083 emqx/emqx:latest
 
 # 终端2 - 启动网关
-cd yatmosphere/gateway
-pip install -r requirements.txt
-python src/main.py
-
-# 终端3 - 启动虚拟设备
 cd yatmosphere
-python virtual_devices/light.py --device_id light_001
+pip install -r requirements.txt
+export PYTHONPATH=$PYTHONPATH:$(pwd) # 在当前终端会话设置工作路径
+python gateway/src/main.py
 ```
 
 - 基础响应验证
 
+创建设备：
+
+```sh
+# 终端1：监听设备创建响应
+mosquitto_sub -t "device/registered"
+
+# 终端2：设备创建
+mosquitto_pub -t "device/register" -m '{
+  "msg_id": "test_001",
+  "device_id": "light_001",
+  "device_type": "light"
+}'
+```
+
 测试场景：发送开灯指令 → 验证设备返回ACK
 
 ```bash
-# 终端1：监听设备响应
+# 终端1：监听设备命令响应
 mosquitto_sub -h localhost -t "device/light_001/response" -v
 
-# 终端2：发送开灯指令
+# 终端2：监听设备状态响应
+mosquitto_sub -h localhost -t "device/light_001/status" -v
+
+# 终端3：发送开灯指令
 mosquitto_pub -h localhost -t "device/light_001/command" -m '{
   "msg_id": 1001,
   "timestamp": 1630000000,
@@ -289,6 +340,19 @@ device/light_001/response {
   "related_msg_id": 1001,
   "timestamp": 1630000001 //时间戳，根据测试时UNIX时间戳生成
 }
+```
+
+删除设备：
+
+```sh
+# 终端1：监听设备删除响应
+mosquitto_sub -t "device/unregistered"
+
+# 终端2：设备删除
+mosquitto_pub -t "device/unregister" -m '{
+  "msg_id": "test_002",
+  "device_id": "light_001"
+}'
 ```
 
 ## 七、参考资料
