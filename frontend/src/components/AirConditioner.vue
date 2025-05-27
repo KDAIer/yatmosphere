@@ -27,7 +27,7 @@
       <div class="temp-control">
         <button class="temp-btn" @click="adjustTemp(-0.5)">-</button>
         <div class="temp-display">
-          <span class="current-temp">{{ currentTemp }}</span>
+          <span class="current-temp">{{ selectedDeviceObj?.temperature ?? '--' }}</span>
           <span class="temp-unit">℃</span>
         </div>
         <button class="temp-btn" @click="adjustTemp(0.5)">+</button>
@@ -106,18 +106,20 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import axios from 'axios'
 import { defineProps } from 'vue'
 
+
+import { defineEmits } from 'vue'
+const emit = defineEmits(['refresh-devices'])
 const props = defineProps({
   visible: Boolean
 })
 
 const isPowerOn = ref(true)
-const currentTemp = ref(22)
 const currentMode = ref('cool')
-const selectedDevice = ref(null)
+const selectedDevice = ref(null) // 只保存设备id
 const devices = ref([])
 
 const isEcoMode = ref(false)
@@ -133,37 +135,31 @@ const modes = [
   { name: '送风', value: 'fan', icon: '🌪️' },
 ]
 
+// 计算属性：当前选中设备对象
+const selectedDeviceObj = computed(() => {
+  return devices.value.find(d => d.id === selectedDevice.value)
+})
+
 const fetchDevices = async () => {
   try {
-    const res = await axios.get('/aircon/getall')
-    // 注意：设备数组在 res.data.data
+    const token = localStorage.getItem('authToken')
+    const res = await axios.get('/aircon/getall',{
+      headers: { 'Content-Type': 'application/json', 'Authorization': token }
+    })
     devices.value = (res.data.data || []).map(item => ({
       id: item.deviceId,
-      name: item.deviceName
+      name: item.deviceName,
+      temperature: item.temperature ?? 22,
     }))
     if (devices.value.length > 0) {
-      selectedDevice.value = devices.value[0].id
+      selectedDevice.value = devices.value[0].id // 只保存id
     }
-
     console.log('接口返回', res.data)
     console.log('devices', devices.value)
   } catch (e) {
     console.error('获取空调设备失败', e)
   }
 }
-console.log('fetchDevices', devices.value)
-// 监听visible，弹窗显示时加载设备
-// watch(() => props.visible, (val) => {
-//   if (val) {
-//     fetchDevices()
-//   }
-// })
-
-import { onMounted } from 'vue'
-onMounted(() => {
-  fetchDevices()
-})
-
 
 onMounted(fetchDevices)
 
@@ -171,8 +167,37 @@ const togglePower = () => {
   isPowerOn.value = !isPowerOn.value
 }
 
-const adjustTemp = (delta) => {
-  currentTemp.value = Math.min(30, Math.max(16, currentTemp.value + delta))
+const adjustTemp = async (delta) => {
+  if (!selectedDeviceObj.value) return
+  try {
+    const token = localStorage.getItem('authToken')
+    const device = selectedDeviceObj.value
+    const url =
+      delta > 0
+        ? `/aircon/inc?deviceName=${encodeURIComponent(device.name)}`
+        : `/aircon/dec?deviceName=${encodeURIComponent(device.name)}`
+    const res = await axios.post(
+      url,
+      null,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    )
+    // 本地温度同步变化
+    device.temperature = Math.min(30, Math.max(16, device.temperature + delta))
+    emit('update-device', {
+      id: device.id,
+      temperature: device.temperature,
+      mode: currentMode.value
+    })
+    console.log(`温度调节${res.data.data}: ${device.temperature}℃`)
+    emit('refresh-devices')
+  } catch (e) {
+    console.error('调节温度失败', e)
+  }
 }
 
 const changeMode = (mode) => {
@@ -180,20 +205,14 @@ const changeMode = (mode) => {
 }
 
 const loadDeviceSettings = () => {
-  // 加载设备设置的逻辑
+  // 可根据需要加载设备设置
 }
 
 const setFanSpeed = (level) => {
   fanSpeed.value = level
 }
-
-const handleTimerChange = () => {
-  // 处理定时器变化的逻辑
-}
-
-const setCustomTimer = () => {
-  // 设置自定义定时的逻辑
-}
+const handleTimerChange = () => {}
+const setCustomTimer = () => {}
 </script>
 
 <style scoped>

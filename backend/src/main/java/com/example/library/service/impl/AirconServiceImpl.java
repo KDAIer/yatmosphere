@@ -57,7 +57,7 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
     @Override
     @Transactional
     public boolean increaseTemperature(String deviceName) {
-
+        System.out.println("deviceName:" + deviceName);
         int updated = airconMapper.increaseTemperatureByDeviceName(deviceName);
         // 查询当前温度和原detail
         Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);

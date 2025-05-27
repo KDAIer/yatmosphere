@@ -98,12 +98,17 @@
               <component
                 :is="getAreaComponent(activeArea)"
                 @close="activeArea = null"
+                @update-device="updateDeviceInfo"
+
                 class="modal-content"
               />
             </div>
           </section>
         </div>
+        <!-- @refresh-devices="fetchAllDevices" -->
 
+
+        
         <!-- 第二行 -->
         <div class="grid-row">
           <!-- 环境监测 -->
@@ -150,7 +155,7 @@
         <!-- 设备列表 -->
         <section class="device-list card">
           <h2>设备列表</h2>
-          <div class="device-table-container">
+          <div class="device-table-container" @refresh-devices="fetchAllDevices">
             <div class="device-table">
               <div class="table-header">
                 <span>设备ID</span>
@@ -160,7 +165,7 @@
               </div>
               <div class="table-body">
                 <div
-                  v-for="device in allDevices"
+                  v-for="device in devices"
                   :key="device.id"
                   class="table-row"
                   :class="{ 'device-on': device.state }"
@@ -217,6 +222,11 @@
 </template>
 
 <script setup>
+import axios from 'axios'
+import AirConditioner from '@/components/AirConditioner.vue'
+const devices = ref([])
+import { defineEmits } from 'vue'
+const emit = defineEmits(['refresh-devices'])
 import {
   theme,
   toggleTheme,
@@ -264,6 +274,45 @@ const getNetworkStrength = () => {
   const networkDevice = quickDevices.value.find(d => d.type === 'network')
   return networkDevice ? networkDevice.signalStrength : 0
 }
+
+const fetchAllDevices = async () => {
+  try {
+    const token = localStorage.getItem('authToken')
+    const res = await axios.get('/device/getall', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    })
+    if (res.data && Array.isArray(res.data.data)) {
+      devices.value = res.data.data.map(item => ({
+        id: item.deviceId,
+        name: item.deviceName,
+        category: item.category,
+        state: item.status,
+        details: item.detail
+      }))
+    }
+    console.log('设备列表', devices.value)
+  } catch (e) {
+    console.error('获取设备列表失败', e)
+  }
+}
+
+const updateDeviceInfo = ({ id, temperature, mode }) => {
+  const idx = devices.value.findIndex(d => d.id === id)
+  if (idx !== -1) {
+    // 用新对象替换，确保响应式
+    devices.value[idx] = {
+      ...devices.value[idx],
+      details: `${temperature}℃ ${mode === 'cool' ? '制冷模式' : mode === 'heat' ? '制热模式' : ''}`
+    }
+  }
+}
+
+import { ref, onMounted } from 'vue'
+
+onMounted(fetchAllDevices)
 
 </script>
 

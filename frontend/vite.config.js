@@ -19,6 +19,17 @@ export default defineConfig({
         changeOrigin: true,
         // 根据你后端接口实际路径，如果不需要改路径就不用 rewrite
         rewrite: (path) => path.replace(/^\/api/, '/api')
+      },
+      '/aircon': {
+        target: 'http://localhost:81',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/aircon/, '/aircon')
+      },
+
+        '/device': {
+        target: 'http://localhost:81',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/device/, '/device')
       }
     }
   },
