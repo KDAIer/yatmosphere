@@ -55,7 +55,7 @@ backend/iot
 
 ## 五、运行后端服务
 
-在项目根目录执行：
+在./backend目录下执行：
 
 ```bash
 mvn spring-boot:run
