@@ -42,4 +42,24 @@ public class AirconController {
      public Boolean decreaseTemperature(@RequestParam String deviceName) {
          return airconService.decreaseTemperature(deviceName);
      }
+    @PostMapping("/refri")
+    @Operation(summary = "制冷模式", description = "将deviceName对应空改为制冷模式")
+    public Boolean refrigerationmod(@RequestParam String deviceName) {
+        return airconService.refrigerationmod(deviceName);
+    }
+    @PostMapping("/heat")
+    @Operation(summary = "制热模式", description = "将deviceName对应空改为制热模式")
+    public Boolean heatingmod(@RequestParam String deviceName) {
+        return airconService.heatingmod(deviceName);
+    }
+    @PostMapping("/dehumidifier")
+    @Operation(summary = "抽湿模式", description = "将deviceName对应空改为抽湿模式")
+    public Boolean dehumidifiermod(@RequestParam String deviceName) {
+        return airconService.dehumidifiermod(deviceName);
+    }
+    @PostMapping("/blow")
+    @Operation(summary = "送风模式", description = "将deviceName对应空改为送风模式")
+    public Boolean blowmod(@RequestParam String deviceName) {
+        return airconService.blowmod(deviceName);
+    }
 }

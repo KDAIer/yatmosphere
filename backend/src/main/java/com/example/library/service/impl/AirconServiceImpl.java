@@ -85,6 +85,66 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         // 返回更新结果
         return updated > 0;
     }
+    @Override
+    public boolean refrigerationmod(String deviceName){
+
+        int updated = airconMapper.refrigerationmod(deviceName);
+        Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);
+        // 如果查询结果不为空
+        if (aircon != null) {
+            // 格式化温度和模式
+            String detail = formatDetail(aircon.getTemperature(), aircon.getMode());
+            // 更新设备详情
+            airconMapper.updateDeviceDetail(deviceName, detail);
+        }
+        // 返回更新结果
+        return updated > 0;
+
+    }
+    @Override
+    public boolean heatingmod(String deviceName){
+
+        int updated =  airconMapper.heatingmod(deviceName);
+
+        Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);
+        // 如果查询结果不为空
+        if (aircon != null) {
+            // 格式化温度和模式
+            String detail = formatDetail(aircon.getTemperature(), aircon.getMode());
+            // 更新设备详情
+            airconMapper.updateDeviceDetail(deviceName, detail);
+        }
+        // 返回更新结果
+        return updated > 0;
+    }
+    @Override
+    public boolean dehumidifiermod(String deviceName){
+        int updated =  airconMapper.dehumidifiermod(deviceName);
+        Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);
+        // 如果查询结果不为空
+        if (aircon != null) {
+            // 格式化温度和模式
+            String detail = formatDetail(aircon.getTemperature(), aircon.getMode());
+            // 更新设备详情
+            airconMapper.updateDeviceDetail(deviceName, detail);
+        }
+        // 返回更新结果
+        return updated > 0;
+    }
+    @Override
+    public boolean blowmod(String deviceName){
+        int updated =  airconMapper.blowmod(deviceName);
+        Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);
+        // 如果查询结果不为空
+        if (aircon != null) {
+            // 格式化温度和模式
+            String detail = formatDetail(aircon.getTemperature(), aircon.getMode());
+            // 更新设备详情
+            airconMapper.updateDeviceDetail(deviceName, detail);
+        }
+        // 返回更新结果
+        return updated > 0;
+    }
 
     private String formatDetail(Double temperature, String mode) {
         // 只保留整数部分
@@ -105,4 +165,5 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         // 如果没有匹配，直接返回原字符串
         return detail;
     }
+
 }

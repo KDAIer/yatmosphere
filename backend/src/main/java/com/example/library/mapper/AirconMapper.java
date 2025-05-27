@@ -35,6 +35,18 @@ public interface AirconMapper extends BaseMapper<Aircon> {
         WHERE d.device_name = #{deviceName}
         """)
     int decreaseTemperatureByDeviceName(@Param("deviceName") String deviceName);
+    @Update("UPDATE aircon a LEFT JOIN device d ON a.device_id = d.device_id SET a.mode = '制冷' WHERE d.device_name = #{deviceName}")
+    int refrigerationmod(@Param("deviceName") String deviceName);
+
+    @Update("UPDATE aircon a LEFT JOIN device d ON a.device_id = d.device_id SET a.mode = '制热' WHERE d.device_name = #{deviceName}")
+    int heatingmod(@Param("deviceName") String deviceName);
+
+    @Update("UPDATE aircon a LEFT JOIN device d ON a.device_id = d.device_id SET a.mode = '除湿' WHERE d.device_name = #{deviceName}")
+    int dehumidifiermod(@Param("deviceName") String deviceName);
+
+
+    @Update("UPDATE aircon a LEFT JOIN device d ON a.device_id = d.device_id SET a.mode = '送风' WHERE d.device_name = #{deviceName}")
+    int blowmod(@Param("deviceName") String deviceName);
 
     // 查询当前温度、模式和detail
     @Select("""
