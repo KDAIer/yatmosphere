@@ -1,5 +1,5 @@
 // src/composables/DashboardLogic.js
-import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
+import { ref, computed, onMounted, onUnmounted, reactive, watchEffect } from 'vue'
 import axios from 'axios'
 import AirConditioner from '@/components/AirConditioner.vue'
 import LivingRoomControl from '@/components/LivingRoomControl.vue'
@@ -134,12 +134,13 @@ export const useTimeUpdater = () => {
 // 环境数据
 const environmentData = reactive({
   time: { label: '时间', value: currentTime },
-  people: { label: '屋内有', value: '3人' },
+  people: { label: '屋内有', value: '' },
   temperature: { label: '温度', value: '22°C' },
   humidity: { label: '湿度', value: '57%' },
   pm25: { label: 'PM2.5', value: '32 μg/m³' },
   co2: { label: '二氧化碳', value: '450 ppm' },
 })
+
 
 // 场景模式
 const scenes = ref([
@@ -170,6 +171,11 @@ const getCurrentAccount = () => {
   return localStorage.getItem('account') || 'admin'
 }
 
+// 自动监听在家人数
+watchEffect(() => {
+  const count = familyMembers.value.filter(m => m.isHome).length
+  environmentData.people.value = `${count}人`
+})
 
 
 // const familyMembers = ref([
