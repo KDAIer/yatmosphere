@@ -278,6 +278,68 @@ const triggerParticleEffect = (event, deviceId) => {
   }, 800)
 }
 
+
+
+
+const bgMusic = ref(null)
+const isMusicReady = ref(false)
+
+export const useMusicPlayer = () => {
+  const initMusic = (audioElement) => {
+    console.log('initMusic被调用，audioElement:', audioElement)
+    if (!audioElement) {
+      console.error('音频元素不存在')
+      return
+    }
+    
+    bgMusic.value = audioElement
+    
+    console.log('开始设置音频事件监听器')
+    console.log('音频文件 URL:', audioElement.src)
+    
+    // 监听元数据加载
+    bgMusic.value.addEventListener('loadedmetadata', () => {
+      console.log('音频元数据加载完成，持续时间:', bgMusic.value.duration, '秒')
+    })
+    
+    // 监听音频加载完成
+    bgMusic.value.addEventListener('canplaythrough', () => {
+      console.log('音频加载完成')
+      isMusicReady.value = true
+      bgMusic.value.volume = 0.5 // 提高音量，测试是否可闻
+      console.log('尝试恢复音量到 0.5')
+      bgMusic.value.play().then(() => {
+        console.log('播放尝试成功')
+      }).catch(err => {
+        console.error('播放失败:', err)
+      })
+    })
+    
+    // 监听加载开始
+    bgMusic.value.addEventListener('loadstart', () => {
+      console.log('音频开始加载')
+    })
+    
+    // 监听可以播放
+    bgMusic.value.addEventListener('canplay', () => {
+      console.log('音频可以播放')
+    })
+    
+    // 监听错误
+    bgMusic.value.addEventListener('error', (e) => {
+      console.error('音频加载错误:', e)
+      console.error('错误代码:', bgMusic.value.error?.code, '错误信息:', bgMusic.value.error?.message)
+    })
+    
+    console.log('强制加载音频')
+    bgMusic.value.load()
+  }
+  
+  return { initMusic, bgMusic }
+}
+
+
+
 // 导出所有逻辑
 export {
   theme,
@@ -312,4 +374,5 @@ export {
   faShieldAlt,
   faExclamationTriangle,
   faWifi,
+  
 }

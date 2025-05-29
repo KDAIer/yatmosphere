@@ -12,6 +12,14 @@
       <source src="/src/assets/videos/background.mp4" type="video/mp4">
       您的浏览器不支持视频播放。
     </video>
+
+    <!-- 添加背景音乐 -->
+    <audio autoplay loop volume="0.2" >
+      <source src="/src/assets/audio/Ready.mp3" type="audio/mp3">
+      您的浏览器不支持音频播放。
+    </audio>
+
+    
     <div class="auth-form">
         <div class="title-with-image">
             <img src="../assets/images/logo.png" alt="智能家居系统图片" class="system-image" />

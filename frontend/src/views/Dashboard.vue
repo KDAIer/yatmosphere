@@ -1,11 +1,31 @@
 <!-- src/components/Dashboard.vue -->
 <template>
   <div class="dashboard">
+
+    <audio
+      ref="bgMusicRef"
+      autoplay
+      loop
+      preload="auto"
+      style="display: none;"
+    >
+      <source src="/src/assets/audio/海愿 - 塞壬唱片-MSR、Eagle Wei.mp3" type="audio/mpeg">
+      您的浏览器不支持音频播放。
+    </audio>
+    
     <!-- 头部 -->
     <header class="header">
       <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
       <h1>智能家居控制中心</h1>
       <div class="user-info">
+        
+      <button @click="toggleMusic" class="music-btn">
+        <font-awesome-icon icon="music" class="music-icon" />
+        <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" class="player-icon" />
+        <!-- {{ isPlaying ? '暂停音乐' : '播放音乐' }} -->
+      </button>
+
+
         <button @click="toggleTheme" class="theme-btn">
           <font-awesome-icon :icon="theme === 'light' ? 'moon' : 'sun'" />
           {{ theme === 'light' ? '黑夜模式' : '白天模式' }}
@@ -236,19 +256,26 @@
               <!-- 通用字段 -->
               <div class="form-group">
                 <label>设备名称:</label>
-                <input v-model="newDevice.deviceName" placeholder="例如: 客厅空调/卧室灯">
+                <input type="text" v-model="newDevice.deviceName" placeholder="例如: 客厅空调/卧室灯">
               </div>
               <div class="form-group">
                 <label>设备ID:</label>
-                <input v-model="newDevice.deviceId" placeholder="例如: AC001/LT001">
+                <input type="text" v-model="newDevice.deviceId" placeholder="例如: AC001/LT001">
               </div>
               <div class="form-group">
                 <label>初始状态:</label>
-                <label class="switch">
-                  <input type="checkbox" v-model="newDevice.status">
-                  <span class="slider round"></span>
-                  <span class="switch-label">{{ newDevice.status ? '开启' : '关闭' }}</span>
-                </label>
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      v-model="newDevice.status"
+                      @click="triggerParticleEffect($event, 'add-device-switch')"
+                    />
+                    <span class="slider round"></span>
+                    <span class="switch-label">{{ newDevice.status ? '开启' : '关闭' }}</span>
+                    <div class="particle-container" :class="{ active: activeParticle === 'add-device-switch' }">
+                      <span class="particle" v-for="n in 8" :key="n" :style="{ '--angle': `${(n - 1) * 45}deg` }"></span>
+                    </div>
+                  </label>
               </div>
 
               <!-- 空调特有字段 -->
@@ -447,9 +474,42 @@ const updateDeviceInfo = ({ id, temperature, mode }) => {
   }
 }
 
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
+import { useMusicPlayer } from './DashboardLogic.js'
+
+// 音频相关
+const bgMusicRef = ref(null)
+
+const { initMusic, bgMusic } = useMusicPlayer()
+
 
 onMounted(fetchAllDevices)
+
+const isPlaying = ref(false)
+
+// 修改后的播放/暂停音频函数
+const toggleMusic = () => {
+  if (bgMusicRef.value) {
+    if (isPlaying.value) {
+      // 当前正在播放，点击暂停
+      bgMusicRef.value.pause()
+      isPlaying.value = false
+      console.log('音频已暂停')
+    } else {
+      // 当前暂停中，点击播放
+      bgMusicRef.value.volume = 0.2
+      bgMusicRef.value.play().then(() => {
+        isPlaying.value = true
+        console.log('音频播放成功')
+      }).catch(err => {
+        console.error('音频播放失败:', err)
+      })
+    }
+  } else {
+    console.error('音频元素未找到，无法操作')
+  }
+}
+
 
 
 // 用户数据
