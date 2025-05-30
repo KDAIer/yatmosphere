@@ -243,7 +243,7 @@ INSERT INTO aircon (
 
 DROP TABLE if exists `light`;
 CREATE TABLE `light` (
-                         `id` INT PRIMARY KEY,
+                         `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
                          `device_id` VARCHAR(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                          `status` BOOLEAN DEFAULT 1,
                          `brightness` INT DEFAULT 80,

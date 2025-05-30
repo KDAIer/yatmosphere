@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface LightService extends BaseService<Light> {
     List<Light> getAllLights();
+
+    boolean addLight(Light light);
     boolean turnOnLight(String deviceName);
     boolean turnOffLight(String deviceName);
 }
