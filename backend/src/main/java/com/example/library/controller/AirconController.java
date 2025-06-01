@@ -5,7 +5,6 @@ import com.example.library.service.AirconService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.List;
 public class AirconController {
     @Resource
     private AirconService airconService;
-
 
     @PostMapping("/add")
     @Operation(summary = "新增空调", description = "新增空调（设备+空调表）")
@@ -31,32 +29,36 @@ public class AirconController {
         return airconService.getAllAircons();
     }
 
-     @PostMapping("/inc")
-     @Operation(summary = "升高温度", description = "根据deviceName升高温度0.5度")
-     public Boolean increaseTemperature(@RequestParam String deviceName) {
-         return airconService.increaseTemperature(deviceName);
-     }
+    @PostMapping("/inc")
+    @Operation(summary = "升高温度", description = "根据deviceName升高温度0.5度")
+    public Boolean increaseTemperature(@RequestParam String deviceName) {
+        return airconService.increaseTemperature(deviceName);
+    }
 
-     @PostMapping("/dec")
-     @Operation(summary = "降低温度", description = "根据deviceName降低温度0.5度")
-     public Boolean decreaseTemperature(@RequestParam String deviceName) {
-         return airconService.decreaseTemperature(deviceName);
-     }
+    @PostMapping("/dec")
+    @Operation(summary = "降低温度", description = "根据deviceName降低温度0.5度")
+    public Boolean decreaseTemperature(@RequestParam String deviceName) {
+        return airconService.decreaseTemperature(deviceName);
+    }
+
     @PostMapping("/refri")
     @Operation(summary = "制冷模式", description = "将deviceName对应空改为制冷模式")
     public Boolean refrigerationmod(@RequestParam String deviceName) {
         return airconService.refrigerationmod(deviceName);
     }
+
     @PostMapping("/heat")
     @Operation(summary = "制热模式", description = "将deviceName对应空改为制热模式")
     public Boolean heatingmod(@RequestParam String deviceName) {
         return airconService.heatingmod(deviceName);
     }
+
     @PostMapping("/dehumidifier")
     @Operation(summary = "抽湿模式", description = "将deviceName对应空改为抽湿模式")
     public Boolean dehumidifiermod(@RequestParam String deviceName) {
         return airconService.dehumidifiermod(deviceName);
     }
+
     @PostMapping("/blow")
     @Operation(summary = "送风模式", description = "将deviceName对应空改为送风模式")
     public Boolean blowmod(@RequestParam String deviceName) {
