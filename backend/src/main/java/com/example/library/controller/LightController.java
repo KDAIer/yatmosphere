@@ -1,6 +1,7 @@
 package com.example.library.controller;
 
 import com.example.library.pojo.entity.Light;
+import com.example.library.pojo.vo.Result;
 import com.example.library.service.LightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,8 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.library.etc.ResultGenerator.genFail;
 
 @RestController
 @RequestMapping("/light")
@@ -20,6 +23,24 @@ public class LightController {
     @Operation(summary = "查看所有灯", description = "查看所有灯")
     public List<Light> getAllLights() {
         return lightService.getAllLights();
+    }
+
+
+    @PostMapping("/add")
+    @Operation(summary = "新增灯", description = "新增灯（设备+灯表）")
+    public Result<Boolean> addLight(@RequestBody Light light) {
+        try {
+            boolean result = lightService.addLight(light);
+            if (result) {
+                return Result.success(true);
+            } else {
+                return Result.fail("添加失败");
+            }
+        } catch(
+        RuntimeException e)
+        {
+            return Result.fail(e.getMessage());
+        }
     }
 
     @PostMapping("/on")

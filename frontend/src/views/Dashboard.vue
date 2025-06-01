@@ -51,21 +51,21 @@
         <div class="user-details">
               <div class="detail-item">
                 <span class="detail-label">用户名:</span>
-                <span class="detail-value">{{ user.username }}</span>
+                <span class="detail-value">{{ username }}</span>
               </div>
-              <div class="detail-item">
+              <!-- <div class="detail-item">
                 <span class="detail-label">姓名:</span>
                 <span class="detail-value">{{ user.fullName }}</span>
-              </div>
+              </div> -->
               <div class="detail-item">
                 <span class="detail-label">家庭邀请码:</span>
-                <span class="detail-value">{{ user.inviteCode }}</span>
+                <span class="detail-value">{{ inviteCode }}</span>
                 <button class="copy-btn" @click="copyInviteCode">复制</button>
               </div>
-              <div class="detail-item">
+              <!-- <div class="detail-item">
                 <span class="detail-label">注册时间:</span>
                 <span class="detail-value">{{ user.registerTime }}</span>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -239,6 +239,19 @@
                   <span>{{ device.details || '-' }}</span>
                 </div>
               </div>
+              <div class="table-body">
+                <div
+                  v-for="device in allDevices"
+                  :key="device.id"
+                  class="table-row"
+                  :class="{ 'device-on': device.state }"
+                >
+                  <span>{{ device.id }}</span>
+                  <span>{{ device.name }}</span>
+                  <span>{{ device.state ? '开启' : '关闭' }}</span>
+                  <span>{{ device.details || '-' }}</span>
+                </div>
+              </div>
             </div>
           </div>
         <!-- 添加设备弹窗 -->
@@ -394,6 +407,7 @@ const emit = defineEmits(['refresh-devices'])
 import {
   theme,
   toggleTheme,
+  inviteCode,
   username,
   activeArea,
   areas,
@@ -516,10 +530,10 @@ const toggleMusic = () => {
 const showUserModal = ref(false)
 const user = ref({
   avatar: 'https://example.com/avatar.jpg', // 替换为实际头像URL
-  username: 'admin',
-  fullName: '张伟',
-  inviteCode: 'HOME-2023-ABCD',
-  registerTime: '2023-05-15 14:30:22'
+  username: ' ',
+  // fullName: '张伟', (注册时也没有显示真实姓名，这块感觉没有必要)
+  inviteCode: ''
+  // registerTime: '2023-05-15 14:30:22' （注册时间显示也没有必要）
 })
 
 // 复制邀请码函数

@@ -684,66 +684,66 @@ display: flex; /* 改为 flex 水平布局 */
 
 /* Wi-Fi 信号图标 */
 .signal-strength {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .wifi-icon {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    position: relative;
-    vertical-align: middle;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  vertical-align: middle;
 }
 
 .wifi-icon::before,
 .wifi-icon::after,
 .wifi-icon span::before,
 .wifi-icon span::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    box-sizing: border-box;
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
 }
 
 /* 弧线样式 */
 .wifi-icon::before,
 .wifi-icon::after,
 .wifi-icon span::before {
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-top-color: #4ecdc4;
-    opacity: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #4ecdc4;
+  opacity: 0;
 }
 
 /* 最内层弧线 */
 .wifi-icon::before {
-    width: 15px;
-    height: 10px;
-    top: 16px;
+  width: 15px;
+  height: 10px;
+  top: 16px;
 }
 
 /* 中间弧线 */
 .wifi-icon::after {
-    width: 23px;
-    height: 16px;
-    top: 12px;
+  width: 23px;
+  height: 16px;
+  top: 12px;
 }
 
 /* 最外层弧线 */
 .wifi-icon span::before {
-    width: 28px;
-    height: 20px;
-    top: 8px;
+  width: 28px;
+  height: 20px;
+  top: 8px;
 }
 
 /* 底部圆点 */
 .wifi-icon span::after {
-    width: 4px;
-    height: 4px;
-    background: #4ecdc4;
-    border-radius: 50%;
-    top: 20px;
+  width: 4px;
+  height: 4px;
+  background: #4ecdc4;
+  border-radius: 50%;
+  top: 20px;
     opacity: 1; /* 始终显示 */
 }
 
@@ -754,27 +754,27 @@ display: flex; /* 改为 flex 水平布局 */
 
 .wifi-icon[data-strength='1'] span::after,
 .wifi-icon[data-strength='1']::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .wifi-icon[data-strength='2'] span::after,
 .wifi-icon[data-strength='2']::before,
 .wifi-icon[data-strength='2']::after {
-    opacity: 1;
+  opacity: 1;
 }
 
 .wifi-icon[data-strength='3'] span::after,
 .wifi-icon[data-strength='3']::before,
 .wifi-icon[data-strength='3']::after,
 .wifi-icon[data-strength='3'] span::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .wifi-icon[data-strength='4'] span::after,
 .wifi-icon[data-strength='4']::before,
 .wifi-icon[data-strength='4']::after,
 .wifi-icon[data-strength='4'] span::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* 网络弹窗 */
@@ -875,6 +875,7 @@ display: flex; /* 改为 flex 水平布局 */
   display: flex;
   flex-direction: column;
   gap: 12px;
+  color: #000;
 }
 
 .detail-item {
@@ -938,7 +939,7 @@ display: flex; /* 改为 flex 水平布局 */
 }
 
 .add-btn {
- 
+
   color: var(--color-text); /* Use CSS variable for text color */
 }
 
@@ -1104,7 +1105,7 @@ input:checked + .slider:before {
 .music-btn {
   background: rgba(255, 255, 255, 0.0);
   border: rgb(0,0,0) solid 1px;
-  border-radius: 10px; 
+  border-radius: 10px;
   width: 50px;
   height: 35px;
   display: flex;
