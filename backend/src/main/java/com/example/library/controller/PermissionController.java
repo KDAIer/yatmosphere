@@ -17,6 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/permission")
 @Tag(name = "权限信息接口", description = "权限信息接口")
-@PreAuthorize(AuthorizeConstant.HAS_ROLE_ADMIN)
+// @PreAuthorize(AuthorizeConstant.HAS_ROLE_ADMIN)
 public class PermissionController extends BaseExtController<Permission, PermissionDTO, PermissionService> {
 }

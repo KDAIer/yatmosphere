@@ -25,12 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 @Tag(name = "用户信息接口", description = "用户信息接口")
-@PreAuthorize(AuthorizeConstant.HAS_ROLE_ADMIN)
+// @PreAuthorize(AuthorizeConstant.HAS_ROLE_ADMIN)
 public class UserController extends BaseExtController<User, UserDTO, UserService> {
     @Resource
     private RoleService roleService;
-
-
 
     @Override
     @PostMapping("/save")
@@ -39,8 +37,6 @@ public class UserController extends BaseExtController<User, UserDTO, UserService
         User user = userPropertySet(dto);
         return service.save(user);
     }
-
-
 
     @Override
     @PostMapping("/update")

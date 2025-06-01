@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/role")
 @Tag(name = "角色信息接口", description = "角色信息接口")
-@PreAuthorize(AuthorizeConstant.HAS_ROLE_ADMIN)
+// @PreAuthorize(AuthorizeConstant.HAS_ROLE_ADMIN)
 public class RoleController extends BaseExtController<Role, RoleDTO, RoleService> {
     @Resource
     private PermissionService permissionService;
@@ -45,10 +45,6 @@ public class RoleController extends BaseExtController<Role, RoleDTO, RoleService
         Role role = rolePropertySet(dto);
         return service.updateById(role);
     }
-
-
-
-
 
     private Role rolePropertySet(RoleDTO dto) {
         Role role = new Role();
