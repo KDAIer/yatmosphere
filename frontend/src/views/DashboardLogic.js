@@ -39,6 +39,9 @@ const username = ref('')
 
 const roleName = ref('')
 
+// 读取邀请码
+const inviteCode = ref('')
+
 
 // // 用户数据
 // const username = ref('管理员')
@@ -92,6 +95,18 @@ export const useTimeUpdater = () => {
   }
 
   username.value = getCurrentAccount()
+
+  const getCurrentInviteCode = () => {
+    //const account = localStorage.getItem('account')
+    const inviteCode = localStorage.getItem('inviteCode')
+    console.log('获取当前邀请码:', inviteCode)
+    if (!inviteCode) {
+      console.warn('未在 localStorage 中找到 inviteCode，使用默认值 admin')
+    }
+    return inviteCode
+  }
+  inviteCode.value = getCurrentInviteCode()
+
 
   const loadFamilyMembers = async () => {
     const account = getCurrentAccount()
@@ -151,12 +166,8 @@ const scenes = ref([
 
 // 所有设备
 const allDevices = ref([
-  { id: 'AC001', name: '客厅空调', state: true, details: '22°C 制冷模式' },
   { id: 'LK002', name: '智能门锁', state: false, details: '已锁定' },
   { id: 'SF003', name: '安防系统', state: true, details: '布防中' },
-  { id: 'LT004', name: '客厅灯', state: true, details: '亮度75%' },
-  { id: 'KT005', name: '厨房灯', state: false, details: '关闭' },
-  { id: 'BD006', name: '卧室灯', state: true, details: '暖光模式' },
 ])
 
 // 家庭成员
@@ -213,47 +224,50 @@ const quickDevices = ref([
 ])
 
 const handleDeviceAction = (device) => {
-  if (!device || !device.id) {
+  if (!device || !device.name) {
     console.error('Invalid device:', device)
     return
   }
-  if (!quickDevices.value) {
-    console.error('quickDevices is undefined')
-    return
-  }
-  const index = quickDevices.value.findIndex(d => d.id === device.id)
-  if (index === -1) {
-    console.error('Device not found:', device.id)
+
+  // 找 quickDevices 中对应设备的索引
+  const quickIndex = quickDevices.value.findIndex(d => d.name === device.name)
+  if (quickIndex === -1) {
+    console.error('Device not found in quickDevices:', device.name)
     return
   }
 
-  quickDevices.value[index] = {
-    ...quickDevices.value[index],
-    state: !quickDevices.value[index].state,
-  }
-  const newState = quickDevices.value[index].state
+  // 状态取反
+  const newState = !quickDevices.value[quickIndex].state
+
+  // 更新 quickDevices
+  quickDevices.value[quickIndex].state = newState
 
   switch (device.type) {
     case 'master':
-      quickDevices.value[index].status = newState ? '系统在线' : '系统离线'
+      quickDevices.value[quickIndex].status = newState ? '系统在线' : '系统离线'
       break
     case 'lock':
-      quickDevices.value[index].status = newState
+      quickDevices.value[quickIndex].status = newState
         ? `已在 ${new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })} 锁定`
         : '已解锁'
       break
     case 'security':
-      quickDevices.value[index].status = newState ? '布防中' : '撤防中'
-      console.log(newState ? '安防系统已激活' : '安防系统已撤防')
+      quickDevices.value[quickIndex].status = newState ? '布防中' : '撤防中'
       break
     case 'network':
-      quickDevices.value[index].status = newState ? '5G在线' : '网络断开'
-      quickDevices.value[index].signalStrength = newState ? 80 : 0 // 动态更新强度
-      if (newState) showNetworkModal()
+      quickDevices.value[quickIndex].status = newState ? '5G在线' : '网络断开'
+      quickDevices.value[quickIndex].signalStrength = newState ? 80 : 0
       break
     default:
       console.warn('Unknown device type:', device.type)
       break
+  }
+
+  // 同步更新 allDevices 里的状态和 details （这里我的想法是只有安防系统以及智能门锁有展示，所以就仅靠name属性来更新不走数据库后端）
+  const allIndex = allDevices.value.findIndex(d => d.name === device.name)
+  if (allIndex !== -1) {
+    allDevices.value[allIndex].state = newState
+    allDevices.value[allIndex].details = quickDevices.value[quickIndex].status
   }
 }
 
@@ -291,17 +305,17 @@ export const useMusicPlayer = () => {
       console.error('音频元素不存在')
       return
     }
-    
+
     bgMusic.value = audioElement
-    
+
     console.log('开始设置音频事件监听器')
     console.log('音频文件 URL:', audioElement.src)
-    
+
     // 监听元数据加载
     bgMusic.value.addEventListener('loadedmetadata', () => {
       console.log('音频元数据加载完成，持续时间:', bgMusic.value.duration, '秒')
     })
-    
+
     // 监听音频加载完成
     bgMusic.value.addEventListener('canplaythrough', () => {
       console.log('音频加载完成')
@@ -314,27 +328,27 @@ export const useMusicPlayer = () => {
         console.error('播放失败:', err)
       })
     })
-    
+
     // 监听加载开始
     bgMusic.value.addEventListener('loadstart', () => {
       console.log('音频开始加载')
     })
-    
+
     // 监听可以播放
     bgMusic.value.addEventListener('canplay', () => {
       console.log('音频可以播放')
     })
-    
+
     // 监听错误
     bgMusic.value.addEventListener('error', (e) => {
       console.error('音频加载错误:', e)
       console.error('错误代码:', bgMusic.value.error?.code, '错误信息:', bgMusic.value.error?.message)
     })
-    
+
     console.log('强制加载音频')
     bgMusic.value.load()
   }
-  
+
   return { initMusic, bgMusic }
 }
 
@@ -345,6 +359,7 @@ export {
   theme,
   toggleTheme,
   username,
+  inviteCode,
   roleName,
   activeArea,
   areas,
@@ -374,5 +389,5 @@ export {
   faShieldAlt,
   faExclamationTriangle,
   faWifi,
-  
+
 }

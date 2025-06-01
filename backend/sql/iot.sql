@@ -215,6 +215,9 @@ INSERT INTO device VALUES (116, '卧室灯', 'BD006', '灯', 1, '2025-5-20 14:27
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
 UNLOCK TABLES;
 
+delete from device where id = '112';
+delete from device where id = '113';
+
 -- LOCK TABLES `aircon_status` WRITE;
 -- /*!40000 ALTER TABLE `device` DISABLE KEYS */;
 -- INSERT INTO `aircon_status` VALUES (123123124,25,'123-456','空调',1,'2025-5-20 14:27:00','2025-5-20 14:27:00');

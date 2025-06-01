@@ -321,6 +321,7 @@ try {
     localStorage.setItem('authToken', response.data.data.token)
     localStorage.setItem('username', username.value)
     localStorage.setItem('role', response.data.data.role || 'member')
+    localStorage.setItem('inviteCode', response.data.data.inviteCode || '')
     successMessage.value = '登录成功！'
     router.push('/dashboard')
   } else {
