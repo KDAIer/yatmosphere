@@ -8,6 +8,7 @@ public interface AirconService extends BaseService<Aircon> {
     List<Aircon> getAllAircons();
     boolean increaseTemperature(String deviceName);
     boolean decreaseTemperature(String deviceName);
+    boolean updateAirconMode(String deviceId, String mode);
     boolean refrigerationmod(String deviceName);
     boolean heatingmod(String deviceName);
     boolean dehumidifiermod(String deviceName);

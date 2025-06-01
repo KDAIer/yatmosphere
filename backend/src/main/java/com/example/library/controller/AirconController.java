@@ -41,6 +41,13 @@ public class AirconController {
         return airconService.decreaseTemperature(deviceName);
     }
 
+
+    @PostMapping("/updateMode")
+    @Operation(summary = "修改空调模式", description = "根据deviceId和mode修改空调模式，同时更新设备描述")
+    public Boolean updateAirconMode(@RequestParam String deviceId, @RequestParam String mode) {
+        return airconService.updateAirconMode(deviceId, mode);
+    }
+
     @PostMapping("/refri")
     @Operation(summary = "制冷模式", description = "将deviceName对应空改为制冷模式")
     public Boolean refrigerationmod(@RequestParam String deviceName) {

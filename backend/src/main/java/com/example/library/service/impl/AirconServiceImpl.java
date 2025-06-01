@@ -85,6 +85,22 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         // 返回更新结果
         return updated > 0;
     }
+
+
+    @Override
+    @Transactional
+    public boolean updateAirconMode(String deviceId, String mode) {
+        // 根据 deviceId 查询空调记录（包括温度）
+        Aircon aircon = airconMapper.selectTempAndModeByDeviceId(deviceId);
+        if (aircon == null) {
+            throw new ServiceException("未找到指定设备: " + deviceId);
+        }
+        // 计算新的detail，通过已有的formatDetail方法
+        String newDetail = formatDetail(aircon.getTemperature(), mode);
+        // 更新空调mode和设备描述detail
+        int updated = airconMapper.updateModeByDeviceId(deviceId, mode, newDetail);
+        return updated > 0;
+    }
     @Override
     public boolean refrigerationmod(String deviceName){
 

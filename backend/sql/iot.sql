@@ -211,7 +211,7 @@ INSERT INTO device VALUES (113, '安防系统', 'SF003', '安防', 1, '2025-5-20
 INSERT INTO device VALUES (114, '客厅灯', 'LT004', '灯', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '亮度75%');
 INSERT INTO device VALUES (115, '厨房灯', 'KT005', '灯', 0, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '关闭');
 INSERT INTO device VALUES (116, '卧室灯', 'BD006', '灯', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '暖光模式');
-
+INSERT INTO device VALUES (117, '卧室空调', 'AC002', '空调', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '22°C 制冷模式');
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
 UNLOCK TABLES;
 
@@ -243,6 +243,10 @@ CREATE TABLE aircon (
 INSERT INTO aircon (
     id, temperature, device_id, mode, status, fan_level, timer
 ) VALUES (111, 22.0, 'AC001', '制冷', FALSE, 3, 0 );
+
+INSERT INTO aircon (
+    id, temperature, device_id, mode, status, fan_level, timer
+) VALUES (117, 22.0, 'AC002', '制冷', FALSE, 3, 0 );
 
 DROP TABLE if exists `light`;
 CREATE TABLE `light` (

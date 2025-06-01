@@ -39,7 +39,7 @@
           v-for="mode in modes"
           :key="mode.value"
           class="mode-btn"
-          :class="{ active: currentMode === mode.value }"
+          :class="{ active: selectedDeviceObj?.mode === modeMapping[mode.value] }"
           @click="changeMode(mode.value)"
         >
           <span class="mode-icon">{{ mode.icon }}</span>
@@ -106,19 +106,16 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
-import { defineProps } from 'vue'
-
-
-import { defineEmits } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 const emit = defineEmits(['refresh-devices'])
 const props = defineProps({
   visible: Boolean
 })
 
 const isPowerOn = ref(true)
-const currentMode = ref('cool')
+// 【去掉 currentMode，直接从设备数据中获取 mode】
 const selectedDevice = ref(null) // 只保存设备id
 const devices = ref([])
 
@@ -135,6 +132,14 @@ const modes = [
   { name: '送风', value: 'fan', icon: '🌪️' },
 ]
 
+// modeMapping: 将英文值映射为中文
+const modeMapping = {
+  cool: '制冷',
+  heat: '制热',
+  dry: '除湿',
+  fan: '送风'
+}
+
 // 计算属性：当前选中设备对象
 const selectedDeviceObj = computed(() => {
   return devices.value.find(d => d.id === selectedDevice.value)
@@ -143,13 +148,15 @@ const selectedDeviceObj = computed(() => {
 const fetchDevices = async () => {
   try {
     const token = localStorage.getItem('authToken')
-    const res = await axios.get('/aircon/getall',{
+    const res = await axios.get('/aircon/getall', {
       headers: { 'Content-Type': 'application/json', 'Authorization': token }
     })
+    // 将返回的 mode 字段也映射到设备对象中，若不存在则默认为'制冷'
     devices.value = (res.data.data || []).map(item => ({
       id: item.deviceId,
       name: item.deviceName,
       temperature: item.temperature ?? 22,
+      mode: item.mode || '制冷'
     }))
     if (devices.value.length > 0) {
       selectedDevice.value = devices.value[0].id // 只保存id
@@ -176,22 +183,18 @@ const adjustTemp = async (delta) => {
       delta > 0
         ? `/aircon/inc?deviceName=${encodeURIComponent(device.name)}`
         : `/aircon/dec?deviceName=${encodeURIComponent(device.name)}`
-    const res = await axios.post(
-      url,
-      null,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        }
+    const res = await axios.post(url, null, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
       }
-    )
+    })
     // 本地温度同步变化
     device.temperature = Math.min(30, Math.max(16, device.temperature + delta))
     emit('update-device', {
       id: device.id,
       temperature: device.temperature,
-      mode: currentMode.value
+      mode: device.mode
     })
     console.log(`温度调节${res.data.data}: ${device.temperature}℃`)
     emit('refresh-devices')
@@ -200,8 +203,39 @@ const adjustTemp = async (delta) => {
   }
 }
 
-const changeMode = (mode) => {
-  currentMode.value = mode
+const changeMode = async (mode) => {
+  if (!selectedDeviceObj.value) return
+  try {
+    const token = localStorage.getItem('authToken')
+    const newMode = modeMapping[mode]
+    const response = await axios.post(
+      `/aircon/updateMode`,
+      null,
+      {
+        params: {
+          deviceId: selectedDeviceObj.value.id,
+          mode: newMode // 使用中文参数
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    )
+    if (response.data.data === true) {
+      console.log("空调模式更新成功", newMode)
+      // 更新本地设备的 mode 字段
+      const device = devices.value.find(d => d.id === selectedDeviceObj.value.id)
+      if (device) {
+        device.mode = newMode
+      }
+      emit('refresh-devices')
+    } else {
+      console.error("空调模式更新失败")
+    }
+  } catch (e) {
+    console.error("更新空调模式错误", e)
+  }
 }
 
 const loadDeviceSettings = () => {

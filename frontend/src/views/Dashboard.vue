@@ -155,14 +155,15 @@
               <component
                 :is="getAreaComponent(activeArea)"
                 @close="activeArea = null"
-                @update-device="updateDeviceInfo"
-
+                @refresh-devices="fetchAllDevices"
+               ></component>
                 class="modal-content"
               />
             </div>
           </section>
         </div>
         <!-- @refresh-devices="fetchAllDevices" -->
+                         <!-- @update-device="updateDeviceInfo" -->
 
 
 
