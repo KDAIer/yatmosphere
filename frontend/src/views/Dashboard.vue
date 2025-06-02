@@ -156,9 +156,8 @@
                 :is="getAreaComponent(activeArea)"
                 @close="activeArea = null"
                 @refresh-devices="fetchAllDevices"
-               ></component>
                 class="modal-content"
-              />
+                />
             </div>
           </section>
         </div>
