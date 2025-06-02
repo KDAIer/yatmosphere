@@ -18,6 +18,16 @@ public interface AirconMapper extends BaseMapper<Aircon> {
     """)
     int insertAircon(Aircon aircon);
 
+
+    
+
+    @Update("""
+        UPDATE aircon
+        SET status = #{status}
+        WHERE device_id = #{deviceId}
+        """)
+    int updatePowerByDeviceId(@Param("deviceId") String deviceId, @Param("status") int status);
+
     // 升高温度
     @Update("""
         UPDATE aircon a

@@ -101,6 +101,14 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         int updated = airconMapper.updateModeByDeviceId(deviceId, mode, newDetail);
         return updated > 0;
     }
+
+    @Override
+    @Transactional
+    public boolean updateAirconPower(String deviceId, int status) {
+        int updatedAircon = airconMapper.updatePowerByDeviceId(deviceId, status);
+        int updatedDevice = deviceMapper.updateStatusByDeviceId(deviceId, status);
+        return updatedAircon > 0 && updatedDevice > 0;
+    }
     @Override
     public boolean refrigerationmod(String deviceName){
 

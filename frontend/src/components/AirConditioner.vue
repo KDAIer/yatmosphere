@@ -14,12 +14,12 @@
         </option>
       </select>
     </div>
-
+    
     <div class="control-body">
       <!-- 电源控制 -->
       <div class="power-control">
-        <button class="power-btn" :class="{ on: isPowerOn }" @click="togglePower">
-          {{ isPowerOn ? '关闭' : '开启' }}
+        <button class="power-btn" :class="{ on: selectedDeviceObj?.isPowerOn }" @click="togglePower">
+          {{ selectedDeviceObj?.isPowerOn ? '关闭' : '开启' }}
         </button>
       </div>
 
@@ -114,7 +114,7 @@ const props = defineProps({
   visible: Boolean
 })
 
-const isPowerOn = ref(true)
+//const isPowerOn = ref(true)
 // 【去掉 currentMode，直接从设备数据中获取 mode】
 const selectedDevice = ref(null) // 只保存设备id
 const devices = ref([])
@@ -170,15 +170,52 @@ const fetchDevices = async () => {
 
 onMounted(fetchDevices)
 
-const togglePower = () => {
-  isPowerOn.value = !isPowerOn.value
+const togglePower = async () => {
+  if (!selectedDeviceObj.value) return
+  try {
+    const token = localStorage.getItem('authToken')
+    const device = selectedDeviceObj.value
+    // 判断设备当前状态，0表示关闭模式，1表示开启模式
+    const newStatus = device.isPowerOn ? 0 : 1
+    const res = await axios.post(
+      `/aircon/changePower`,
+      null,
+      {
+        params: {
+          deviceId: device.id,
+          status: newStatus
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    )
+    if (res.data.data === true) {
+      // 同步更新设备的 isPowerOn 状态
+      device.isPowerOn = !device.isPowerOn
+      console.log("空调状态更新成功")
+      emit('refresh-devices')
+    } else {
+      console.error("空调状态更新失败")
+    }
+  } catch (e) {
+    console.error("更新空调状态错误", e)
+  }
 }
 
 const adjustTemp = async (delta) => {
   if (!selectedDeviceObj.value) return
   try {
-    const token = localStorage.getItem('authToken')
     const device = selectedDeviceObj.value
+    // 新温度值
+    const newTemp = device.temperature + delta
+    // 温度边界判断，若超过边界则不调用接口
+    if ((delta > 0 && device.temperature >= 30) || (delta < 0 && device.temperature <= 16)) {
+      console.log('温度已达边界，不进行调节')
+      return
+    }
+    const token = localStorage.getItem('authToken')
     const url =
       delta > 0
         ? `/aircon/inc?deviceName=${encodeURIComponent(device.name)}`
@@ -189,8 +226,8 @@ const adjustTemp = async (delta) => {
         'Authorization': token
       }
     })
-    // 本地温度同步变化
-    device.temperature = Math.min(30, Math.max(16, device.temperature + delta))
+    // 本地温度同步变化（确保温度在16～30之间）
+    device.temperature = Math.min(30, Math.max(16, newTemp))
     emit('update-device', {
       id: device.id,
       temperature: device.temperature,
@@ -202,7 +239,6 @@ const adjustTemp = async (delta) => {
     console.error('调节温度失败', e)
   }
 }
-
 const changeMode = async (mode) => {
   if (!selectedDeviceObj.value) return
   try {

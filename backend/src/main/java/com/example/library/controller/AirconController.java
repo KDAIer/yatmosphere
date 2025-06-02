@@ -29,6 +29,12 @@ public class AirconController {
         return airconService.getAllAircons();
     }
 
+    @PostMapping("/changePower")
+    @Operation(summary = "改变空调开关", description = "根据deviceId和status修改空调开关状态，status为0或1")
+    public Boolean changePower(@RequestParam String deviceId, @RequestParam int status) {
+        return airconService.updateAirconPower(deviceId, status);
+    }
+
     @PostMapping("/inc")
     @Operation(summary = "升高温度", description = "根据deviceName升高温度0.5度")
     public Boolean increaseTemperature(@RequestParam String deviceName) {

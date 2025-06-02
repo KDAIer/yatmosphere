@@ -5,6 +5,7 @@ import com.example.library.pojo.entity.Device;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -28,6 +29,14 @@ public interface DeviceMapper extends BaseMapper<Device> {
     VALUES (#{deviceId}, #{deviceName}, #{category}, #{status}, #{detail})
     """)
     int insertDevice(Device device);
+
+
+    @Update("""
+    UPDATE device 
+    SET status = #{status}
+    WHERE device_id = #{deviceId}
+    """)
+    int updateStatusByDeviceId(@Param("deviceId") String deviceId, @Param("status") int status);
 
 //    @Select("SELECT * FROM device")
     List<Device> selectAllDevices();
