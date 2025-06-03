@@ -190,20 +190,83 @@
           </section>
 
           <!-- 智能场景 -->
-          <section class="scenes card">
-            <h2>智能场景</h2>
-            <div class="scene-grid">
-              <button
-                v-for="scene in scenes"
-                :key="scene.id"
-                class="scene-btn"
-                @click="activateScene(scene.id)"
-              >
-                <span class="scene-icon">{{ scene.icon }}</span>
-                <span class="scene-name">{{ scene.name }}</span>
-              </button>
-            </div>
-          </section>
+            <section class="scenes card">
+              <div class="scenes-header">
+                <h2>智能场景</h2>
+                <button class="add-scene-btn" @click="showSceneCreator = true">
+                  <span>+ 自定义场景</span>
+                </button>
+              </div>
+
+              <div class="scenes-container">
+                <div class="scenes-scrollable">
+                  <!-- 预设场景 -->
+                  <button
+                    v-for="scene in presetScenes"
+                    :key="scene.id"
+                    class="scene-btn"
+                    @click="activateScene(scene.id)"
+                  >
+                    <span class="scene-icon">{{ scene.icon }}</span>
+                    <span class="scene-name">{{ scene.name }}</span>
+                  </button>
+
+                  <!-- 自定义场景 -->
+                  <button
+                    v-for="scene in customScenes"
+                    :key="'custom-'+scene.id"
+                    class="scene-btn custom-scene"
+                    @click="activateScene(scene.id)"
+                    @contextmenu.prevent="editScene(scene.id)"
+                  >
+                    <span class="scene-icon">{{ scene.icon }}</span>
+                    <span class="scene-name">{{ scene.name }}</span>
+                    <span class="scene-delete" @click.stop="deleteScene(scene.id)">×</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 场景创建/编辑弹窗 -->
+              <div class="scene-modal" v-if="showSceneCreator" @click.self="showSceneCreator = false">
+                <div class="modal-content">
+                  <h3>{{ editingScene ? '编辑场景' : '创建场景' }}</h3>
+
+                  <div class="form-group">
+                    <label>场景名称</label>
+                    <input v-model="newScene.name" placeholder="输入场景名称">
+                  </div>
+
+                  <div class="form-group">
+                    <label>选择图标</label>
+                    <div class="icon-grid">
+                      <div
+                        v-for="icon in sceneIcons"
+                        :key="icon"
+                        class="icon-option"
+                        :class="{ selected: newScene.icon === icon }"
+                        @click="newScene.icon = icon"
+                      >
+                        {{ icon }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal-actions">
+                    <button
+                      v-if="editingScene"
+                      class="delete-btn"
+                      @click="confirmDeleteScene"
+                    >
+                      删除
+                    </button>
+                    <button class="cancel-btn" @click="cancelEdit">取消</button>
+                    <button class="confirm-btn" @click="saveScene">
+                      {{ editingScene ? '保存' : '创建' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
 
         </div>
       </div>
@@ -621,6 +684,97 @@ const removeDevice = () => {
   showRemoveDeviceModal.value = false
 }
 
+// 自定义场景
+const customScenes = ref([])
+
+// 场景管理状态
+const showSceneCreator = ref(false)
+const editingScene = ref(null)
+const newScene = ref({
+  id: null,
+  name: '',
+  icon: '✨'
+})
+
+// 可用图标
+const sceneIcons = ['🏠', '🛌', '🍽️', '🎬', '🎵', '📖', '💡', '🌙', '✨']
+
+// 激活场景
+const activateScene = (sceneId) => {
+  console.log('激活场景:', sceneId)
+  // 这里添加实际场景激活逻辑
+}
+
+// 创建新场景
+const createScene = () => {
+  if (!newScene.value.name.trim()) return
+
+  const sceneId = 'custom-' + Date.now()
+  customScenes.value.push({
+    id: sceneId,
+    name: newScene.value.name,
+    icon: newScene.value.icon
+  })
+
+  resetSceneForm()
+  showSceneCreator.value = false
+}
+
+// 编辑场景
+const editScene = (sceneId) => {
+  const scene = customScenes.value.find(s => s.id === sceneId)
+  if (scene) {
+    newScene.value = { ...scene }
+    editingScene.value = sceneId
+    showSceneCreator.value = true
+  }
+}
+
+// 保存场景
+const saveScene = () => {
+  if (!newScene.value.name.trim()) return
+
+  if (editingScene.value) {
+    // 更新现有场景
+    const index = customScenes.value.findIndex(s => s.id === editingScene.value)
+    if (index !== -1) {
+      customScenes.value[index] = { ...newScene.value }
+    }
+  } else {
+    // 创建新场景
+    createScene()
+    return
+  }
+
+  resetSceneForm()
+  showSceneCreator.value = false
+}
+
+// 删除场景
+const deleteScene = (sceneId) => {
+  customScenes.value = customScenes.value.filter(scene => scene.id !== sceneId)
+}
+
+// 确认删除
+const confirmDeleteScene = () => {
+  if (confirm('确定要删除这个场景吗？')) {
+    deleteScene(editingScene.value)
+    resetSceneForm()
+    showSceneCreator.value = false
+  }
+}
+
+// 取消编辑
+const cancelEdit = () => {
+  resetSceneForm()
+  showSceneCreator.value = false
+}
+
+// 重置表单
+const resetSceneForm = () => {
+  newScene.value = { id: null, name: '', icon: '✨' }
+  editingScene.value = null
+}
 
 </script>
 
