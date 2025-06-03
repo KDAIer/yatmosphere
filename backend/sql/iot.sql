@@ -194,7 +194,8 @@ CREATE TABLE `device` (
                           `device_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ISBN号',
                           `category` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类别',
                           `status` boolean NOT NULL COMMENT '状态', #0为开启1为关闭
-                          `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+        `light` boolean NOT NULL  COMMENT '灯光', #0为关闭1为开启
+                        `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                           `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                           `detail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详情',
                           PRIMARY KEY (`id`),
@@ -205,13 +206,13 @@ CREATE TABLE `device` (
 
 LOCK TABLES `device` WRITE;
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
-INSERT INTO device VALUES (111, '客厅空调', 'AC001', '空调', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '22°C 制冷模式');
-INSERT INTO device VALUES (112, '智能门锁', 'LK002', '门锁', 0, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '已锁定');
-INSERT INTO device VALUES (113, '安防系统', 'SF003', '安防', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '布防中');
-INSERT INTO device VALUES (114, '客厅灯', 'LT004', '灯', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '亮度75%');
-INSERT INTO device VALUES (115, '厨房灯', 'KT005', '灯', 0, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '关闭');
-INSERT INTO device VALUES (116, '卧室灯', 'BD006', '灯', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '暖光模式');
-INSERT INTO device VALUES (117, '卧室空调', 'AC002', '空调', 1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '22°C 制冷模式');
+INSERT INTO device VALUES (111, '客厅空调', 'AC001', '空调', 1,0, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '22°C 制冷模式');
+INSERT INTO device VALUES (112, '智能门锁', 'LK002', '门锁', 0,0, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '已锁定');
+INSERT INTO device VALUES (113, '安防系统', 'SF003', '安防', 1, 0,'2025-5-20 14:27:00', '2025-5-20 14:27:00', '布防中');
+INSERT INTO device VALUES (114, '客厅灯', 'LT004', '灯', 1, 0,'2025-5-20 14:27:00', '2025-5-20 14:27:00', '亮度75%');
+INSERT INTO device VALUES (115, '厨房灯', 'KT005', '灯', 0, 0,'2025-5-20 14:27:00', '2025-5-20 14:27:00', '关闭');
+INSERT INTO device VALUES (116, '卧室灯', 'BD006', '灯', 1, 0,'2025-5-20 14:27:00', '2025-5-20 14:27:00', '暖光模式');
+INSERT INTO device VALUES (117, '卧室空调', 'AC002', '空调', 1,1, '2025-5-20 14:27:00', '2025-5-20 14:27:00', '22°C 制冷模式');
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,6 +233,7 @@ CREATE TABLE aircon (
 
                                mode VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL CHECK (mode IN ('制冷','制热','除湿','送风')),
                                status BOOLEAN NOT NULL DEFAULT FALSE,
+                               light BOOLEAN NOT NULL DEFAULT FALSE,
                                fan_level INT NOT NULL CHECK (fan_level BETWEEN 1 AND 5),
                                timer INT NOT NULL DEFAULT 0,
                                FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE,
@@ -241,18 +243,19 @@ CREATE TABLE aircon (
 --                                name VARCHAR(10) NOT NULL,
 
 INSERT INTO aircon (
-    id, temperature, device_id, mode, status, fan_level, timer
-) VALUES (111, 22.0, 'AC001', '制冷', FALSE, 3, 0 );
+    id, temperature, device_id, mode, status, light,fan_level, timer
+) VALUES (111, 22.0, 'AC001', '制冷', FALSE, TRUE,3, 0 );
 
 INSERT INTO aircon (
-    id, temperature, device_id, mode, status, fan_level, timer
-) VALUES (117, 22.0, 'AC002', '制冷', FALSE, 3, 0 );
+    id, temperature, device_id, mode, status,light, fan_level, timer
+) VALUES (117, 22.0, 'AC002', '制冷', FALSE, TRUE,3, 0 );
 
 DROP TABLE if exists `light`;
 CREATE TABLE `light` (
                          `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
                          `device_id` VARCHAR(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                          `status` BOOLEAN DEFAULT 1,
+                         `light` BOOLEAN DEFAULT 1,
                          `brightness` INT DEFAULT 80,
                          `color_temp` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '自然',
                          FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE
@@ -264,10 +267,10 @@ CREATE TABLE `light` (
 
 
 
-INSERT INTO light (id, device_id, status, brightness, color_temp) VALUES
-                                                                      (114, 'LT004', 1, 75, '自然'),
-                                                                      (115, 'KT005', 0, 0, '自然'),
-                                                                      (116, 'BD006', 1, 80, '暖光');
+INSERT INTO light (id, device_id, status, light,brightness, color_temp) VALUES
+                                                                      (114, 'LT004', 1, 1,75, '自然'),
+                                                                      (115, 'KT005', 0, 0,0, '自然'),
+                                                                      (116, 'BD006', 1, 1,80, '暖光');
 
 
 DROP TABLE IF EXISTS `record`;

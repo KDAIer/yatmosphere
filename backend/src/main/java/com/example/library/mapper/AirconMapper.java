@@ -17,16 +17,88 @@ public interface AirconMapper extends BaseMapper<Aircon> {
     VALUES (#{deviceId}, #{temperature}, #{mode}, #{fanLevel}, #{timer})
     """)
     int insertAircon(Aircon aircon);
+    //打开节能模式
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.status = true
+        WHERE d.device_name = #{deviceName}
+    """)
+    int desenergymodeByDeviceName(@Param("deviceName")String deviceName);
+    //查看当前是否为节能模式
+    @Update("""
+        SELECT a.status
+        FROM aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        WHERE d.device_name = #{deviceName}
+    """)
+    boolean selectifdesenergymodeByDeviceName(@Param("deviceName")String deviceName);
 
-
-    
+    //关闭节能模式
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.status = false
+        WHERE d.device_name = #{deviceName}
+    """)
+    int turnoffdesenergymodeByDeviceName(@Param("deviceName")String deviceName);
 
     @Update("""
-        UPDATE aircon
-        SET status = #{status}
-        WHERE device_id = #{deviceId}
-        """)
-    int updatePowerByDeviceId(@Param("deviceId") String deviceId, @Param("status") int status);
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.fan_level = 1
+        WHERE d.device_name = #{deviceName}
+    """)
+    int wind1(@Param("deviceName")String deviceName);
+
+
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.fan_level = 2
+        WHERE d.device_name = #{deviceName}
+    """)
+    int wind2(@Param("deviceName")String deviceName);
+
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.fan_level = 3
+        WHERE d.device_name = #{deviceName}
+    """)
+    int wind3(@Param("deviceName")String deviceName);
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.fan_level = 4
+        WHERE d.device_name = #{deviceName}
+    """)
+    int wind4(@Param("deviceName")String deviceName);
+
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.fan_level = 5
+        WHERE d.device_name = #{deviceName}
+    """)
+    int wind5(@Param("deviceName")String deviceName);
+
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.light = TRUE
+        WHERE d.device_name = #{deviceName}
+    """)
+    int turnonlight(@Param("deviceName")String deviceName);
+
+    @Update("""
+    UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.light = FALSE
+        WHERE d.device_name = #{deviceName}
+    """)
+    int turnofflight(@Param("deviceName")String deviceName);
+
 
     // 升高温度
     @Update("""
@@ -45,24 +117,6 @@ public interface AirconMapper extends BaseMapper<Aircon> {
         WHERE d.device_name = #{deviceName}
         """)
     int decreaseTemperatureByDeviceName(@Param("deviceName") String deviceName);
-
-    @Select("""
-    SELECT a.temperature, a.mode, d.detail 
-    FROM aircon a
-    LEFT JOIN device d ON a.device_id = d.device_id 
-    WHERE a.device_id = #{deviceId}
-    """)
-    Aircon selectTempAndModeByDeviceId(@Param("deviceId") String deviceId);
-    
-    @Update("""
-        UPDATE aircon a
-        LEFT JOIN device d ON a.device_id = d.device_id
-        SET a.mode = #{mode}, d.detail = #{detail}
-        WHERE a.device_id = #{deviceId}
-        """)
-    int updateModeByDeviceId(@Param("deviceId") String deviceId,
-                             @Param("mode") String mode,
-                             @Param("detail") String detail);
     @Update("UPDATE aircon a LEFT JOIN device d ON a.device_id = d.device_id SET a.mode = '制冷' WHERE d.device_name = #{deviceName}")
     int refrigerationmod(@Param("deviceName") String deviceName);
 
@@ -93,4 +147,8 @@ public interface AirconMapper extends BaseMapper<Aircon> {
         WHERE d.device_name = #{deviceName}
         """)
     int updateDeviceDetail(@Param("deviceName") String deviceName, @Param("detail") String detail);
+
+
+
+
 }

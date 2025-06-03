@@ -33,6 +33,94 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
 
     @Override
     @Transactional
+    public boolean desenergy(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.desenergymodeByDeviceName(deviceName);
+//        Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);
+//        // 如果查询结果不为空
+//        if (aircon != null) {
+//            // 格式化温度和模式
+//            String detail = formatDetail(aircon.getTemperature(), aircon.getMode());
+//            // 更新设备详情
+//            airconMapper.updateDeviceDetail(deviceName, detail);
+//        }
+        // 返回更新结果
+        return updated > 0;
+    }
+
+    @Override
+    @Transactional
+    public boolean turnoffdesenergy(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.turnoffdesenergymodeByDeviceName(deviceName);
+        // 查询当前温度和原detail
+//        Aircon aircon = airconMapper.selectTempAndModeByDeviceName(deviceName);
+//        String oldDetail = aircon.getDetail();
+//        double newTemp = aircon.getTemperature();
+//        String newDetail = updateDetailTemperature(oldDetail, newTemp);
+//        airconMapper.updateDeviceDetail(deviceName, newDetail);
+        return updated > 0;
+    }
+    @Override
+    @Transactional
+    public boolean wind1(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.wind1(deviceName);
+        return updated > 0;
+    }
+    @Override
+    @Transactional
+    public boolean wind2(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.wind2(deviceName);
+        return updated > 0;
+    }
+
+
+    @Override
+    @Transactional
+    public boolean wind3(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.wind3(deviceName);
+        return updated > 0;
+    }
+    @Override
+    @Transactional
+    public boolean wind4(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.wind4(deviceName);
+        return updated > 0;
+    }
+
+
+
+    @Override
+    @Transactional
+    public boolean turnonlight(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.turnonlight(deviceName);
+        return updated > 0;
+    }
+
+    @Override
+    @Transactional
+    public boolean turnofflight(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.turnofflight(deviceName);
+        return updated > 0;
+    }
+
+
+    @Override
+    @Transactional
+    public boolean wind5(String deviceName) {
+        System.out.println("deviceName:" + deviceName);
+        int updated = airconMapper.wind5(deviceName);
+        return updated > 0;
+    }
+
+    @Override
+    @Transactional
     public boolean addAircon(Aircon aircon) {
         // 先查deviceId是否已存在
         Device exist = deviceMapper.selectById(aircon.getDeviceId());
@@ -84,30 +172,6 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         }
         // 返回更新结果
         return updated > 0;
-    }
-
-
-    @Override
-    @Transactional
-    public boolean updateAirconMode(String deviceId, String mode) {
-        // 根据 deviceId 查询空调记录（包括温度）
-        Aircon aircon = airconMapper.selectTempAndModeByDeviceId(deviceId);
-        if (aircon == null) {
-            throw new ServiceException("未找到指定设备: " + deviceId);
-        }
-        // 计算新的detail，通过已有的formatDetail方法
-        String newDetail = formatDetail(aircon.getTemperature(), mode);
-        // 更新空调mode和设备描述detail
-        int updated = airconMapper.updateModeByDeviceId(deviceId, mode, newDetail);
-        return updated > 0;
-    }
-
-    @Override
-    @Transactional
-    public boolean updateAirconPower(String deviceId, int status) {
-        int updatedAircon = airconMapper.updatePowerByDeviceId(deviceId, status);
-        int updatedDevice = deviceMapper.updateStatusByDeviceId(deviceId, status);
-        return updatedAircon > 0 && updatedDevice > 0;
     }
     @Override
     public boolean refrigerationmod(String deviceName){
