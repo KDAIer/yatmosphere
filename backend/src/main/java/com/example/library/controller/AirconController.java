@@ -94,33 +94,16 @@ public class AirconController {
     public Boolean turnoffdesenergy(@RequestParam String deviceName) {
         return airconService.turnoffdesenergy(deviceName);
     }
-
-    @PostMapping("/wind1")
-    @Operation(summary = "调节风量等级为1", description = "调节风量等级为1")
-    public Boolean wind1(@RequestParam String deviceName) {
-        return airconService.wind1(deviceName);
+    @PostMapping("/setWindLevel")
+    @Operation(summary = "设置风量等级", description = "设置风量等级 (1-5)")
+    public Boolean setWindLevel(
+            @RequestParam String deviceName,
+            @RequestParam int level
+    ) {
+        if (level < 1 || level > 5) {
+            throw new IllegalArgumentException("风量等级必须在1-5范围内");
+        }
+        return airconService.setWindLevel(deviceName, level);
     }
 
-    @PostMapping("/wind2")
-    @Operation(summary = "调节风量等级为2", description = "调节风量等级为2")
-    public Boolean wind2(@RequestParam String deviceName) {
-        return airconService.wind2(deviceName);
-    }
-
-    @PostMapping("/wind3")
-    @Operation(summary = "调节风量等级为3", description = "调节风量等级为3")
-    public Boolean wind3(@RequestParam String deviceName) {
-        return airconService.wind3(deviceName);
-    }
-
-    @PostMapping("/wind4")
-    @Operation(summary = "调节风量等级为4", description = "调节风量等级为4")
-    public Boolean wind4(@RequestParam String deviceName) {
-        return airconService.wind4(deviceName);
-    }
-    @PostMapping("/wind5")
-    @Operation(summary = "调节风量等级为5", description = "调节风量等级为5")
-    public Boolean wind5(@RequestParam String deviceName) {
-        return airconService.wind5(deviceName);
-    }
 }

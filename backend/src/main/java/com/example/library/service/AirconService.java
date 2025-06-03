@@ -17,12 +17,9 @@ public interface AirconService extends BaseService<Aircon> {
     boolean desenergy(String deviceName);
     boolean turnoffdesenergy(String deviceName);
 
-    boolean wind1(String deviceName);
-    boolean wind2(String deviceName);
-    boolean wind3(String deviceName);
-    boolean wind4(String deviceName);
 
-    boolean wind5(String deviceName);
+
+    boolean setWindLevel(String deviceName, int level);
     boolean updateAirconPower(String deviceId, int status);
     boolean updateAirconMode(String deviceId, String mode);
 

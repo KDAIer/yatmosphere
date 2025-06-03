@@ -61,38 +61,19 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
 //        airconMapper.updateDeviceDetail(deviceName, newDetail);
         return updated > 0;
     }
-    @Override
-    @Transactional
-    public boolean wind1(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind1(deviceName);
-        return updated > 0;
-    }
-    @Override
-    @Transactional
-    public boolean wind2(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind2(deviceName);
-        return updated > 0;
-    }
-
 
     @Override
     @Transactional
-    public boolean wind3(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind3(deviceName);
+    public boolean setWindLevel(String deviceName, int level) {
+        // 验证风量等级是否有效
+        if (level < 1 || level > 5) {
+            throw new IllegalArgumentException("风量等级必须在 1-5 范围内");
+        }
+
+        System.out.println("deviceName:" + deviceName + ", level:" + level);
+        int updated = airconMapper.setWindLevel(deviceName, level);
         return updated > 0;
     }
-    @Override
-    @Transactional
-    public boolean wind4(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind4(deviceName);
-        return updated > 0;
-    }
-
-
 
     @Override
     @Transactional
@@ -133,13 +114,6 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
     }
 
 
-    @Override
-    @Transactional
-    public boolean wind5(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind5(deviceName);
-        return updated > 0;
-    }
 
     @Override
     @Transactional
