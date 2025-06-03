@@ -262,6 +262,7 @@
 
 .card {
   background: rgb(255, 255, 255,0.3);
+  max-width: 550px; /* 可根据需要调整 */
   padding: 1rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -1099,6 +1100,159 @@ input:checked + .slider:before {
 .confirm-btn:disabled {
   background: #cccccc;
   cursor: not-allowed;
+}
+
+/* 场景头部样式 */
+.scenes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.add-scene-btn {
+  padding: 6px 12px;
+  background: #f0f7ff;
+  border: 1px solid #3182ce;
+  color: #3182ce;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.add-scene-btn:hover {
+  background: #e3f2fd;
+}
+
+/* 场景容器样式 */
+.scene-container {
+  overflow-x: auto;
+  padding-bottom: 10px;
+  height: 200px;
+}
+
+.scene-grid {
+  display: flex;
+  gap: 1rem;
+  min-width: max-content;
+  height: 170px;
+}
+
+/* 自定义场景按钮样式 */
+.custom-scene {
+  position: relative;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e0;
+}
+
+.custom-scene:hover {
+  background: #f0f7ff;
+}
+
+.scene-delete {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: #f56565;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.custom-scene:hover .scene-delete {
+  opacity: 1;
+}
+
+
+/* 场景弹窗样式 */
+.scene-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.scene-modal .modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 350px;
+  max-width: 90%;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.icon-option {
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #f8fafc;
+}
+
+.icon-option.selected {
+  background: #e3f2fd;
+  border: 1px solid #3182ce;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cancel-btn, .confirm-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #f0f0f0;
+}
+
+.confirm-btn {
+  background: #2196F3;
+  color: white;
 }
 
 
