@@ -23,7 +23,8 @@ public interface AirconService extends BaseService<Aircon> {
     boolean wind4(String deviceName);
 
     boolean wind5(String deviceName);
-
+    boolean updateAirconPower(String deviceId, int status);
+    boolean updateAirconMode(String deviceId, String mode);
 
     boolean turnonlight(String deviceName);
 

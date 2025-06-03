@@ -42,6 +42,35 @@ public interface AirconMapper extends BaseMapper<Aircon> {
         WHERE d.device_name = #{deviceName}
     """)
     int turnoffdesenergymodeByDeviceName(@Param("deviceName")String deviceName);
+    @Select("""
+    SELECT a.temperature, a.mode, d.detail 
+    FROM aircon a
+    LEFT JOIN device d ON a.device_id = d.device_id 
+    WHERE a.device_id = #{deviceId}
+    """)
+    Aircon selectTempAndModeByDeviceId(@Param("deviceId") String deviceId);
+
+
+
+    @Update("""
+        UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.mode = #{mode}, d.detail = #{detail}
+        WHERE a.device_id = #{deviceId}
+        """)
+    int updateModeByDeviceId(@Param("deviceId") String deviceId,
+                             @Param("mode") String mode,
+                             @Param("detail") String detail);
+    @Update("""
+        UPDATE aircon
+        SET status = #{status}
+        WHERE device_id = #{deviceId}
+        """)
+    int updatePowerByDeviceId(@Param("deviceId") String deviceId, @Param("status") int status);
+
+
+
+
 
     @Update("""
     UPDATE aircon a

@@ -14,7 +14,7 @@
         </option>
       </select>
     </div>
-    
+
     <div class="control-body">
       <!-- 电源控制 -->
       <div class="power-control">
@@ -240,6 +240,7 @@ const adjustTemp = async (delta) => {
   }
 }
 const changeMode = async (mode) => {
+  console.log("空调模式更新")
   if (!selectedDeviceObj.value) return
   try {
     const token = localStorage.getItem('authToken')
