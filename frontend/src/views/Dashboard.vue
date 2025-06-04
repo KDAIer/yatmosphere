@@ -1,29 +1,27 @@
 <!-- src/components/Dashboard.vue -->
 <template>
-  <div class="dashboard">
+  <div class="dashboard" :class="{ 'mobile-layout': isMobileView }">
 
-    <audio
-      ref="bgMusicRef"
-      autoplay
-      loop
-      preload="auto"
-      style="display: none;"
-    >
+    <audio ref="bgMusicRef" autoplay loop preload="auto" style="display: none;">
       <source src="/src/assets/audio/海愿 - 塞壬唱片-MSR、Eagle Wei.mp3" type="audio/mpeg">
       您的浏览器不支持音频播放。
     </audio>
-    
+
     <!-- 头部 -->
     <header class="header">
       <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
       <h1>智能家居控制中心</h1>
-      <div class="user-info">
-        
-      <button @click="toggleMusic" class="music-btn">
-        <font-awesome-icon icon="music" class="music-icon" />
-        <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" class="player-icon" />
-        <!-- {{ isPlaying ? '暂停音乐' : '播放音乐' }} -->
+
+      <button class="view-toggle-btn" @click="toggleViewMode" :title="isMobileView ? '切换到电脑版' : '切换到移动版'">
+        <span class="icon">{{ isMobileView ? '💻切换到电脑版' : '📱切换到移动版' }}</span>
       </button>
+
+      <div class="user-info">
+        <button @click="toggleMusic" class="music-btn">
+          <font-awesome-icon icon="music" class="music-icon" />
+          <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" class="player-icon" />
+          <!-- {{ isPlaying ? '暂停音乐' : '播放音乐' }} -->
+        </button>
 
 
         <button @click="toggleTheme" class="theme-btn">
@@ -48,7 +46,7 @@
             <div class="avatar-large">
               <img :src="user.avatar" alt="用户头像">
             </div>
-        <div class="user-details">
+            <div class="user-details">
               <div class="detail-item">
                 <span class="detail-label">用户名:</span>
                 <span class="detail-value">{{ username }}</span>
@@ -72,66 +70,63 @@
       </div>
     </header>
 
-  <!-- 主内容区 -->
-  <main class="main-content">
-    <!-- 左侧2x3网格布局 -->
-    <div class="grid-layout">
-      <!-- 第一行 -->
-      <div class="grid-row">
-        <!-- 快速控制 -->
-        <section class="quick-control card">
-          <h2>快速控制</h2>
-          <div class="device-grid">
-            <div class="device-card" v-for="(device, index) in quickDevices" :key="device.id" :class="{ 'device-on': device.state }">
-              <div class="device-icon">
-                <img :src="device.icon" class="device-icon" alt="device icon" />
-              </div>
-              <div class="device-info">
-                <h3>{{ device.name }}</h3>
-                <p class="device-status">{{ device.status }}</p>
-                <div v-if="device.type === 'network' && device.state" class="signal-strength">
-                  <div class="wifi-icon" :data-strength="Math.ceil(device.signalStrength / 20)">
-                    <span></span>
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 左侧2x3网格布局 -->
+      <div class="grid-layout">
+        <!-- 第一行 -->
+        <div class="grid-row">
+          <!-- 快速控制 -->
+          <section class="quick-control card">
+            <h2>快速控制</h2>
+            <div class="device-grid">
+              <div class="device-card" v-for="(device, index) in quickDevices" :key="device.id"
+                :class="{ 'device-on': device.state }">
+                <div class="device-icon">
+                  <img :src="device.icon" class="device-icon" alt="device icon" />
+                </div>
+                <div class="device-info">
+                  <h3>{{ device.name }}</h3>
+                  <p class="device-status">{{ device.status }}</p>
+                  <div v-if="device.type === 'network' && device.state" class="signal-strength">
+                    <div class="wifi-icon" :data-strength="Math.ceil(device.signalStrength / 20)">
+                      <span></span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="device-control">
-                <label class="switch">
-                  <input
-                    type="checkbox"
-                    :checked="device.state"
-                    @change="handleDeviceAction(device)"
-                    @click="triggerParticleEffect($event, device.id)"
-                    :disabled="device.type === 'emergency'"
-                  />
-                  <span class="slider"></span>
-                  <div class="particle-container" :class="{ active: activeParticle === device.id }">
-                    <span class="particle" v-for="n in 8" :key="n" :style="{ '--angle': `${(n - 1) * 45}deg` }"></span>
-                  </div>
-                </label>
+                <div class="device-control">
+                  <label class="switch">
+                    <input type="checkbox" :checked="device.state" @change="handleDeviceAction(device)"
+                      @click="triggerParticleEffect($event, device.id)" :disabled="device.type === 'emergency'" />
+                    <span class="slider"></span>
+                    <div class="particle-container" :class="{ active: activeParticle === device.id }">
+                      <span class="particle" v-for="n in 8" :key="n"
+                        :style="{ '--angle': `${(n - 1) * 45}deg` }"></span>
+                    </div>
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <!-- 网络弹窗 -->
-        <Teleport to="body">
-          <div v-if="networkModalVisible" class="network-modal">
-            <div class="modal-content">
-              <h3>网络设置</h3>
-              <div class="network-info">
-                <p>当前连接：家庭Wi-Fi_5G</p>
-                <p>信号强度：
-                  <span class="wifi-icon inline" :data-strength="Math.ceil(getNetworkStrength() / 25)">
-                    <span></span>
-                  </span>
-                  {{ getNetworkStrength() }}%
-                </p>
+          <!-- 网络弹窗 -->
+          <Teleport to="body">
+            <div v-if="networkModalVisible" class="network-modal">
+              <div class="modal-content">
+                <h3>网络设置</h3>
+                <div class="network-info">
+                  <p>当前连接：家庭Wi-Fi_5G</p>
+                  <p>信号强度：
+                    <span class="wifi-icon inline" :data-strength="Math.ceil(getNetworkStrength() / 25)">
+                      <span></span>
+                    </span>
+                    {{ getNetworkStrength() }}%
+                  </p>
+                </div>
+                <button class="btn" @click="networkModalVisible = false">关闭</button>
               </div>
-              <button class="btn" @click="networkModalVisible = false">关闭</button>
             </div>
-          </div>
-        </Teleport>
+          </Teleport>
 
 
 
@@ -139,30 +134,21 @@
           <section class="area-control card">
             <h2>区域控制</h2>
             <div class="grid-area-selector" ref="gridItems">
-              <div
-                class="grid-area-item"
-                v-for="(area, index) in areas"
-                :key="index"
-                @click="toggleArea(area.id)"
-                :class="{ active: activeArea === area.id, 'has-sub': area.children }"
-              >
+              <div class="grid-area-item" v-for="(area, index) in areas" :key="index" @click="toggleArea(area.id)"
+                :class="{ active: activeArea === area.id, 'has-sub': area.children }">
                 <!-- <font-awesome-icon :icon="area.icon" class="area-icon" /> -->
-                 <img :src="area.icon" class="area-icon" alt="area icon" />
+                <img :src="area.icon" class="area-icon" alt="area icon" />
                 <span class="area-name">{{ area.name }}</span>
               </div>
             </div>
             <div class="area-details" v-if="activeArea" @click.self="activeArea = null">
-              <component
-                :is="getAreaComponent(activeArea)"
-                @close="activeArea = null"
-                @refresh-devices="fetchAllDevices"
-                class="modal-content"
-                />
+              <component :is="getAreaComponent(activeArea)" @close="activeArea = null"
+                @refresh-devices="fetchAllDevices" class="modal-content" />
             </div>
           </section>
         </div>
         <!-- @refresh-devices="fetchAllDevices" -->
-                         <!-- @update-device="updateDeviceInfo" -->
+        <!-- @update-device="updateDeviceInfo" -->
 
 
 
@@ -173,11 +159,7 @@
             <h2>环境监测</h2>
             <div class="data-grid">
               <template v-for="(data, key) in environmentData" :key="key">
-                <div
-                  class="data-card"
-                  :class="{ 'time-card': key === 'time' }"
-                  v-if="key === 'time'"
-                >
+                <div class="data-card" :class="{ 'time-card': key === 'time' }" v-if="key === 'time'">
                   <div class="data-label">{{ data.label }}</div>
                   <div class="data-value time-value">{{ currentTime || '加载中...' }}</div>
                 </div>
@@ -190,83 +172,67 @@
           </section>
 
           <!-- 智能场景 -->
-            <section class="scenes card">
-              <div class="scenes-header">
-                <h2>智能场景</h2>
-                <button class="add-scene-btn" @click="showSceneCreator = true">
-                  <span>+ 自定义场景</span>
+          <section class="scenes card">
+            <div class="scenes-header">
+              <h2>智能场景</h2>
+              <button class="add-scene-btn" @click="showSceneCreator = true">
+                <span>+ 自定义场景</span>
+              </button>
+            </div>
+
+
+
+            <div class="scenes-container">
+              <div class="scenes-grid">
+                <!-- 预设场景 -->
+                <button v-for="(scene, index) in scenes" :key="index" class="scene-btn"
+                  @click="activateScene(scene.id)">
+                  <span class="scene-icon">{{ scene.icon }}</span>
+                  {{ scene.name }}
+                </button>
+
+                <!-- 自定义场景 -->
+                <button v-for="scene in customScenes" :key="'custom-' + scene.id" class="scene-btn custom-scene"
+                  @click="activateScene(scene.id)" @contextmenu.prevent="editScene(scene.id)">
+                  <span class="scene-icon">{{ scene.icon }}</span>
+                  <span class="scene-name">{{ scene.name }}</span>
+                  <span class="scene-delete" @click.stop="deleteScene(scene.id)">×</span>
                 </button>
               </div>
+            </div>
 
-              <div class="scenes-container">
-                <div class="scenes-scrollable">
-                  <!-- 预设场景 -->
-                  <button
-                    v-for="scene in presetScenes"
-                    :key="scene.id"
-                    class="scene-btn"
-                    @click="activateScene(scene.id)"
-                  >
-                    <span class="scene-icon">{{ scene.icon }}</span>
-                    <span class="scene-name">{{ scene.name }}</span>
-                  </button>
+            <!-- 场景创建/编辑弹窗 -->
+            <div class="scene-modal" v-if="showSceneCreator" @click.self="showSceneCreator = false">
+              <div class="scene-modal-content">
+                <h3>{{ editingScene ? '编辑场景' : '创建场景' }}</h3>
 
-                  <!-- 自定义场景 -->
-                  <button
-                    v-for="scene in customScenes"
-                    :key="'custom-'+scene.id"
-                    class="scene-btn custom-scene"
-                    @click="activateScene(scene.id)"
-                    @contextmenu.prevent="editScene(scene.id)"
-                  >
-                    <span class="scene-icon">{{ scene.icon }}</span>
-                    <span class="scene-name">{{ scene.name }}</span>
-                    <span class="scene-delete" @click.stop="deleteScene(scene.id)">×</span>
-                  </button>
+                <div class="form-group">
+                  <label>场景名称</label>
+                  <input v-model="newScene.name" placeholder="输入场景名称">
                 </div>
-              </div>
 
-              <!-- 场景创建/编辑弹窗 -->
-              <div class="scene-modal" v-if="showSceneCreator" @click.self="showSceneCreator = false">
-                <div class="modal-content">
-                  <h3>{{ editingScene ? '编辑场景' : '创建场景' }}</h3>
-
-                  <div class="form-group">
-                    <label>场景名称</label>
-                    <input v-model="newScene.name" placeholder="输入场景名称">
-                  </div>
-
-                  <div class="form-group">
-                    <label>选择图标</label>
-                    <div class="icon-grid">
-                      <div
-                        v-for="icon in sceneIcons"
-                        :key="icon"
-                        class="icon-option"
-                        :class="{ selected: newScene.icon === icon }"
-                        @click="newScene.icon = icon"
-                      >
-                        {{ icon }}
-                      </div>
+                <div class="form-group">
+                  <label>选择图标</label>
+                  <div class="icon-grid">
+                    <div v-for="icon in sceneIcons" :key="icon" class="icon-option"
+                      :class="{ selected: newScene.icon === icon }" @click="newScene.icon = icon">
+                      {{ icon }}
                     </div>
                   </div>
+                </div>
 
-                  <div class="modal-actions">
-                    <button
-                      v-if="editingScene"
-                      class="delete-btn"
-                      @click="confirmDeleteScene"
-                    >
-                      删除
-                    </button>
-                    <button class="cancel-btn" @click="cancelEdit">取消</button>
-                    <button class="confirm-btn" @click="saveScene">
-                      {{ editingScene ? '保存' : '创建' }}
-                    </button>
-                  </div>
+                <div class="modal-actions">
+                  <button v-if="editingScene" class="delete-btn" @click="confirmDeleteScene">
+                    删除
+                  </button>
+                  <button class="cancel-btn" @click="cancelEdit">取消</button>
+                  <button class="confirm-btn" @click="saveScene">
+                    {{ editingScene ? '保存' : '创建' }}
+                  </button>
                 </div>
               </div>
-            </section>
+            </div>
+          </section>
 
         </div>
       </div>
@@ -290,12 +256,8 @@
                 <span>详情</span>
               </div>
               <div class="table-body">
-                <div
-                  v-for="device in devices"
-                  :key="device.id"
-                  class="table-row"
-                  :class="{ 'device-on': device.state }"
-                >
+                <div v-for="device in devices" :key="device.id" class="table-row"
+                  :class="{ 'device-on': device.state }">
                   <span>{{ device.id }}</span>
                   <span>{{ device.name }}</span>
                   <span>{{ device.state ? '开启' : '关闭' }}</span>
@@ -303,12 +265,8 @@
                 </div>
               </div>
               <div class="table-body">
-                <div
-                  v-for="device in allDevices"
-                  :key="device.id"
-                  class="table-row"
-                  :class="{ 'device-on': device.state }"
-                >
+                <div v-for="device in allDevices" :key="device.id" class="table-row"
+                  :class="{ 'device-on': device.state }">
                   <span>{{ device.id }}</span>
                   <span>{{ device.name }}</span>
                   <span>{{ device.state ? '开启' : '关闭' }}</span>
@@ -317,7 +275,7 @@
               </div>
             </div>
           </div>
-        <!-- 添加设备弹窗 -->
+          <!-- 添加设备弹窗 -->
           <div class="device-modal" v-if="showAddDeviceModal" @click.self="showAddDeviceModal = false">
             <div class="modal-content">
               <h3>添加新设备</h3>
@@ -340,18 +298,15 @@
               </div>
               <div class="form-group">
                 <label>初始状态:</label>
-                  <label class="switch">
-                    <input
-                      type="checkbox"
-                      v-model="newDevice.status"
-                      @click="triggerParticleEffect($event, 'add-device-switch')"
-                    />
-                    <span class="slider round"></span>
-                    <span class="switch-label">{{ newDevice.status ? '开启' : '关闭' }}</span>
-                    <div class="particle-container" :class="{ active: activeParticle === 'add-device-switch' }">
-                      <span class="particle" v-for="n in 8" :key="n" :style="{ '--angle': `${(n - 1) * 45}deg` }"></span>
-                    </div>
-                  </label>
+                <label class="switch">
+                  <input type="checkbox" v-model="newDevice.status"
+                    @click="triggerParticleEffect($event, 'add-device-switch')" />
+                  <span class="slider round"></span>
+                  <span class="switch-label">{{ newDevice.status ? '开启' : '关闭' }}</span>
+                  <div class="particle-container" :class="{ active: activeParticle === 'add-device-switch' }">
+                    <span class="particle" v-for="n in 8" :key="n" :style="{ '--angle': `${(n - 1) * 45}deg` }"></span>
+                  </div>
+                </label>
               </div>
 
               <!-- 空调特有字段 -->
@@ -426,20 +381,12 @@
           <div class="member-table-container">
             <div class="member-table">
               <div class="table-body">
-                <div
-                  v-for="member in familyMembers"
-                  :key="member.id"
-                  class="member-row"
-                  :class="{ admin: member.isAdmin }"
-                >
+                <div v-for="member in familyMembers" :key="member.id" class="member-row"
+                  :class="{ admin: member.isAdmin }">
                   <div class="member-info">
                     <span class="member-name">{{ member.name }}</span>
                     <span v-if="member.isAdmin" class="admin-badge">管理员</span>
-                    <span
-                      class="home-badge"
-                      :class="member.isHome ? 'home' : 'away'"
-                      @click="toggleHomeStatus(member)"
-                    >
+                    <span class="home-badge" :class="member.isHome ? 'home' : 'away'" @click="toggleHomeStatus(member)">
                       {{ member.isHome ? '在家' : '不在家' }}
                     </span>
                   </div>
@@ -696,8 +643,22 @@ const newScene = ref({
   icon: '✨'
 })
 
-// 可用图标
-const sceneIcons = ['🏠', '🛌', '🍽️', '🎬', '🎵', '📖', '💡', '🌙', '✨']
+const sceneIcons = [
+  // 房间/区域
+  '🏠', '🛏️', '🛋️', '🚿', '🧻', '🍽️', '🏙️', '🌳',
+
+  // 活动场景
+  '🎬', '🎮', '🎵', '🎤', '📖', '✍️', '🧘', '🏋️',
+
+  // 设备/功能
+  '💡', '📱', '💻', '🖥️', '🔌', '🔋', '📶', '🔊',
+
+  // 自然/时间
+  '🌞', '🌙', '☀️', '🌤️', '⛅', '🌧️', '❄️', '✨',
+
+  // 安全/工具
+  '🔒', '🔑', '🛡️', '🚨', '⏰', '📅', '🔄', '🎚️'
+];
 
 // 创建新场景
 const createScene = () => {
@@ -769,6 +730,23 @@ const resetSceneForm = () => {
   newScene.value = { id: null, name: '', icon: '✨' }
   editingScene.value = null
 }
+
+
+const isMobileView = ref(false)
+
+const toggleViewMode = () => {
+  isMobileView.value = !isMobileView.value
+  // 可选：保存到本地存储
+  localStorage.setItem('preferredView', isMobileView.value ? 'mobile' : 'desktop')
+}
+
+// 可选：初始化时读取本地存储偏好
+onMounted(() => {
+  const savedView = localStorage.getItem('preferredView')
+  if (savedView) {
+    isMobileView.value = savedView === 'mobile'
+  }
+})
 
 </script>
 
