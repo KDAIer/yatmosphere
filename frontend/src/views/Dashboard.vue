@@ -363,9 +363,11 @@
               <h3>移除设备</h3>
               <div class="form-group">
                 <label>选择要移除的设备:</label>
-                <select v-model="selectedDeviceToRemove">
-                  <option v-for="device in deviceList" :value="device.id">{{ device.name }} ({{ device.id }})</option>
-                </select>
+                  <select v-model="selectedDeviceToRemove">
+                    <option v-for="device in devices" :value="{ deviceId: device.id, deviceName: device.name }">
+                      {{ device.name }} ({{ device.id }})
+                    </option>
+                  </select>
               </div>
               <div class="modal-actions">
                 <button class="cancel-btn" @click="showRemoveDeviceModal = false">取消</button>
@@ -625,11 +627,41 @@ const addDevice = () => {
 }
 
 // 移除设备
-const removeDevice = () => {
-  deviceList.value = deviceList.value.filter(device => device.id !== selectedDeviceToRemove.value)
-  selectedDeviceToRemove.value = ''
-  showRemoveDeviceModal.value = false
-}
+const removeDevice = async () => {
+  if (!selectedDeviceToRemove.value || !selectedDeviceToRemove.value.deviceName) {
+    console.error('未选择设备或设备名称为空');
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem('authToken');
+    const res = await axios.post(`/device/deleteByDeviceName`, null, {
+      params: { deviceName: selectedDeviceToRemove.value.deviceName },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    });
+
+    if (res.data.status === 200 && res.data.data === true) {
+      console.log('设备删除成功:', selectedDeviceToRemove.value.deviceName);
+
+      // 更新前端设备列表
+      devices.value = devices.value.filter(device => device.id !== selectedDeviceToRemove.value.deviceId);
+
+      // 触发设备刷新事件
+      emit('refresh-devices');
+
+      // 清除选择并关闭弹窗
+      selectedDeviceToRemove.value = null;
+      showRemoveDeviceModal.value = false;
+    } else {
+      console.error('设备删除失败:', res.data.msg);
+    }
+  } catch (err) {
+    console.error('删除设备请求异常:', err);
+  }
+};
 
 // 自定义场景
 const customScenes = ref([])

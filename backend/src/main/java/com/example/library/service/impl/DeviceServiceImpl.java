@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.library.common.service.impl.BaseServiceImpl;
 import com.example.library.etc.ServiceException;
+import com.example.library.mapper.AirconMapper;
 import com.example.library.mapper.DeviceMapper;
+import com.example.library.mapper.LightMapper;
 import com.example.library.mapper.RecordMapper;
 import com.example.library.pojo.entity.*;
 import com.example.library.service.DeviceService;
@@ -35,12 +37,40 @@ public class DeviceServiceImpl extends BaseServiceImpl<Device, DeviceMapper> imp
     @Resource
     private RecordMapper recordMapper;
 
-    @Transactional(rollbackFor = Exception.class)
 
+    @Resource
+    private AirconMapper airconMapper;
+    @Resource
+    private LightMapper lightMapper;
+
+    @Override
+    @Transactional
+    public boolean deleteByDeviceName(String deviceName) {
+        // 查询设备信息
+        Device device = deviceMapper.selectDeviceByName(deviceName);
+        if (device == null) {
+            throw new ServiceException("设备不存在: " + deviceName);
+        }
+
+        // 根据设备类型删除对应表中的记录
+        if ("aircon".equalsIgnoreCase(device.getCategory())) {
+            airconMapper.deleteByDeviceId(device.getDeviceId());
+        } else if ("light".equalsIgnoreCase(device.getCategory())) {
+            lightMapper.deleteByDeviceId(device.getDeviceId());
+        }
+
+        // 删除设备表中的记录
+        int deleted = deviceMapper.deleteByDeviceName(deviceName);
+        return deleted > 0;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
 //    @Override
     public List<Device> getAllDevice() {
         return deviceMapper.selectAllDevices();
     }
+
+    
 //
 //    @Override
 //    @Transactional(rollbackFor = Exception.class)

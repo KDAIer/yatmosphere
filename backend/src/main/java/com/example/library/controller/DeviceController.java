@@ -49,7 +49,18 @@ public class DeviceController extends BaseExtController<Device, DeviceDTO, Devic
             vo.setDetail(device.getDetail());
             return vo;
         }).collect(Collectors.toList());
+
+
+
     }
+
+    @PostMapping("/deleteByDeviceName")
+    @Operation(summary = "删除设备", description = "根据deviceName删除设备，同时删除aircon或light表中的内容")
+    public Boolean deleteByDeviceName(@RequestParam String deviceName) {
+        return deviceservice.deleteByDeviceName(deviceName);
+    }
+
+
     //
     // @Override
     // @PostMapping("/save")

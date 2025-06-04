@@ -2,10 +2,7 @@ package com.example.library.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.library.pojo.entity.Light;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,6 +14,11 @@ public interface LightMapper extends BaseMapper<Light> {
         VALUES (#{deviceId}, #{brightness}, #{colorTemp})
         """)
     int insertLight(Light light);
+
+
+    @Delete("DELETE FROM light WHERE device_id = #{deviceId}")
+    int deleteByDeviceId(@Param("deviceId") String deviceId);
+
 
     // 开灯
     @Update("""

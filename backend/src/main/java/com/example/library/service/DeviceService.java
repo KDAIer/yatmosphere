@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface DeviceService extends BaseService<Device> {
     List<Device> getAllDevice();
+
+    public boolean deleteByDeviceName(String deviceName);
 }
