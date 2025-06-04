@@ -42,53 +42,43 @@ public interface AirconMapper extends BaseMapper<Aircon> {
         WHERE d.device_name = #{deviceName}
     """)
     int turnoffdesenergymodeByDeviceName(@Param("deviceName")String deviceName);
+    @Select("""
+    SELECT a.temperature, a.mode, d.detail 
+    FROM aircon a
+    LEFT JOIN device d ON a.device_id = d.device_id 
+    WHERE a.device_id = #{deviceId}
+    """)
+    Aircon selectTempAndModeByDeviceId(@Param("deviceId") String deviceId);
+
+
+
+    @Update("""
+        UPDATE aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        SET a.mode = #{mode}, d.detail = #{detail}
+        WHERE a.device_id = #{deviceId}
+        """)
+    int updateModeByDeviceId(@Param("deviceId") String deviceId,
+                             @Param("mode") String mode,
+                             @Param("detail") String detail);
+    @Update("""
+        UPDATE aircon
+        SET status = #{status}
+        WHERE device_id = #{deviceId}
+        """)
+    int updatePowerByDeviceId(@Param("deviceId") String deviceId, @Param("status") int status);
+
+
 
     @Update("""
     UPDATE aircon a
-        LEFT JOIN device d ON a.device_id = d.device_id
-        SET a.fan_level = 1
-        WHERE d.device_name = #{deviceName}
-    """)
-    int wind1(@Param("deviceName")String deviceName);
+    LEFT JOIN device d ON a.device_id = d.device_id
+    SET a.fan_level = #{level}
+    WHERE d.device_name = #{deviceName}
+""")
+    int setWindLevel(@Param("deviceName") String deviceName, @Param("level") int level);
 
 
-    @Update("""
-    UPDATE aircon a
-        LEFT JOIN device d ON a.device_id = d.device_id
-        SET a.fan_level = 2
-        WHERE d.device_name = #{deviceName}
-    """)
-    int wind2(@Param("deviceName")String deviceName);
-
-    @Update("""
-    UPDATE aircon a
-        LEFT JOIN device d ON a.device_id = d.device_id
-        SET a.fan_level = 3
-        WHERE d.device_name = #{deviceName}
-    """)
-    int wind3(@Param("deviceName")String deviceName);
-    @Update("""
-    UPDATE aircon a
-        LEFT JOIN device d ON a.device_id = d.device_id
-        SET a.fan_level = 4
-        WHERE d.device_name = #{deviceName}
-    """)
-    int wind4(@Param("deviceName")String deviceName);
-
-    @Update("""
-    UPDATE aircon a
-        LEFT JOIN device d ON a.device_id = d.device_id
-        SET a.fan_level = 5
-        WHERE d.device_name = #{deviceName}
-    """)
-    int wind5(@Param("deviceName")String deviceName);
-
-    @Update("""
-    UPDATE aircon a
-        LEFT JOIN device d ON a.device_id = d.device_id
-        SET a.light = TRUE
-        WHERE d.device_name = #{deviceName}
-    """)
     int turnonlight(@Param("deviceName")String deviceName);
 
     @Update("""

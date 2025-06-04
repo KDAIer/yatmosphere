@@ -61,38 +61,19 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
 //        airconMapper.updateDeviceDetail(deviceName, newDetail);
         return updated > 0;
     }
-    @Override
-    @Transactional
-    public boolean wind1(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind1(deviceName);
-        return updated > 0;
-    }
-    @Override
-    @Transactional
-    public boolean wind2(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind2(deviceName);
-        return updated > 0;
-    }
-
 
     @Override
     @Transactional
-    public boolean wind3(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind3(deviceName);
+    public boolean setWindLevel(String deviceName, int level) {
+        // 验证风量等级是否有效
+        if (level < 1 || level > 5) {
+            throw new IllegalArgumentException("风量等级必须在 1-5 范围内");
+        }
+
+        System.out.println("deviceName:" + deviceName + ", level:" + level);
+        int updated = airconMapper.setWindLevel(deviceName, level);
         return updated > 0;
     }
-    @Override
-    @Transactional
-    public boolean wind4(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind4(deviceName);
-        return updated > 0;
-    }
-
-
 
     @Override
     @Transactional
@@ -100,6 +81,28 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         System.out.println("deviceName:" + deviceName);
         int updated = airconMapper.turnonlight(deviceName);
         return updated > 0;
+    }
+    @Override
+    @Transactional
+    public boolean updateAirconMode(String deviceId, String mode) {
+        // 根据 deviceId 查询空调记录（包括温度）
+        Aircon aircon = airconMapper.selectTempAndModeByDeviceId(deviceId);
+        if (aircon == null) {
+            throw new ServiceException("未找到指定设备: " + deviceId);
+        }
+        // 计算新的detail，通过已有的formatDetail方法
+        String newDetail = formatDetail(aircon.getTemperature(), mode);
+        // 更新空调mode和设备描述detail
+        int updated = airconMapper.updateModeByDeviceId(deviceId, mode, newDetail);
+        return updated > 0;
+    }
+
+    @Override
+    @Transactional
+    public boolean updateAirconPower(String deviceId, int status) {
+        int updatedAircon = airconMapper.updatePowerByDeviceId(deviceId, status);
+        int updatedDevice = deviceMapper.updateStatusByDeviceId(deviceId, status);
+        return updatedAircon > 0 && updatedDevice > 0;
     }
 
     @Override
@@ -111,13 +114,6 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
     }
 
 
-    @Override
-    @Transactional
-    public boolean wind5(String deviceName) {
-        System.out.println("deviceName:" + deviceName);
-        int updated = airconMapper.wind5(deviceName);
-        return updated > 0;
-    }
 
     @Override
     @Transactional

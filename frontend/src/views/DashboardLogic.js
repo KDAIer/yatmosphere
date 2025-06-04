@@ -218,9 +218,9 @@ const getAreaComponent = (areaId) => {
 // 快捷设备
 const quickDevices = ref([
   { id: 1, name: '总控开关', state: true, status: '系统在线', icon: '/src/assets/images/switch.png', type: 'master' },
-  { id: 2, name: '智能门锁', state: false, status: '已锁定', icon: '/src/assets/images/doorlock.png', type: 'lock' },
+  { id: 2, name: '智能门锁', state: false, status: '大门锁定', icon: '/src/assets/images/doorlock.png', type: 'lock' },
   { id: 3, name: '安防系统', state: true, status: '布防中', icon: '/src/assets/images/security.png', type: 'security' },
-  { id: 5, name: '网络状态', state: true, status: '5G在线', icon: '/src/assets/images/wifi.png', type: 'network', signalStrength: 80 },
+  { id: 5, name: '网络状态', state: true, status: '', icon: '/src/assets/images/wifi.png', type: 'network', signalStrength: 80 },
 ])
 
 const handleDeviceAction = (device) => {
@@ -248,14 +248,14 @@ const handleDeviceAction = (device) => {
       break
     case 'lock':
       quickDevices.value[quickIndex].status = newState
-        ? `已在 ${new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })} 锁定`
-        : '已解锁'
+        ? '大门锁定'
+        : '大门解锁'
       break
     case 'security':
       quickDevices.value[quickIndex].status = newState ? '布防中' : '撤防中'
       break
     case 'network':
-      quickDevices.value[quickIndex].status = newState ? '5G在线' : '网络断开'
+      quickDevices.value[quickIndex].status = newState ? '' : '网络断开'
       quickDevices.value[quickIndex].signalStrength = newState ? 80 : 0
       break
     default:

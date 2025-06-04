@@ -14,7 +14,7 @@
         </option>
       </select>
     </div>
-    
+
     <div class="control-body">
       <!-- 电源控制 -->
       <div class="power-control">
@@ -66,8 +66,8 @@
               v-for="level in 5"
               :key="level"
               class="speed-btn"
-              :class="{ active: fanSpeed === level }"
-              @click="setFanSpeed(level)"
+              :class="{ active: selectedDeviceObj?.fanSpeed === level }"
+              @click="changeWind(level)"
             >
               {{ level }}
             </button>
@@ -114,13 +114,9 @@ const props = defineProps({
   visible: Boolean
 })
 
-//const isPowerOn = ref(true)
-// 【去掉 currentMode，直接从设备数据中获取 mode】
-const selectedDevice = ref(null) // 只保存设备id
+const selectedDevice = ref(null)
 const devices = ref([])
-
 const isEcoMode = ref(false)
-const fanSpeed = ref(3)
 const timerOption = ref('0')
 const customTime = ref('00:00')
 const isLightOn = ref(true)
@@ -132,7 +128,6 @@ const modes = [
   { name: '送风', value: 'fan', icon: '🌪️' },
 ]
 
-// modeMapping: 将英文值映射为中文
 const modeMapping = {
   cool: '制冷',
   heat: '制热',
@@ -140,7 +135,6 @@ const modeMapping = {
   fan: '送风'
 }
 
-// 计算属性：当前选中设备对象
 const selectedDeviceObj = computed(() => {
   return devices.value.find(d => d.id === selectedDevice.value)
 })
@@ -151,15 +145,16 @@ const fetchDevices = async () => {
     const res = await axios.get('/aircon/getall', {
       headers: { 'Content-Type': 'application/json', 'Authorization': token }
     })
-    // 将返回的 mode 字段也映射到设备对象中，若不存在则默认为'制冷'
     devices.value = (res.data.data || []).map(item => ({
       id: item.deviceId,
       name: item.deviceName,
       temperature: item.temperature ?? 22,
-      mode: item.mode || '制冷'
+      mode: item.mode || '制冷',
+      isPowerOn: item.isPowerOn ?? false,
+      fanSpeed: item.fanSpeed ?? 3 // Default fan speed
     }))
     if (devices.value.length > 0) {
-      selectedDevice.value = devices.value[0].id // 只保存id
+      selectedDevice.value = devices.value[0].id
     }
     console.log('接口返回', res.data)
     console.log('devices', devices.value)
@@ -175,7 +170,6 @@ const togglePower = async () => {
   try {
     const token = localStorage.getItem('authToken')
     const device = selectedDeviceObj.value
-    // 判断设备当前状态，0表示关闭模式，1表示开启模式
     const newStatus = device.isPowerOn ? 0 : 1
     const res = await axios.post(
       `/aircon/changePower`,
@@ -192,7 +186,6 @@ const togglePower = async () => {
       }
     )
     if (res.data.data === true) {
-      // 同步更新设备的 isPowerOn 状态
       device.isPowerOn = !device.isPowerOn
       console.log("空调状态更新成功")
       emit('refresh-devices')
@@ -208,9 +201,7 @@ const adjustTemp = async (delta) => {
   if (!selectedDeviceObj.value) return
   try {
     const device = selectedDeviceObj.value
-    // 新温度值
     const newTemp = device.temperature + delta
-    // 温度边界判断，若超过边界则不调用接口
     if ((delta > 0 && device.temperature >= 30) || (delta < 0 && device.temperature <= 16)) {
       console.log('温度已达边界，不进行调节')
       return
@@ -226,7 +217,6 @@ const adjustTemp = async (delta) => {
         'Authorization': token
       }
     })
-    // 本地温度同步变化（确保温度在16～30之间）
     device.temperature = Math.min(30, Math.max(16, newTemp))
     emit('update-device', {
       id: device.id,
@@ -239,7 +229,9 @@ const adjustTemp = async (delta) => {
     console.error('调节温度失败', e)
   }
 }
+
 const changeMode = async (mode) => {
+  console.log("空调模式更新")
   if (!selectedDeviceObj.value) return
   try {
     const token = localStorage.getItem('authToken')
@@ -250,7 +242,7 @@ const changeMode = async (mode) => {
       {
         params: {
           deviceId: selectedDeviceObj.value.id,
-          mode: newMode // 使用中文参数
+          mode: newMode
         },
         headers: {
           'Content-Type': 'application/json',
@@ -260,7 +252,6 @@ const changeMode = async (mode) => {
     )
     if (response.data.data === true) {
       console.log("空调模式更新成功", newMode)
-      // 更新本地设备的 mode 字段
       const device = devices.value.find(d => d.id === selectedDeviceObj.value.id)
       if (device) {
         device.mode = newMode
@@ -274,20 +265,43 @@ const changeMode = async (mode) => {
   }
 }
 
+const changeWind = async (level) => {
+  if (!selectedDeviceObj.value) return
+  try {
+    const token = localStorage.getItem('authToken')
+    const device = selectedDeviceObj.value
+    const res = await axios.post(
+      `/aircon/setWindLevel?deviceName=${encodeURIComponent(device.name)}&level=${level}`,
+      null,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    )
+    if (res.data.data === true) {
+      device.fanSpeed = level
+      console.log(`风量等级设置为 ${level}`)
+      emit('refresh-devices')
+    } else {
+      console.error("风量等级设置失败")
+    }
+  } catch (e) {
+    console.error("设置风量等级错误", e)
+  }
+}
+
 const loadDeviceSettings = () => {
   // 可根据需要加载设备设置
 }
 
-const setFanSpeed = (level) => {
-  fanSpeed.value = level
-}
 const handleTimerChange = () => {}
 const setCustomTimer = () => {}
 </script>
 
 <style scoped>
 @import '/src/assets/base.css';
-
 
 .flat-air-control {
   background: white;
@@ -412,13 +426,11 @@ const setCustomTimer = () => {}
   color: var(--text-color);
 }
 
-/* 设备选择器样式 */
 .device-selector {
   margin-bottom: 1.5rem;
   padding: 0.5rem;
   background: var(--color-device-card-bg);
   border-radius: 8px;
-
 }
 
 .device-selector select {
@@ -429,7 +441,6 @@ const setCustomTimer = () => {}
   width: calc(100% - 80px);
 }
 
-/* 附加控制区域样式 */
 .additional-controls {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
@@ -456,7 +467,6 @@ const setCustomTimer = () => {}
   min-width: 60px;
 }
 
-/* 开关样式 */
 .switch {
   position: relative;
   display: inline-block;
@@ -509,7 +519,6 @@ input:checked + .slider:before {
   transition: 0.4s;
 }
 
-/* 风量等级按钮样式 */
 .speed-levels {
   display: flex;
   gap: 0.5rem;
@@ -536,7 +545,6 @@ input:checked + .slider:before {
   border-color: #3182ce;
 }
 
-/* 定时选择样式 */
 .control-group.timer select {
   padding: 0.3rem;
   border-radius: 4px;

@@ -42,7 +42,7 @@ public class MqttControlService implements MqttCallback {
 
     // 发布控制命令到设备的命令主题
     public void sendCommand(ControlRequest request) throws MqttException {
-        String topic = "device/" + request.getDeviceId() + "/command";
+        String topic = "device/" + request.getdevice_id() + "/command";
         // 构建 JSON 负载
         String payload = "";
         try {
@@ -81,18 +81,18 @@ public class MqttControlService implements MqttCallback {
         // 解析设备ID
         String[] parts = topic.split("/");
         if (parts.length >= 3) {
-            String deviceId = parts[1];
+            String device_id = parts[1];
             // 解析 JSON 负载
             JsonNode json = objectMapper.readTree(message.getPayload());
-            String msgId = json.has("msgId") ? json.get("msgId").asText() : null;
+            String msg_id = json.has("msg_id") ? json.get("msg_id").asText() : null;
             String status = json.has("status") ? json.get("status").asText() : null;
-            int errorCode = json.has("errorCode") ? json.get("errorCode").asInt() : 0;
+            int error_code = json.has("error_code") ? json.get("error_code").asInt() : 0;
             // 保存状态到数据库
             DeviceStatus deviceStatus = new DeviceStatus();
-            deviceStatus.setDeviceId(deviceId);
-            deviceStatus.setMsgId(msgId);
+            deviceStatus.setdevice_id(device_id);
+            deviceStatus.setmsg_id(msg_id);
             deviceStatus.setStatus(status);
-            deviceStatus.setErrorCode(errorCode);
+            deviceStatus.seterror_code(error_code);
             deviceStatus.setTimestamp(LocalDateTime.now());
             statusRepository.save(deviceStatus);
             System.out.println("Saved device response to DB: " + deviceStatus);

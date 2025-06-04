@@ -60,12 +60,8 @@ class Device(metaclass=abc.ABCMeta):
     # 检查设备类型和命令是否匹配
     if self.device_type == payload['device_type'] and payload['device_id'] == self.device_id:
       # 处理命令
-      if payload['msg_type'] == 'command':
-        self.handle_command(payload)
-        return
-      else:
-        self.handle_response(400, "消息类型不匹配", payload)
-        return
+      # if payload['msg_type'] == 'command':
+      self.handle_command(payload)
     else:
       self.handle_response(400, "设备类型或ID不匹配", payload)
       return
