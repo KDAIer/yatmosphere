@@ -699,12 +699,6 @@ const newScene = ref({
 // 可用图标
 const sceneIcons = ['🏠', '🛌', '🍽️', '🎬', '🎵', '📖', '💡', '🌙', '✨']
 
-// 激活场景
-const activateScene = (sceneId) => {
-  console.log('激活场景:', sceneId)
-  // 这里添加实际场景激活逻辑
-}
-
 // 创建新场景
 const createScene = () => {
   if (!newScene.value.name.trim()) return
