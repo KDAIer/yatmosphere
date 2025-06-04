@@ -20,18 +20,18 @@ public class DeviceStatus {
 
     /** 设备唯一标识 */
     @Column(nullable = false)
-    private String deviceId;
+    private String device_id;
 
     /** 消息 ID（与前端/后端通信消息一一对应） */
     @Column(nullable = false)
-    private String msgId;
+    private String msg_id;
 
     /** 设备执行结果状态，如 "success"/"error" */
     @Column(nullable = false)
     private String status;
 
     /** 错误码，0 表示成功，非零表示失败原因 */
-    private int errorCode;
+    private int error_code;
 
     /** 记录生成时间戳 */
     private LocalDateTime timestamp;
@@ -50,20 +50,20 @@ public class DeviceStatus {
         this.id = id;
     }
 
-    public String getDeviceId() {
-        return deviceId;
+    public String getdevice_id() {
+        return device_id;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public void setdevice_id(String device_id) {
+        this.device_id = device_id;
     }
 
-    public String getMsgId() {
-        return msgId;
+    public String getmsg_id() {
+        return msg_id;
     }
 
-    public void setMsgId(String msgId) {
-        this.msgId = msgId;
+    public void setmsg_id(String msg_id) {
+        this.msg_id = msg_id;
     }
 
     public String getStatus() {
@@ -74,12 +74,12 @@ public class DeviceStatus {
         this.status = status;
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public int geterror_code() {
+        return error_code;
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    public void seterror_code(int error_code) {
+        this.error_code = error_code;
     }
 
     public LocalDateTime getTimestamp() {
@@ -96,10 +96,10 @@ public class DeviceStatus {
     public String toString() {
         return "DeviceStatus{" +
                 "id=" + id +
-                ", deviceId='" + deviceId + '\'' +
-                ", msgId='" + msgId + '\'' +
+                ", device_id='" + device_id + '\'' +
+                ", msg_id='" + msg_id + '\'' +
                 ", status='" + status + '\'' +
-                ", errorCode=" + errorCode +
+                ", error_code=" + error_code +
                 ", timestamp=" + timestamp +
                 '}';
     }

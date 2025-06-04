@@ -294,6 +294,22 @@ CREATE TABLE `record` (
 -- # UNLOCK TABLES;
 
 
+DROP TABLE IF EXISTS `device_status`;
+
+CREATE TABLE `device_status` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `device_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备id',
+  `msg_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '消息id',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '状态',
+  `error_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '错误码',
+  `timestamp` datetime NOT NULL COMMENT '时间戳',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表';
+
+-- 示例插入
+INSERT INTO device_status (device_id, msg_id, status, error_code, timestamp)
+VALUES ('AC001', 'msg001', '正常', '0', '2025-05-20 14:27:00');
+
 
 
 

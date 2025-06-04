@@ -1,5 +1,6 @@
 package com.example.library.controller;
 
+import com.example.library.etc.Result;
 import com.example.library.service.MqttControlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * 控制器：处理前端发送的设备控制命令请求
- * 支持 GET 方式接收查询参数：msgId, deviceId, deviceType, action, value
+ * 返回值类型改为 Result<Object>，在内部封装状态码、提示信息和可选数据
  */
 @RestController
 @RequestMapping("/api/control")
@@ -18,92 +19,94 @@ public class DeviceControlController {
 
     /**
      * GET 请求版本：前端通过 URL 查询参数传递控制命令
-     * 示例 URL: /api/control/device?
-     * msgId=1623456789000&
-     * deviceId=light1&
-     * deviceType=light&
+     * 示例 URL:
+     * /api/control/device?
+     * msg_id=1623456789000&
+     * device_type=light&
+     * device_id=AC001&
      * action=set_power&
-     * value=on
-     *
-     * @param msgId      消息唯一 ID（时间戳等）
-     * @param deviceId   设备 ID
-     * @param deviceType 设备类型（如 "light" 或 "aircon"）
-     * @param action     控制动作（如 "set_power", "set_temperature" 等）
-     * @param value      动作对应的值（字符串或数字，取决于 action）
-     * @return 成功或失败提示
+     * value=off
      */
     @GetMapping("/device")
-    public ResponseEntity<String> controlDeviceByGet(
-            @RequestParam("msgId") Long msgId,
-            @RequestParam("deviceId") String deviceId,
-            @RequestParam("deviceType") String deviceType,
+    public ResponseEntity<Result<Object>> controlDeviceByGet(
+            @RequestParam("msg_id") Long msg_id,
+            @RequestParam("device_id") String device_id,
+            @RequestParam("device_type") String device_type,
             @RequestParam("action") String action,
             @RequestParam(value = "value", required = false) String value) {
+        // 封装请求到 DTO
+        ControlRequest request = new ControlRequest();
+        request.setmsg_id(msg_id);
+        request.setdevice_id(device_id);
+        request.setdevice_type(device_type);
+        request.setAction(action);
+        request.setValue(value);
+
         try {
-            // 将查询参数封装为 ControlRequest 对象
-            ControlRequest request = new ControlRequest();
-            request.setMsgId(msgId);
-            request.setDeviceId(deviceId);
-            request.setDeviceType(deviceType);
-            request.setAction(action);
-            // value 参数是 String，如果设备需要数值类型，可在 MqttControlService 内转换
-            request.setValue(value);
+            // 发布 MQTT 命令
             mqttControlService.sendCommand(request);
-            return ResponseEntity.ok("Command sent to device via GET");
+            // 返回一个 Result 对象，表示成功，不携带额外 data
+            return ResponseEntity.ok(Result.success(null));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to send command: " + e.getMessage());
+            e.printStackTrace(); // 打印完整堆栈，辅助调试
+            // 返回一个失败的 Result，状态码 500，提示 e.getMessage()
+            return ResponseEntity
+                    .status(500)
+                    .body(Result.failure(500, "Failed to send command: " + e.getMessage()));
         }
     }
 
     /**
-     * POST 方法
+     * POST 请求版本：接收 JSON 体
      */
     @PostMapping("/device")
-    public ResponseEntity<String> controlDeviceByPost(@RequestBody ControlRequest request) {
+    public ResponseEntity<Result<Object>> controlDeviceByPost(@RequestBody ControlRequest request) {
         try {
             mqttControlService.sendCommand(request);
-            return ResponseEntity.ok("Command sent to device via POST");
+            return ResponseEntity.ok(Result.success(null));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to send command: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(500)
+                    .body(Result.failure(500, "Failed to send command: " + e.getMessage()));
         }
     }
 
     /**
-     * 用于接收前端请求的 DTO 类，包含 msgId、deviceId、deviceType、action 以及可选的 value
+     * 用于接收前端请求的 DTO 类，包含 msg_id、device_id、device_type、action 以及可选的 value
      */
     public static class ControlRequest {
-        private Long msgId;
-        private String deviceId;
-        private String deviceType;
+        private Long msg_id;
+        private String device_id;
+        private String device_type;
         private String action;
         private Object value;
 
         public ControlRequest() {
-            // 默认构造函数
         }
 
-        public Long getMsgId() {
-            return msgId;
+        public Long getmsg_id() {
+            return msg_id;
         }
 
-        public void setMsgId(Long msgId) {
-            this.msgId = msgId;
+        public void setmsg_id(Long msg_id) {
+            this.msg_id = msg_id;
         }
 
-        public String getDeviceId() {
-            return deviceId;
+        public String getdevice_id() {
+            return device_id;
         }
 
-        public void setDeviceId(String deviceId) {
-            this.deviceId = deviceId;
+        public void setdevice_id(String device_id) {
+            this.device_id = device_id;
         }
 
-        public String getDeviceType() {
-            return deviceType;
+        public String getdevice_type() {
+            return device_type;
         }
 
-        public void setDeviceType(String deviceType) {
-            this.deviceType = deviceType;
+        public void setdevice_type(String device_type) {
+            this.device_type = device_type;
         }
 
         public String getAction() {
@@ -120,6 +123,17 @@ public class DeviceControlController {
 
         public void setValue(Object value) {
             this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "ControlRequest{" +
+                    "msg_id=" + msg_id +
+                    ", device_id='" + device_id + '\'' +
+                    ", device_type='" + device_type + '\'' +
+                    ", action='" + action + '\'' +
+                    ", value=" + value +
+                    '}';
         }
     }
 }
