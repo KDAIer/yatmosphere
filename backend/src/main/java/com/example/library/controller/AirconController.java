@@ -65,7 +65,7 @@ public class AirconController {
     public Boolean heatingmod(@RequestParam String deviceName) {
         return airconService.heatingmod(deviceName);
     }
-    @PostMapping("/dehumidifier")
+//    @PostMapping("/dehumidifier")
     @Operation(summary = "抽湿模式", description = "将deviceName对应空改为抽湿模式")
     public Boolean dehumidifiermod(@RequestParam String deviceName) {
         return airconService.dehumidifiermod(deviceName);

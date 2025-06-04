@@ -22,7 +22,7 @@ public class Device extends BaseEntity {
     private String deviceName;
 
     @UniqColumn(message = "已存在重复设备")
-    private String deviceId; // 对应数据库字段 device_id，不是 isbn
+    private String deviceId; // 对应数据库字段 device_id，不是 isbn   
 
     private String category;
 
