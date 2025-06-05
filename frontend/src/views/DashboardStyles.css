@@ -43,8 +43,19 @@
 
 .device-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 允许列宽收缩 */
+  gap: 0.6rem; /* 更小的间隙 */
+  margin-bottom: 1rem;
+  width: 100%;
+  overflow: hidden; /* 隐藏溢出内容 */
+}
+
+.device-grid > * {
+  white-space: nowrap; /* 强制不换行 */
+  overflow: hidden; /* 隐藏溢出文本 */
+  text-overflow: ellipsis; /* 超出显示省略号 */
+  font-size: clamp(0.75rem, 2vw, 0.9rem); /* 响应式字体大小 */
+  min-width: 0; /* 允许内容收缩 */
 }
 
 .device-online {
@@ -64,7 +75,7 @@
   height: 100px;
   object-fit: contain;
   vertical-align: middle;
-  margin-right: 1.0rem;
+  margin-right: -10px;
 }
 
 /* .device-card.master .device-icon {
