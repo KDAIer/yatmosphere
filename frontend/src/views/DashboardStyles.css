@@ -1216,7 +1216,7 @@ input:checked+.slider:before {
 .scene-btn {
   flex: 0 0 120px;
   width: 120px;
-  height: 100px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1272,15 +1272,15 @@ input:checked+.slider:before {
   position: absolute;
   top: -6px;
   right: -6px;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   background: #f56565;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 30px;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s;
@@ -1310,7 +1310,12 @@ input:checked+.slider:before {
   padding: 20px;
   width: 700px;
   max-width: 90%;
+  /* 添加最大高度和垂直滚动 */
+  max-height: 90vh; /* 限制最大高度为视口的90% */
+  overflow-y: auto; /* 添加垂直滚动条 */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  /* 添加边距防止内容贴边 */
+  margin: 20px 0;
 }
 
 .scene-modal-content h3 {
@@ -1465,82 +1470,8 @@ input:checked+.slider:before {
   color: rgb(255, 255, 255, 0.8);
 }
 
-/* 视图切换按钮 */
-.view-toggle-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 50%;
-  width: 200px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-right: 15px;
-  color: white;
-  font-size: 18px;
-  transition: all 0.3s;
-}
-
-.view-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
-}
 
 
-
-
-
-/* 移动端布局 */
-.mobile-layout .main-content {
-  grid-template-columns: 1fr !important;
-}
-
-.mobile-layout .top-row,
-.mobile-layout .bottom-row {
-  grid-template-columns: 1fr !important;
-  gap: 1rem !important;
-}
-
-.mobile-layout .card {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-.mobile-layout .device-grid {
-  grid-template-columns: repeat(1, 1fr) !important;
-}
-
-.mobile-layout .grid-area-selector {
-  grid-template-columns: repeat(1, 1fr) !important;
-}
-
-.mobile-layout .scene-grid {
-  grid-template-columns: repeat(1, 1fr) !important;
-}
-
-.mobile-layout .right-column {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  gap: 2rem;
-  height: 300px;
-  width: 100%;
-}
-
-
-
-/* 响应式设计（自动适应） */
-@media (max-width: 768px) {
-  .main-content {
-    grid-template-columns: 1fr !important;
-  }
-
-  .top-row,
-  .bottom-row {
-    grid-template-columns: 1fr !important;
-  }
-}
 
 /* 头部小头像 */
 .avatar-img {
@@ -1571,3 +1502,118 @@ input:checked+.slider:before {
   object-fit: cover;
   cursor: pointer;
 }
+
+/* 视图切换按钮 */
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-header-bg);
+  border: 1px solid var(--color-text);
+  color: rgb(255, 255, 255, 0.8);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-bottom: 2rem; /* 通常优先控制垂直间距 */
+}
+
+.view-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+
+/* 移动端布局 */
+.mobile-layout .main-content {
+  grid-template-columns: 1fr !important;
+}
+
+.mobile-layout .top-row,
+.mobile-layout .bottom-row {
+  grid-template-columns: 1fr !important;
+  gap: 1rem !important;
+}
+
+.mobile-layout .grid-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mobile-layout .header {
+  display: table-row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 5.5rem;
+  background: var(--color-header-bg);
+  color: #ffffff;
+  /* 设置 header 文本颜色，例如白色 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
+.mobile-layout .user-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+}
+.mobile-layout .scene-btn {
+  height: 100%;
+}
+
+.mobile-layout .avatar-img {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mobile-layout .card {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.mobile-layout .device-grid {
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+.mobile-layout .grid-area-selector {
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+.mobile-layout .scene-grid {
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+.mobile-layout .right-column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2rem;
+  height: 800px;
+  width: 100%;
+}
+
+
+
+/* 响应式设计（自动适应） */
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr !important;
+  }
+
+  .top-row,
+  .bottom-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
