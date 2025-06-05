@@ -1009,6 +1009,42 @@
   max-width: 90%;
 }
 
+/* 权限弹窗样式*/
+.access-error-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.access-error-modal .modal-content {
+  border: rgb(78,205,196) solid 2px;
+  border-radius: 15px;
+}
+
+.access-error-modal .error-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-text);
+  background-color: rgb(78,205,196);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.access-error-modal .error-message {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--color-text);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 /* 表单组样式 */
 .form-group {
   margin-bottom: 25px;

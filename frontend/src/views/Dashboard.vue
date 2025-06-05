@@ -244,8 +244,8 @@
           <div class="device-list-header">
             <h2>设备列表</h2>
             <div class="device-actions">
-              <button class="action-btn add-btn" @click="showAddDeviceModal = true">添加设备</button>
-              <button class="action-btn remove-btn" @click="showRemoveDeviceModal = true">移除设备</button>
+              <button class="action-btn add-btn" @click="canAddDevice">添加设备</button>
+              <button class="action-btn remove-btn" @click="canRemoveDevice">移除设备</button>
             </div>
           </div>
           <div class="device-table-container" @refresh-devices="fetchAllDevices">
@@ -406,6 +406,14 @@
             </div>
           </div>
         </section>
+      </div>
+
+      <!--权限错误弹窗-->
+      <div class="access-error-modal" v-if="showAccessError" @click.self="showAccessError = false">
+        <div class="modal-content">
+          <h3 class="error-title"><span style="color: red">⚠</span>权限错误</h3>
+          <p class="error-message">&nbsp;您没有权限使用此功能，请联系管理员&nbsp;</p>
+        </div>
       </div>
     </main>
 
@@ -785,6 +793,12 @@ const editScene = (sceneId) => {
 const saveScene = () => {
   if (!newScene.value.name.trim()) return
 
+  // 检查权限
+  if (!checkRoleAccess()) {
+    console.error('没有权限保存场景，当前角色:', localStorage.getItem('role'), '当前value:', roleAccess.value)
+    return
+  }
+
   if (editingScene.value) {
     // 更新现有场景
     const index = customScenes.value.findIndex(s => s.id === editingScene.value)
@@ -803,11 +817,22 @@ const saveScene = () => {
 
 // 删除场景
 const deleteScene = (sceneId) => {
+  // customScenes.value = customScenes.value.filter(scene => scene.id !== sceneId)
+  // 检查权限
+  if (!checkRoleAccess()) {
+    console.error('没有权限删除场景，当前角色:', localStorage.getItem('role'), '当前value:', roleAccess.value)
+    return
+  }
   customScenes.value = customScenes.value.filter(scene => scene.id !== sceneId)
 }
 
 // 确认删除
 const confirmDeleteScene = () => {
+  // 检查权限
+  if (!checkRoleAccess()) {
+    console.error('没有权限删除场景，当前角色:', localStorage.getItem('role'), '当前value:', roleAccess.value)
+    return
+  }
   if (confirm('确定要删除这个场景吗？')) {
     deleteScene(editingScene.value)
     resetSceneForm()
@@ -843,6 +868,37 @@ onMounted(() => {
     isMobileView.value = savedView === 'mobile'
   }
 })
+
+// 角色权限相关
+const roleAccess = ref(false)
+const showAccessError = ref(false)
+// 检查角色权限函数
+const checkRoleAccess = () => {
+  localStorage.getItem('role') === 'admin' ? roleAccess.value = true : roleAccess.value = false
+  if (!roleAccess.value) {
+    console.error('当前角色没有权限访问此功能')
+    showAccessError.value = true
+  } else {
+    showAccessError.value = false
+  }
+  return roleAccess.value
+}
+// 添加设备按钮需要检查角色权限
+const canAddDevice = () => {
+  if (!checkRoleAccess()) {
+    console.error('没有权限添加设备，当前角色:', localStorage.getItem('role'), '当前value:', roleAccess.value)
+    return
+  }
+  showAddDeviceModal.value = true
+}
+// 移除设备按钮需要检查角色权限
+const canRemoveDevice = () => {
+  if (!checkRoleAccess()) {
+    console.error('没有权限移除设备，当前角色:', localStorage.getItem('role'), '当前value:', roleAccess.value)
+    return
+  }
+  showRemoveDeviceModal.value = true
+}
 
 </script>
 
