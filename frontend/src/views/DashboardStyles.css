@@ -6,6 +6,8 @@
   min-height: 100vh;
   width: 100vw;
   margin: 0;
+  padding-left: 64px; /* 左侧留白 */
+  box-sizing: border-box; /* 确保padding不影响总宽度 */
 }
 
 .device-card {
@@ -210,6 +212,7 @@
   /* 左上角定位 */
   top: 0.5rem;
   left: 0.5rem;
+  margin-left: 64px;
 }
 
 /* 调整 h1 避免被图标遮挡 */
@@ -1794,6 +1797,10 @@ input:checked+.slider:before {
   color: #fff;
   width: 100%;
   box-sizing: border-box;
+}
+
+.mobile-layout .header-logo {
+  margin-left: 0px;
 }
 
 .mobile-layout .music-btn {
