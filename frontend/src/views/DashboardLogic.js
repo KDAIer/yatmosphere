@@ -116,27 +116,25 @@ export const useTimeUpdater = () => {
   inviteCode.value = getCurrentInviteCode()
 
 
-  const loadFamilyMembers = async () => {
-    const account = getCurrentAccount()
-    console.log('加载家庭成员，当前账号:', account)
-    try {
-      const res = await axios.get('/api/family-members', {
-        params: { account }
-      })
-      // 检查响应状态
-      if (res.data.status === 200) {
-        familyMembers.value = res.data.data.map((member, index) => ({
-          ...member,
-          id: index // 为 v-for 添加唯一 key
-        }))
-        console.log('家庭成员加载成功:', familyMembers.value)
-      } else {
-        console.error('家庭成员请求失败:', res.data.msg)
-      }
-    } catch (err) {
-      console.error('家庭成员请求异常:', err)
-    }
-  }
+  // const loadFamilyMembers = async () => {
+  //     const account = getCurrentAccount()
+  //     try {
+  //       const res = await axios.get('/api/family-members', { params: { account } })
+  //       if (res.data.status === 200) {
+  //         familyMembers.value = res.data.data.map((member, index) => ({
+  //           ...member,
+  //           id: index
+  //         }))
+  //         localStorage.setItem('familyMembers', JSON.stringify(familyMembers.value))
+  //         console.log('家庭成员加载成功:', familyMembers.value)
+  //       } else {
+  //         console.error('家庭成员请求失败:', res.data.msg)
+  //       }
+  //     } catch (err) {
+  //       console.error('家庭成员请求异常:', err)
+  //     }
+  //   }
+
 
   onMounted(() => {
     console.log('Dashboard 组件已挂载，启动时间更新与数据加载')
@@ -144,7 +142,7 @@ export const useTimeUpdater = () => {
     const timer = setInterval(updateTime, 1000)
 
     // 加载家庭成员
-    loadFamilyMembers()
+    // loadFamilyMembers()
 
     onUnmounted(() => {
       console.log('清除时间更新定时器')
@@ -155,7 +153,7 @@ export const useTimeUpdater = () => {
   return { currentTime, familyMembers }
 }
 // 环境数据
-const environmentData = reactive({
+export const environmentData = reactive({
   time: { label: '时间', value: currentTime },
   people: { label: '屋内有', value: '' },
   temperature: { label: '温度', value: '22°C' },
@@ -183,6 +181,7 @@ const allDevices = ref([
 export const familyMembers = ref([])
 export const toggleHomeStatus = (member) => {
   member.isHome = !member.isHome
+  localStorage.setItem('familyMembers', JSON.stringify(familyMembers.value))
 }
 // 示例：从本地存储或状态管理中获取当前账号
 const getCurrentAccount = () => {
@@ -374,7 +373,6 @@ export {
   areas,
   quickDevices,
   currentTime,
-  environmentData,
   scenes,
   allDevices,
   // familyMembers,

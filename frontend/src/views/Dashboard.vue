@@ -380,7 +380,7 @@
           </div>
         </section>
 
-        <!-- 家庭成员 -->
+        <!-- 家庭成员
         <section class="member-list card">
           <h2>家庭成员</h2>
           <div class="member-table-container">
@@ -405,7 +405,7 @@
               </div>
             </div>
           </div>
-        </section>
+        </section> -->
       </div>
 
       <!--权限错误弹窗-->
