@@ -28,10 +28,11 @@
           <font-awesome-icon :icon="theme === 'light' ? 'moon' : 'sun'" />
           {{ theme === 'light' ? '黑夜模式' : '白天模式' }}
         </button>
+        <!-- 头部小头像：只做“打开弹窗” -->
         <div class="user-avatar" @click="showUserModal = true">
-          <img :src="user.avatar" alt="用户头像" class="avatar-img">
+          <img :src="user.avatar || '/src/assets/images/user.png'" alt="用户头像" class="avatar-img" />
         </div>
-        <span>当前用户：{{ username }} {{ roleName }}</span>
+        <!-- <span>当前用户：{{ username }} {{ roleName }}</span> -->
         <button @click="logout" class="logout-btn">退出登录</button>
       </div>
 
@@ -44,31 +45,33 @@
           </div>
           <div class="modal-body">
             <div class="avatar-large">
-              <img :src="user.avatar" alt="用户头像">
+              <img :src="user.avatar || '/src/assets/images/user.png'" alt="用户头像" @click="onClickAvatar"
+                class="avatar-large-img" />
             </div>
             <div class="user-details">
               <div class="detail-item">
                 <span class="detail-label">用户名:</span>
                 <span class="detail-value">{{ username }}</span>
               </div>
-              <!-- <div class="detail-item">
-                <span class="detail-label">姓名:</span>
-                <span class="detail-value">{{ user.fullName }}</span>
-              </div> -->
+              <div class="detail-item">
+                <span class="detail-label">角色:</span>
+                <span class="detail-value">{{ roleName }}</span>
+              </div>
               <div class="detail-item">
                 <span class="detail-label">家庭邀请码:</span>
                 <span class="detail-value">{{ inviteCode }}</span>
                 <button class="copy-btn" @click="copyInviteCode">复制</button>
               </div>
-              <!-- <div class="detail-item">
-                <span class="detail-label">注册时间:</span>
-                <span class="detail-value">{{ user.registerTime }}</span>
-              </div> -->
             </div>
           </div>
         </div>
       </div>
     </header>
+
+    <!-- 隐藏的文件输入框，用于弹窗中大头像选择 -->
+    <input type="file" ref="avatarInput" accept="image/png, image/jpeg" style="display: none;" @change="onFileChange" />
+
+
 
     <!-- 主内容区 -->
     <main class="main-content">
@@ -363,11 +366,11 @@
               <h3>移除设备</h3>
               <div class="form-group">
                 <label>选择要移除的设备:</label>
-                  <select v-model="selectedDeviceToRemove">
-                    <option v-for="device in devices" :value="{ deviceId: device.id, deviceName: device.name }">
-                      {{ device.name }} ({{ device.id }})
-                    </option>
-                  </select>
+                <select v-model="selectedDeviceToRemove">
+                  <option v-for="device in devices" :value="{ deviceId: device.id, deviceName: device.name }">
+                    {{ device.name }} ({{ device.id }})
+                  </option>
+                </select>
               </div>
               <div class="modal-actions">
                 <button class="cancel-btn" @click="showRemoveDeviceModal = false">取消</button>
@@ -541,11 +544,49 @@ const toggleMusic = () => {
 // 用户数据
 const showUserModal = ref(false)
 const user = ref({
-  avatar: 'https://example.com/avatar.jpg', // 替换为实际头像URL
+  avatar: '',
   username: ' ',
   // fullName: '张伟', (注册时也没有显示真实姓名，这块感觉没有必要)
   inviteCode: ''
   // registerTime: '2023-05-15 14:30:22' （注册时间显示也没有必要）
+})
+
+// 仅在弹窗中点击大头像才触发
+const avatarInput = ref(null)
+
+// 点击弹窗中大头像
+const onClickAvatar = () => {
+  if (avatarInput.value) {
+    avatarInput.value.click()
+  }
+}
+
+// 用户在弹窗里选中文件后的回调：校验 + 预览 + 存 localStorage
+const onFileChange = (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  // 只允许 JPG/PNG 且小于 2MB
+  if (!file.type.match(/^image\/(png|jpeg)$/) || file.size > 2 * 1024 * 1024) {
+    alert('请上传 JPG/PNG 且小于 2MB 的图片')
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (ev) => {
+    const base64Data = ev.target.result
+    user.value.avatar = base64Data // 实时更新头像预览
+    localStorage.setItem('dashboard_user_avatar', base64Data) // 存到 localStorage，刷新后依然能看到
+  }
+  reader.readAsDataURL(file)
+}
+
+// 从 localStorage 读取已保存的头像
+onMounted(() => {
+  const saved = localStorage.getItem('dashboard_user_avatar')
+  if (saved) {
+    user.value.avatar = saved
+  }
 })
 
 // 复制邀请码函数

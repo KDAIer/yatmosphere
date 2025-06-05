@@ -1541,3 +1541,33 @@ input:checked+.slider:before {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* 头部小头像 */
+.avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.user-avatar {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* 弹窗中头像容器：水平/垂直居中 */
+.avatar-large {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.avatar-large-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
