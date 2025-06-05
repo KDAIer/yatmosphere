@@ -281,7 +281,7 @@
           <!-- 添加设备弹窗 -->
           <div class="device-modal" v-if="showAddDeviceModal" @click.self="showAddDeviceModal = false">
             <div class="modal-content">
-              <h3>添加新设备</h3>
+              <h3>添加新设备(请在弹窗最下方确认添加)</h3>
               <div class="form-group">
                 <label>设备类型:</label>
                 <select v-model="newDevice.type" @change="resetDeviceForm">
@@ -315,6 +315,7 @@
               <!-- 空调特有字段 -->
               <template v-if="newDevice.type === 'airConditioner'">
                 <div class="form-group">
+                  <br>
                   <label>温度(℃):</label>
                   <input type="range" v-model="newDevice.temperature" min="16" max="30" step="0.5">
                   <span class="value-display">{{ newDevice.temperature }}℃</span>
@@ -339,6 +340,7 @@
               <!-- 灯特有字段 -->
               <template v-if="newDevice.type === 'light'">
                 <div class="form-group">
+                  <br>
                   <label>亮度(%):</label>
                   <input type="range" v-model="newDevice.brightness" min="0" max="100">
                   <span class="value-display">{{ newDevice.brightness }}%</span>
