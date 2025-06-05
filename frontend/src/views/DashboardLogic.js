@@ -281,6 +281,7 @@ const showNetworkModal = () => {
 const logout = () => {
   localStorage.removeItem('authToken')
   window.location.href = '/login'
+  localStorage.removeItem('username')
 }
 
 // 粒子效果

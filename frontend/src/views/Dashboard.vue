@@ -539,13 +539,13 @@ const toggleMusic = () => {
   }
 }
 
-
+import { watch } from 'vue'
 
 // 用户数据
 const showUserModal = ref(false)
 const user = ref({
   avatar: '',
-  username: ' ',
+  username: username.value,
   // fullName: '张伟', (注册时也没有显示真实姓名，这块感觉没有必要)
   inviteCode: ''
   // registerTime: '2023-05-15 14:30:22' （注册时间显示也没有必要）
@@ -554,40 +554,62 @@ const user = ref({
 // 仅在弹窗中点击大头像才触发
 const avatarInput = ref(null)
 
-// 点击弹窗中大头像
+const AVATAR_KEY_PREFIX = 'dashboard_user_avatar_'  // 键名前缀
+
+// 点击弹窗中大头像时触发文件选择
 const onClickAvatar = () => {
   if (avatarInput.value) {
     avatarInput.value.click()
   }
 }
 
-// 用户在弹窗里选中文件后的回调：校验 + 预览 + 存 localStorage
+// 用户选完新头像后保存到 localStorage（键名带当前用户名前缀）
 const onFileChange = (e) => {
   const file = e.target.files[0]
   if (!file) return
-
-  // 只允许 JPG/PNG 且小于 2MB
   if (!file.type.match(/^image\/(png|jpeg)$/) || file.size > 2 * 1024 * 1024) {
     alert('请上传 JPG/PNG 且小于 2MB 的图片')
     return
   }
-
   const reader = new FileReader()
   reader.onload = (ev) => {
     const base64Data = ev.target.result
-    user.value.avatar = base64Data // 实时更新头像预览
-    localStorage.setItem('dashboard_user_avatar', base64Data) // 存到 localStorage，刷新后依然能看到
+    user.value.avatar = base64Data
+    // 存到localStorage
+    const key = AVATAR_KEY_PREFIX + username.value
+    localStorage.setItem(key, base64Data)
   }
   reader.readAsDataURL(file)
 }
 
-// 从 localStorage 读取已保存的头像
-onMounted(() => {
-  const saved = localStorage.getItem('dashboard_user_avatar')
-  if (saved) {
-    user.value.avatar = saved
+// 监视 username 变化：包括页面首次挂载和后续登录/登出导致 username 改变
+watch(
+  username,
+  (newUsername) => {
+    // 如果 newUsername 为空或未定义，直接清空 avatar，让页面显示默认头像
+    if (!newUsername) {
+      user.value.avatar = ''
+      user.value.username = ''  // modal 里用户名也置空
+      return
+    }
+    // 读取key
+    const key = AVATAR_KEY_PREFIX + newUsername
+    const saved = localStorage.getItem(key)
+    if (saved) {
+      user.value.avatar = saved
+    } else {
+      user.value.avatar = ''  // 没找到，显示默认
+    }
+    user.value.username = newUsername
+  },
+  {
+    immediate: true,
   }
-})
+)
+
+const doLogout = () => {
+  logout()
+}
 
 // 复制邀请码函数
 const copyInviteCode = () => {
