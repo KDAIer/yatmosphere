@@ -191,7 +191,7 @@ const quickDevices = ref([
   { id: 1, name: '总控开关', state: true, status: '系统在线', icon: switchImg, type: 'master' },
   { id: 2, name: '智能门锁', state: false, status: '已锁定', icon: doorlock, type: 'lock' },
   { id: 3, name: '安防系统', state: true, status: '布防中', icon: security, type: 'security' },
-  { id: 5, name: '网络状态', state: true, status: '5G在线', icon: wifi, type: 'network', signalStrength: 80 },
+  { id: 5, name: '网络状态', state: true, status: '', icon: wifi, type: 'network', signalStrength: 80 },
 ])
 
 const handleDeviceAction = (device) => {
