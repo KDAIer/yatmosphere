@@ -3,45 +3,62 @@
   <div class="dashboard" :class="{ 'mobile-layout': isMobileView }">
     <!-- 头部 -->
     <header class="header">
-      <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
-      <h1>智能家居控制中心</h1>
-      <div class="user-info">
-        <!-- 点击跳转到 /profile -->
+      <!-- 左侧：Logo + 标题 -->
+      <div class="header-left">
+        <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
+        <h1 class="header-title">智能家居控制中心</h1>
+      </div>
+
+      <!-- 右侧：搜索框 + 通知 + 头像 -->
+      <div class="header-right">
+        <!-- 搜索框 -->
+        <div class="search-container">
+          <input type="text" v-model="searchQuery" @focus="showSearchResults = true" @keyup.enter="onSearch"
+            placeholder="搜索设备…" class="search-input" />
+          <button class="search-btn" @click="onSearch" title="搜索">🔍</button>
+          <!-- 搜索结果下拉 -->
+          <div v-if="showSearchResults" class="search-results">
+            <div v-if="filteredResults.length">
+              <div v-for="(result, idx) in filteredResults" :key="idx" class="result-item"
+                @click="selectResult(result)">
+                {{ result }}
+              </div>
+            </div>
+            <div v-else class="no-results">未找到相关设备</div>
+          </div>
+        </div>
+
+        <!-- 通知图标 -->
+        <div class="notification-container" @click="openNotifications" title="查看通知">
+          <span class="notification-icon">🔔</span>
+          <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+        </div>
+
+        <!-- 用户头像，点击跳转到 /profile -->
         <div class="user-avatar" @click="goToProfile" title="查看个人信息">
           <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-img" />
         </div>
       </div>
+    </header>
 
-      <!-- 用户信息弹窗 -->
-      <div class="user-modal" v-if="showUserModal" @click.self="showUserModal = false">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3>个人信息</h3>
-            <button class="close-btn" @click="showUserModal = false">×</button>
-          </div>
-          <div class="modal-body">
-            <div class="avatar-large">
-              <img :src="user.avatar || defaultAvatar" alt="用户头像" @click="onClickAvatar" class="avatar-large-img" />
-            </div>
-            <div class="user-details">
-              <div class="detail-item">
-                <span class="detail-label">用户名:</span>
-                <span class="detail-value">{{ username }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">角色:</span>
-                <span class="detail-value">{{ roleName }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">家庭邀请码:</span>
-                <span class="detail-value">{{ inviteCode }}</span>
-                <button class="copy-btn" @click="copyInviteCode">复制</button>
-              </div>
+    <!-- 通知弹窗 -->
+    <div v-if="showNotifications" class="modal-backdrop" @click.self="closeNotifications">
+      <div class="notification-modal">
+        <div class="modal-header">
+          <h2>通知中心</h2>
+          <button class="close-modal-btn" @click="closeNotifications">×</button>
+        </div>
+        <div class="modal-body">
+          <div v-if="notifications.length">
+            <div v-for="(note, idx) in notifications" :key="idx" class="notification-item">
+              <p class="note-text">{{ note.text }}</p>
+              <span class="note-time">{{ note.time }}</span>
             </div>
           </div>
+          <div v-else class="no-notifications">暂无通知</div>
         </div>
       </div>
-    </header>
+    </div>
 
     <!-- 主内容区 -->
     <main class="main-content">
@@ -369,7 +386,7 @@ const devices = ref([])
 import { defineEmits } from 'vue'
 import defaultAvatar from '@/assets/images/user.png'
 const emit = defineEmits(['refresh-devices'])
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { watch } from 'vue'
 import { useRouter } from 'vue-router'
 import {
@@ -715,6 +732,62 @@ onMounted(() => {
     isMobileView.value = savedView === 'mobile'
   }
 })
+
+
+// 搜索状态与模拟结果
+const searchQuery = ref('')
+const showSearchResults = ref(false)
+
+// 模拟设备列表
+const devicesList = [
+  '客厅空调',
+  '卧室灯光',
+  '厨房冰箱',
+  '阳台空气净化器',
+  '车库门传感器',
+  '书房加湿器'
+]
+
+// 根据 searchQuery 过滤结果
+const filteredResults = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return []
+  return devicesList.filter(d => d.includes(q))
+})
+
+function onSearch() {
+  if (!searchQuery.value.trim()) {
+    showSearchResults.value = false
+    return
+  }
+  // 保持下拉打开，用户可点击结果
+  showSearchResults.value = true
+}
+
+function selectResult(result) {
+  // 示例：点击结果弹一个 alert，实际可跳转到设备详情页
+  alert(`已选择设备：${result}`)
+  showSearchResults.value = false
+  searchQuery.value = ''
+}
+
+// 通知状态与模拟数据
+const unreadCount = ref(3)
+const showNotifications = ref(false)
+const notifications = ref([
+  { text: '客厅空调温度已调至 24℃', time: '10分钟前' },
+  { text: '卧室灯光已开启', time: '30分钟前' },
+  { text: '厨房冰箱门未关闭', time: '1小时前' }
+])
+
+function openNotifications() {
+  showNotifications.value = true
+  unreadCount.value = 0
+}
+
+function closeNotifications() {
+  showNotifications.value = false
+}
 
 // 角色权限相关
 const roleAccess = ref(false)
