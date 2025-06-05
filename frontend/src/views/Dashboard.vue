@@ -2,38 +2,37 @@
 <template>
   <div class="dashboard" :class="{ 'mobile-layout': isMobileView }">
 
-    <audio ref="bgMusicRef" autoplay loop preload="auto" style="display: none;">
+    <!-- <audio ref="bgMusicRef" autoplay loop preload="auto" style="display: none;">
       <source src="/src/assets/audio/海愿 - 塞壬唱片-MSR、Eagle Wei.mp3" type="audio/mpeg">
       您的浏览器不支持音频播放。
-    </audio>
+    </audio> -->
 
     <!-- 头部 -->
     <header class="header">
       <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
       <h1>智能家居控制中心</h1>
 
-      <button class="view-toggle-btn" @click="toggleViewMode" :title="isMobileView ? '切换到电脑版' : '切换到移动版'">
+      <!-- <button class="view-toggle-btn" @click="toggleViewMode" :title="isMobileView ? '切换到电脑版' : '切换到移动版'">
         <span class="icon">{{ isMobileView ? '💻切换到电脑版' : '📱切换到移动版' }}</span>
-      </button>
+      </button> -->
 
       <div class="user-info">
-        <button @click="toggleMusic" class="music-btn">
+        <!-- <button @click="toggleMusic" class="music-btn">
           <font-awesome-icon icon="music" class="music-icon" />
           <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" class="player-icon" />
-          <!-- {{ isPlaying ? '暂停音乐' : '播放音乐' }} -->
-        </button>
+          <!-- {{ isPlaying ? '暂停音乐' : '播放音乐' }} </button>
 
 
         <button @click="toggleTheme" class="theme-btn">
           <font-awesome-icon :icon="theme === 'light' ? 'moon' : 'sun'" />
-          {{ theme === 'light' ? '黑夜模式' : '白天模式' }}
-        </button>
+          {{ theme === 'light' ? '黑夜模式' : '白天模式' }} </button> -->
+
         <!-- 头部小头像：只做“打开弹窗” -->
-        <div class="user-avatar" @click="showUserModal = true">
-           <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-img" />
-        </div>
+        <!-- <div class="user-avatar" @click="showUserModal = true">
+          <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-img" />
+        </div> -->
         <!-- <span>当前用户：{{ username }} {{ roleName }}</span> -->
-        <button @click="logout" class="logout-btn">退出登录</button>
+        <!-- <button @click="logout" class="logout-btn">退出登录</button> -->
       </div>
 
       <!-- 用户信息弹窗 -->
@@ -45,8 +44,7 @@
           </div>
           <div class="modal-body">
             <div class="avatar-large">
-              <img :src="user.avatar || defaultAvatar" alt="用户头像" @click="onClickAvatar"
-                class="avatar-large-img" />
+              <img :src="user.avatar || defaultAvatar" alt="用户头像" @click="onClickAvatar" class="avatar-large-img" />
             </div>
             <div class="user-details">
               <div class="detail-item">
@@ -507,40 +505,40 @@ const updateDeviceInfo = ({ id, temperature, mode }) => {
 }
 
 import { ref, onMounted, nextTick } from 'vue'
-import { useMusicPlayer } from './DashboardLogic.js'
+// import { useMusicPlayer } from './DashboardLogic.js'
 
 // 音频相关
-const bgMusicRef = ref(null)
+// const bgMusicRef = ref(null)
 
-const { initMusic, bgMusic } = useMusicPlayer()
+// const { initMusic, bgMusic } = useMusicPlayer()
 
 
 onMounted(fetchAllDevices)
 
-const isPlaying = ref(false)
+// const isPlaying = ref(false)
 
-// 修改后的播放/暂停音频函数
-const toggleMusic = () => {
-  if (bgMusicRef.value) {
-    if (isPlaying.value) {
-      // 当前正在播放，点击暂停
-      bgMusicRef.value.pause()
-      isPlaying.value = false
-      console.log('音频已暂停')
-    } else {
-      // 当前暂停中，点击播放
-      bgMusicRef.value.volume = 0.2
-      bgMusicRef.value.play().then(() => {
-        isPlaying.value = true
-        console.log('音频播放成功')
-      }).catch(err => {
-        console.error('音频播放失败:', err)
-      })
-    }
-  } else {
-    console.error('音频元素未找到，无法操作')
-  }
-}
+// // 修改后的播放/暂停音频函数
+// const toggleMusic = () => {
+//   if (bgMusicRef.value) {
+//     if (isPlaying.value) {
+//       // 当前正在播放，点击暂停
+//       bgMusicRef.value.pause()
+//       isPlaying.value = false
+//       console.log('音频已暂停')
+//     } else {
+//       // 当前暂停中，点击播放
+//       bgMusicRef.value.volume = 0.2
+//       bgMusicRef.value.play().then(() => {
+//         isPlaying.value = true
+//         console.log('音频播放成功')
+//       }).catch(err => {
+//         console.error('音频播放失败:', err)
+//       })
+//     }
+//   } else {
+//     console.error('音频元素未找到，无法操作')
+//   }
+// }
 
 import { watch } from 'vue'
 

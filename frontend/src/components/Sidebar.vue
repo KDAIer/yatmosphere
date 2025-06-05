@@ -1,31 +1,39 @@
 <template>
-    <aside :class="['sidebar', { collapsed }]">
-        <!-- 侧边栏头部：包含折叠按钮和（展开时显示的）标题 -->
+    <!-- 打开按钮：当侧边栏隐藏时显示 -->
+    <button v-if="!showSidebar" class="open-btn" @click="showSidebar = true" title="打开侧边栏">
+        ☰
+    </button>
+
+    <!-- 侧边栏主体 -->
+    <aside v-show="showSidebar" :class="['sidebar', { collapsed }]">
+        <!-- 侧边栏头部：关闭按钮（✖）和折叠按钮（❯/❮）各占一行 -->
         <div class="sidebar-header">
-            <button class="collapse-btn" @click="toggleCollapse" :title="collapsed ? '展开侧边栏' : '收起侧边栏'">
-                <span v-if="collapsed">▶</span>
-                <span v-else>◀</span>
+            <button class="close-btn" @click="showSidebar = false" title="关闭侧边栏">✖</button>
+
+            <button class="collapse-btn" @click.stop="toggleCollapse" :title="collapsed ? '展开侧边栏' : '收起侧边栏'">
+                <span v-if="collapsed">❯</span>
+                <span v-else>❮</span>
             </button>
+
+            <!-- 标题仅在展开时显示 -->
             <h2 v-if="!collapsed" class="header-title">智能家居</h2>
         </div>
 
-        <!-- 导航菜单项 -->
+        <!-- 导航菜单 -->
         <nav class="sidebar-nav">
             <ul>
                 <li>
-                    <router-link to="/dashboard" :class="{ active: isActive('/dashboard') }" class="nav-link"
+                    <router-link to="/dashboard" class="nav-link" :class="{ active: isActive('/dashboard') }"
                         :title="collapsed ? '仪表盘' : ''">
-                        <!-- 建议将下列 span 换为你项目中实际的 SVG/Icon -->
                         <span class="icon">🏠</span>
                         <transition name="fade">
                             <span v-if="!collapsed" class="label">仪表盘</span>
                         </transition>
-                        <!-- 激活时显示左侧高亮进度条 -->
                         <span v-if="isActive('/dashboard')" class="active-bar"></span>
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/profile" :class="{ active: isActive('/profile') }" class="nav-link"
+                    <router-link to="/profile" class="nav-link" :class="{ active: isActive('/profile') }"
                         :title="collapsed ? '个人信息' : ''">
                         <span class="icon">👤</span>
                         <transition name="fade">
@@ -35,7 +43,7 @@
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/devices" :class="{ active: isActive('/devices') }" class="nav-link"
+                    <router-link to="/devices" class="nav-link" :class="{ active: isActive('/devices') }"
                         :title="collapsed ? '设备管理' : ''">
                         <span class="icon">💡</span>
                         <transition name="fade">
@@ -47,7 +55,35 @@
             </ul>
         </nav>
 
-        <!-- 底部退出登录 -->
+        <!-- 设置按钮：折叠或展开时均可显示 -->
+        <div class="settings-toggle-container">
+            <button class="settings-toggle-btn" @click="toggleExtras" :title="showExtras ? '隐藏设置面板' : '显示设置面板'">
+                <span class="settings-icon">⚙️</span>
+            </button>
+        </div>
+
+        <!-- 额外控制面板：仅在“设置”按钮被点击且未折叠时显示 -->
+        <transition name="slide-fade">
+            <div v-if="showExtras && !collapsed" class="extras-panel">
+                <!-- BGM 播放/暂停 -->
+                <button class="extras-btn" @click="toggleMusic" :title="isPlaying ? '暂停背景音乐' : '播放背景音乐'">
+                    <span class="icon">🎵</span>
+                    <span class="label">BGM {{ isPlaying ? '暂停' : '播放' }}</span>
+                </button>
+                <!-- 黑夜/白天模式切换 -->
+                <button class="extras-btn" @click="toggleTheme" :title="theme === 'light' ? '切换到黑夜模式' : '切换到白天模式'">
+                    <span class="icon">{{ theme === 'light' ? '🌙' : '☀️' }}</span>
+                    <span class="label">{{ theme === 'light' ? '黑夜模式' : '白天模式' }}</span>
+                </button>
+                <!-- 移动/电脑版切换 -->
+                <button class="extras-btn" @click="toggleViewMode" :title="isMobileView ? '切换到电脑版' : '切换到移动版'">
+                    <span class="icon">{{ isMobileView ? '💻' : '📱' }}</span>
+                    <span class="label">{{ isMobileView ? '电脑版' : '移动版' }}</span>
+                </button>
+            </div>
+        </transition>
+
+        <!-- 底部：退出登录 -->
         <div class="sidebar-footer">
             <button class="logout-btn" @click="handleLogout" :title="collapsed ? '退出登录' : ''">
                 <span class="icon">🚪</span>
@@ -56,27 +92,96 @@
                 </transition>
             </button>
         </div>
+
+        <!-- 隐藏的 BGM 播放器 -->
+        <audio ref="bgMusicRef" autoplay loop preload="auto" style="display: none;">
+            <source src="/src/assets/audio/海愿 - 塞壬唱片-MSR、Eagle Wei.mp3" type="audio/mpeg" />
+            您的浏览器不支持音频播放。
+        </audio>
     </aside>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
 
-// collapsed = true: 侧边栏收起，false: 展开
+// 侧边栏是否显示
+const showSidebar = ref(false)
+// 侧边栏折叠状态
 const collapsed = ref(false)
 
-function toggleCollapse() {
-    collapsed.value = !collapsed.value
-}
-
-/** 判断当前路由是否处于激活状态，用于高亮显示 */
+// 判断当前路由是否激活
 const isActive = (path) => route.path === path
 
-/** 退出登录：清除 localStorage，然后跳回 /login */
+// 视图模式：移动或电脑
+const isMobileView = ref(window.innerWidth < 768)
+function toggleViewMode() {
+    isMobileView.value = !isMobileView.value
+    if (isMobileView.value) {
+        document.body.classList.add('mobile-layout')
+    } else {
+        document.body.classList.remove('mobile-layout')
+    }
+}
+window.addEventListener('resize', () => {
+    isMobileView.value = window.innerWidth < 768
+})
+
+// BGM 播放控制
+const bgMusicRef = ref(null)
+const isPlaying = ref(true)
+function toggleMusic() {
+    if (!bgMusicRef.value) return
+    if (isPlaying.value) {
+        bgMusicRef.value.pause()
+    } else {
+        bgMusicRef.value.play().catch(() => {
+            isPlaying.value = false
+        })
+    }
+    isPlaying.value = !isPlaying.value
+}
+onMounted(() => {
+    if (bgMusicRef.value) {
+        bgMusicRef.value
+            .play()
+            .then(() => {
+                isPlaying.value = true
+            })
+            .catch(() => {
+                isPlaying.value = false
+            })
+    }
+})
+
+// 主题切换
+const theme = ref('light')
+function toggleTheme() {
+    theme.value = theme.value === 'light' ? 'dark' : 'light'
+    document.documentElement.setAttribute('data-theme', theme.value)
+}
+
+// “设置”面板显示/隐藏
+const showExtras = ref(false)
+function toggleExtras() {
+    if (collapsed.value) {
+        collapsed.value = false
+    }
+    showExtras.value = !showExtras.value
+}
+
+// 折叠/展开侧边栏
+function toggleCollapse() {
+    collapsed.value = !collapsed.value
+    if (collapsed.value) {
+        showExtras.value = false
+    }
+}
+
+// 退出登录
 function handleLogout() {
     localStorage.removeItem('authToken')
     localStorage.removeItem('username')
@@ -86,12 +191,32 @@ function handleLogout() {
 </script>
 
 <style scoped>
-/* 整体侧边栏样式 */
+/* 打开按钮 */
+.open-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(30, 30, 30, 0.7);
+    color: #ffffff;
+    font-size: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.2s ease;
+}
+
+.open-btn:hover {
+    background-color: rgba(30, 30, 30, 0.9);
+}
+
+/* 整体侧边栏 */
 .sidebar {
     display: flex;
     flex-direction: column;
     background: linear-gradient(to bottom, #2e3a4e, #1f2732);
-    /* 渐变背景 */
     color: #e0e6ed;
     transition: width 0.3s ease, background 0.3s ease;
     width: 220px;
@@ -99,29 +224,46 @@ function handleLogout() {
     box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
     position: relative;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 999;
 }
 
-/* 收起状态，仅显示图标 */
+/* 折叠状态 */
 .sidebar.collapsed {
-    width: 64px;
+    width: 64px !important;
 }
 
-/* 侧边栏头部 */
+/* 头部：上下两行布局 */
 .sidebar-header {
     display: flex;
-    align-items: center;
-    padding: 18px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 16px;
     border-bottom: 1px solid rgba(224, 230, 237, 0.08);
 }
 
-/* 折叠按钮 */
+.close-btn {
+    background: none;
+    border: none;
+    color: #e0e6ed;
+    font-size: 18px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    padding: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.close-btn:hover {
+    background-color: rgba(224, 230, 237, 0.12);
+    border-radius: 4px;
+}
+
 .collapse-btn {
     background: none;
     border: none;
     color: #e0e6ed;
     cursor: pointer;
     font-size: 18px;
-    margin-right: 14px;
+    margin-bottom: 8px;
     padding: 6px;
     transition: background-color 0.2s ease;
 }
@@ -131,7 +273,7 @@ function handleLogout() {
     border-radius: 6px;
 }
 
-/* header 标题，仅在展开时显示 */
+/* 标题 */
 .header-title {
     margin: 0;
     font-size: 20px;
@@ -143,7 +285,7 @@ function handleLogout() {
 /* 导航菜单 */
 .sidebar-nav {
     flex: 1;
-    padding-top: 20px;
+    padding-top: 16px;
 }
 
 .sidebar-nav ul {
@@ -156,7 +298,6 @@ function handleLogout() {
     margin-bottom: 6px;
 }
 
-/* 每个导航链接 */
 .nav-link {
     display: flex;
     align-items: center;
@@ -189,7 +330,7 @@ function handleLogout() {
     box-shadow: none;
 }
 
-/* 高亮进度条（左侧） */
+/* 高亮进度条 */
 .active-bar {
     position: absolute;
     left: 0;
@@ -200,7 +341,7 @@ function handleLogout() {
     border-radius: 4px 0 0 4px;
 }
 
-/* 图标 */
+/* 图标、标签 */
 .icon {
     font-size: 20px;
     width: 24px;
@@ -208,7 +349,6 @@ function handleLogout() {
     flex-shrink: 0;
 }
 
-/* 文本标签 */
 .label {
     margin-left: 14px;
     font-size: 15px;
@@ -218,19 +358,105 @@ function handleLogout() {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* 收起状态，隐藏文字时保留过渡 */
 .sidebar.collapsed .label {
     opacity: 0;
     transform: translateX(-8px);
 }
 
-/* 底部退出按钮容器 */
+/* 设置按钮 */
+.settings-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 16px;
+}
+
+.settings-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #e0e6ed;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.settings-toggle-btn:hover {
+    background-color: rgba(224, 230, 237, 0.12);
+    transform: scale(1.1);
+}
+
+/* 额外控制面板 */
+.extras-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 16px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(224, 230, 237, 0.08);
+}
+
+.extras-btn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: #cfd8e3;
+    font-size: 15px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.extras-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateX(4px);
+}
+
+.extras-btn .icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.extras-panel .label {
+    font-size: 15px;
+    color: inherit;
+}
+
+/* 过渡：从上往下展开并渐显 */
+.slide-fade-enter-active {
+    transition: all 0.25s ease;
+}
+
+.slide-fade-leave-active {
+    transition: all 0.2s ease;
+}
+
+.slide-fade-enter-from {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.slide-fade-enter-to {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide-fade-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* 底部退出按钮 */
 .sidebar-footer {
     padding: 18px 16px;
     border-top: 1px solid rgba(224, 230, 237, 0.08);
 }
 
-/* 退出按钮 */
 .logout-btn {
     display: flex;
     align-items: center;
