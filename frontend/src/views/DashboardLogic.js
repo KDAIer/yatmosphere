@@ -115,35 +115,10 @@ export const useTimeUpdater = () => {
   }
   inviteCode.value = getCurrentInviteCode()
 
-
-  // const loadFamilyMembers = async () => {
-  //     const account = getCurrentAccount()
-  //     try {
-  //       const res = await axios.get('/api/family-members', { params: { account } })
-  //       if (res.data.status === 200) {
-  //         familyMembers.value = res.data.data.map((member, index) => ({
-  //           ...member,
-  //           id: index
-  //         }))
-  //         localStorage.setItem('familyMembers', JSON.stringify(familyMembers.value))
-  //         console.log('家庭成员加载成功:', familyMembers.value)
-  //       } else {
-  //         console.error('家庭成员请求失败:', res.data.msg)
-  //       }
-  //     } catch (err) {
-  //       console.error('家庭成员请求异常:', err)
-  //     }
-  //   }
-
-
   onMounted(() => {
     console.log('Dashboard 组件已挂载，启动时间更新与数据加载')
     updateTime()
     const timer = setInterval(updateTime, 1000)
-
-    // 加载家庭成员
-    // loadFamilyMembers()
-
     onUnmounted(() => {
       console.log('清除时间更新定时器')
       clearInterval(timer)
@@ -194,17 +169,6 @@ watchEffect(() => {
   const count = familyMembers.value.filter(m => m.isHome).length
   environmentData.people.value = `${count}人`
 })
-
-
-// const familyMembers = ref([
-//   { id: 1, name: '黄集瑞', isAdmin: true, isHome: true, todos: ['玩火影忍者', '和学妹贴贴'] },
-//   { id: 2, name: '黄集瑞的学妹', isAdmin: false, isHome: true, todos: ['和黄集瑞贴贴', '和黄集瑞打游戏'] },
-//   { id: 3, name: '张小明', isAdmin: false, isHome: false, todos: [] },
-// ])
-
-// const toggleHomeStatus = (member) => {
-//   member.isHome = !member.isHome
-// }
 
 // 区域切换
 const toggleArea = (areaId) => {
@@ -300,9 +264,6 @@ const triggerParticleEffect = (event, deviceId) => {
   }, 800)
 }
 
-
-
-
 const bgMusic = ref(null)
 const isMusicReady = ref(false)
 
@@ -375,8 +336,6 @@ export {
   currentTime,
   scenes,
   allDevices,
-  // familyMembers,
-  // toggleHomeStatus,
   toggleArea,
   getAreaComponent,
   handleDeviceAction,
@@ -396,5 +355,4 @@ export {
   faShieldAlt,
   faExclamationTriangle,
   faWifi,
-
 }

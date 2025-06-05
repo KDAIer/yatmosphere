@@ -10,16 +10,16 @@ export function loadFamilyMembersFromStorage() {
 
 
 const getCurrentAccount = () => {
-//const account = localStorage.getItem('account')
-const account = localStorage.getItem('username')
-if (!account) {
+  //const account = localStorage.getItem('account')
+  const account = localStorage.getItem('username')
+  if (!account) {
     console.warn('未在 localStorage 中找到 account，使用默认值 admin')
-}
-return account || 'admin'
+  }
+  return account || 'admin'
 }
 
 export const loadFamilyMembersFromApi = async () => {
-  const account = getCurrentAccount() // 你原来的逻辑保留
+  const account = getCurrentAccount()
   try {
     const res = await axios.get('/api/family-members', { params: { account } })
     if (res.data.status === 200) {
@@ -37,8 +37,3 @@ export const loadFamilyMembersFromApi = async () => {
     console.error('家庭成员请求异常:', err)
   }
 }
-
-
-watch(familyMembers, (val) => {
-  localStorage.setItem('familyMembers', JSON.stringify(val))
-}, { deep: true })
