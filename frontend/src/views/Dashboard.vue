@@ -30,7 +30,7 @@
         </button>
         <!-- 头部小头像：只做“打开弹窗” -->
         <div class="user-avatar" @click="showUserModal = true">
-          <img :src="user.avatar || '/src/assets/images/user.png'" alt="用户头像" class="avatar-img" />
+           <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-img" />
         </div>
         <!-- <span>当前用户：{{ username }} {{ roleName }}</span> -->
         <button @click="logout" class="logout-btn">退出登录</button>
@@ -45,7 +45,7 @@
           </div>
           <div class="modal-body">
             <div class="avatar-large">
-              <img :src="user.avatar || '/src/assets/images/user.png'" alt="用户头像" @click="onClickAvatar"
+              <img :src="user.avatar || defaultAvatar" alt="用户头像" @click="onClickAvatar"
                 class="avatar-large-img" />
             </div>
             <div class="user-details">
@@ -418,6 +418,7 @@ import axios from 'axios'
 import AirConditioner from '@/components/AirConditioner.vue'
 const devices = ref([])
 import { defineEmits } from 'vue'
+import defaultAvatar from '@/assets/images/user.png'
 const emit = defineEmits(['refresh-devices'])
 import {
   theme,

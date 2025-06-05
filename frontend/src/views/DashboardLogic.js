@@ -6,6 +6,14 @@ import LivingRoomControl from '@/components/LivingRoomControl.vue'
 import KitchenControl from '@/components/KitchenControl.vue'
 import BedroomControl from '@/components/BedroomControl.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import aircondition from '@/assets/images/aircondition.png'
+import bedroom from '@/assets/images/bedroom.png'
+import doorlock from '@/assets/images/doorlock.png'
+import kitchen from '@/assets/images/kitchen.png'
+import livingroom from '@/assets/images/livingroom.png'
+import security from '@/assets/images/security.png'
+import switchImg from '@/assets/images/switch.png'
+import wifi from '@/assets/images/wifi.png'
 import {
   faFan,
   faHouse,
@@ -49,10 +57,10 @@ const activeArea = ref(null)
 
 // 区域配置
 const areas = ref([
-  { id: 'ac', name: '空调控制', icon: '/src/assets/images/aircondition.png', component: 'AirConditioner' },
-  { id: 'living', name: '客厅', icon: '/src/assets/images/livingroom.png', component: 'LivingRoomControl' },
-  { id: 'kitchen', name: '厨房', icon: '/src/assets/images/kitchen.png', component: 'KitchenControl' },
-  { id: 'bedroom', name: '卧室', icon: '/src/assets/images/bedroom.png', component: 'BedroomControl' },
+  { id: 'ac', name: '空调控制', icon: aircondition, component: 'AirConditioner' },
+  { id: 'living', name: '客厅', icon: livingroom, component: 'LivingRoomControl' },
+  { id: 'kitchen', name: '厨房', icon: kitchen, component: 'KitchenControl' },
+  { id: 'bedroom', name: '卧室', icon: bedroom, component: 'BedroomControl' },
 ])
 
 
@@ -217,10 +225,10 @@ const getAreaComponent = (areaId) => {
 
 // 快捷设备
 const quickDevices = ref([
-  { id: 1, name: '总控开关', state: true, status: '系统在线', icon: '/src/assets/images/switch.png', type: 'master' },
-  { id: 2, name: '智能门锁', state: false, status: '大门锁定', icon: '/src/assets/images/doorlock.png', type: 'lock' },
-  { id: 3, name: '安防系统', state: true, status: '布防中', icon: '/src/assets/images/security.png', type: 'security' },
-  { id: 5, name: '网络状态', state: true, status: '', icon: '/src/assets/images/wifi.png', type: 'network', signalStrength: 80 },
+  { id: 1, name: '总控开关', state: true, status: '系统在线', icon: switchImg, type: 'master' },
+  { id: 2, name: '智能门锁', state: false, status: '已锁定', icon: doorlock, type: 'lock' },
+  { id: 3, name: '安防系统', state: true, status: '布防中', icon: security, type: 'security' },
+  { id: 5, name: '网络状态', state: true, status: '5G在线', icon: wifi, type: 'network', signalStrength: 80 },
 ])
 
 const handleDeviceAction = (device) => {
