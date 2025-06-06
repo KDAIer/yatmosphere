@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/Login.vue'
-import Dashboard from '../views/Dashboard.vue'
-import Profile from '../views/Profile.vue'
-// import Devices from '../views/Devices.vue'
+import Login from '@/views/Login.vue'
+import Dashboard from '@/views/Dashboard.vue'
+import Profile from '@/views/Profile.vue'
+import Devices from '@/views/Devices.vue'
 
 const routes = [
   { path: '/login', component: Login },
   { path: '/dashboard', component: Dashboard },
   { path: '/profile', component: Profile },
+  { path: '/devices', component: Devices },
   { path: '/', redirect: '/login' } // 修改根路径重定向为登录页面
 ]
 
