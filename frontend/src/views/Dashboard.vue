@@ -5,11 +5,12 @@
       <div class="mode-dialog">
         <h3>请选择访问模式</h3>
         <div class="mode-buttons">
-          <button @click="setMobileMode(true)">
-            📱 手机端
+          <button class="toggle-btn" @click="toggleViewMode">
+          {{ isMobileView ? '切换到电脑' : '切换到手机' }}
+          <br>
           </button>
-          <button @click="setMobileMode(false)">
-            💻 电脑端
+          <button class="close-btn" @click="close_toggleViewMode">
+          {{ '进入系统' }}
           </button>
         </div>
       </div>
@@ -690,15 +691,13 @@ const resetSceneForm = () => {
 const isMobileView = ref(false)
 const showModeDialog = ref(true)
 
-// 设置模式并关闭弹窗
-const setMobileMode = (mobile) => {
-  isMobileView.value = mobile
-  showModeDialog.value = false
-}
-
-// 保留原有的切换方法
+// 双端切换按钮
 const toggleViewMode = () => {
   isMobileView.value = !isMobileView.value
+}
+
+const close_toggleViewMode = () => {
+  showModeDialog.value = false
 }
 
 // 搜索状态与模拟结果
