@@ -123,7 +123,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { defineEmits, ref, watch } from 'vue'
+import axios from 'axios'
 
 const lights = ref([
   { name: '主灯', icon: '💡', status: true },
@@ -144,14 +145,54 @@ const tvVolume = ref(30)
 const selectedAppliance = ref(null)
 const temperature = ref(24)
 const humidity = ref(50)
-
-const toggleDevice = (device, type) => {
+const emit = defineEmits(['refresh-devices'])
+const toggleDevice = async (device, type) => {
   device.status = !device.status
   if (device.type === 'tv') {
     selectedAppliance.value = device.status ? 'tv' : null
   }
-}
+  if (type == 'lights') {
+    const bedlight = '客厅灯'
+    const token = localStorage.getItem('authToken')
 
+    // console.log(`/light/on?deviceName=${encodeURIComponent(bedlight)}`)
+    if (device.status) {
+      const res = await axios.post(
+          `/light/on?deviceName=${encodeURIComponent(bedlight)}`,
+        null,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        }
+      )
+      if (res.data.data === true) {
+        console.log(`客厅设置成功`)
+        emit('refresh-devices')
+      } else {
+        console.error("客厅灯光设置失败")
+      }
+    } else {
+      const res = await axios.post(
+        `/light/off?deviceName=${encodeURIComponent(bedlight)}`,
+        null,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        }
+      )
+      if (res.data.data === true) {
+        console.log(`客厅灯光设置成功`)
+        emit('refresh-devices')
+      } else {
+        console.error("客厅卧室灯光设置失败")
+      }
+    }
+  }
+}
 const setCurtain = (value) => {
   curtainPosition.value = value
 }
@@ -393,8 +434,8 @@ watch(
 .environment-control {
   display: grid;
   gap: 1rem;
-  background: var(--color-device-card-bg); 
-  
+  background: var(--color-device-card-bg);
+
 }
 
 .env-item {
@@ -405,13 +446,13 @@ watch(
   background: var(--color-device-card-bg);
   border-radius: 8px;
   border: 1px solid #e2e8f0;
-  
+
 }
 
 .env-item span {
   font-size: 0.9rem;
   font-weight: 500;
-  
+
 }
 
 .env-buttons {
