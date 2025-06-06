@@ -1,6 +1,19 @@
 <!-- src/components/Dashboard.vue -->
 <template>
   <div class="dashboard" :class="{ 'mobile-layout': isMobileView }">
+    <div v-if="showModeDialog" class="mode-dialog-overlay">
+      <div class="mode-dialog">
+        <h3>请选择访问模式</h3>
+        <div class="mode-buttons">
+          <button @click="setMobileMode(true)">
+            📱 手机端
+          </button>
+          <button @click="setMobileMode(false)">
+            💻 电脑端
+          </button>
+        </div>
+      </div>
+    </div>
     <!-- 头部 -->
     <header class="header">
       <!-- 左侧：Logo + 标题 -->
@@ -675,11 +688,18 @@ const resetSceneForm = () => {
 
 
 const isMobileView = ref(false)
+const showModeDialog = ref(true)
 
+// 设置模式并关闭弹窗
+const setMobileMode = (mobile) => {
+  isMobileView.value = mobile
+  showModeDialog.value = false
+}
+
+// 保留原有的切换方法
 const toggleViewMode = () => {
   isMobileView.value = !isMobileView.value
 }
-
 
 // 搜索状态与模拟结果
 const searchQuery = ref('')
