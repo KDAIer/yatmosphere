@@ -1,0 +1,303 @@
+/* 设备管理页面样式 */
+.device-page {
+    padding: 24px;
+    background-color: #f5f7fa;
+}
+
+/* 页面标题 */
+.page-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+/* 通用卡片样式 */
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* 设备列表头部 */
+.device-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.device-actions .action-btn {
+    margin-left: 8px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.add-btn {
+    background-color: #409eff;
+    color: #fff;
+}
+
+.add-btn:hover {
+    background-color: #2879c7;
+}
+
+.remove-btn {
+    background-color: #f56c6c;
+    color: #fff;
+}
+
+.remove-btn:hover {
+    background-color: #d43834;
+}
+
+/* 设备表格 */
+.device-table-container {
+    overflow-x: auto;
+}
+
+.device-table {
+    width: 100%;
+}
+
+.table-header,
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 3fr;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.table-header {
+    font-weight: bold;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.table-row {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.device-on {
+    background-color: #f0f9eb;
+}
+
+/* 弹窗通用样式 */
+.device-modal,
+.access-error-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    width: 360px;
+    max-width: 90%;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.form-group {
+    margin: 12px 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #555;
+}
+
+.form-group input[type='text'],
+.form-group input[type='number'],
+.form-group select {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 开关样式 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.2s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: '';
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #fff;
+    transition: 0.2s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #409eff;
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+.switch-label {
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* 粒子特效 */
+.particle-container {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+}
+
+.particle-container.active .particle {
+    animation: explode 0.4s ease-out forwards;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #409eff;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    opacity: 0;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.5) translateY(-8px);
+        opacity: 0;
+    }
+}
+
+/* 弹窗按钮组 */
+.modal-actions {
+    margin-top: 16px;
+    text-align: right;
+}
+
+.cancel-btn,
+.confirm-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    margin-right: 8px;
+}
+
+.cancel-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.confirm-btn {
+    background-color: #409eff;
+    color: #fff;
+}
+
+.confirm-btn:disabled {
+    background-color: #a0cfff;
+    cursor: not-allowed;
+}
+
+.confirm-btn:hover:enabled {
+    background-color: #2879c7;
+}
+
+/* 权限弹窗样式*/
+.access-error-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.access-error-modal .modal-content {
+    border: rgb(78, 205, 196) solid 2px;
+    border-radius: 15px;
+}
+
+.access-error-modal .error-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-text);
+    background-color: rgb(78, 205, 196);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.access-error-modal .error-message {
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--color-text);
+    margin-bottom: 20px;
+    text-align: center;
+}
