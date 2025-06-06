@@ -80,4 +80,10 @@ public class LightServiceImpl extends BaseServiceImpl<Light, LightMapper> implem
         return lightMapper.warmlight(deviceName) > 0;
     }
 
+    @Override
+    @Transactional
+    public boolean coldlight(String deviceName) {
+        return lightMapper.coldlight(deviceName) > 0;
+    }
+
 }

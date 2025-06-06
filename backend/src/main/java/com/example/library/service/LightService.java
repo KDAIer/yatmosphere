@@ -13,4 +13,5 @@ public interface LightService extends BaseService<Light> {
     boolean brightness(String deviceName, int brightness);
     boolean naturelight(String deviceName);
     boolean warmlight(String deviceName);
+    boolean coldlight(String deviceName);
 }

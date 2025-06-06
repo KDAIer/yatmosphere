@@ -72,5 +72,10 @@ public class LightController {
     public Boolean warmlight(@RequestParam String deviceName) {
         return lightService.warmlight(deviceName);
     }
+    @PostMapping("/coldlight")
+    @Operation(summary = "调节灯为冷光模式", description = "调节灯为冷光模式")
+    public Boolean coldlight(@RequestParam String deviceName) {
+        return lightService.coldlight(deviceName);
+    }
 
 }
