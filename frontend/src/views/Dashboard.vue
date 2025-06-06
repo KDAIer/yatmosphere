@@ -678,17 +678,8 @@ const isMobileView = ref(false)
 
 const toggleViewMode = () => {
   isMobileView.value = !isMobileView.value
-  // 可选：保存到本地存储
-  localStorage.setItem('preferredView', isMobileView.value ? 'mobile' : 'desktop')
 }
 
-// 可选：初始化时读取本地存储偏好
-onMounted(() => {
-  const savedView = localStorage.getItem('preferredView')
-  if (savedView) {
-    isMobileView.value = savedView === 'mobile'
-  }
-})
 
 // 搜索状态与模拟结果
 const searchQuery = ref('')
