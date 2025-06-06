@@ -2138,7 +2138,8 @@ input:checked+.slider:before {
     grid-template-columns: 1fr !important;
   }
 }
-/登录选端弹窗/
+
+/* 登陆弹窗*/
 .mode-dialog-overlay {
   position: fixed;
   top: 0;
