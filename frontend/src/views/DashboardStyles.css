@@ -6,8 +6,10 @@
   min-height: 100vh;
   width: 100vw;
   margin: 0;
-  padding-left: 64px; /* 左侧留白 */
-  box-sizing: border-box; /* 确保padding不影响总宽度 */
+  padding-left: 64px;
+  /* 左侧留白 */
+  box-sizing: border-box;
+  /* 确保padding不影响总宽度 */
 }
 
 .device-card {
@@ -43,19 +45,27 @@
 
 .device-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 允许列宽收缩 */
-  gap: 0.6rem; /* 更小的间隙 */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* 允许列宽收缩 */
+  gap: 0.6rem;
+  /* 更小的间隙 */
   margin-bottom: 1rem;
   width: 100%;
-  overflow: hidden; /* 隐藏溢出内容 */
+  overflow: hidden;
+  /* 隐藏溢出内容 */
 }
 
-.device-grid > * {
-  white-space: nowrap; /* 强制不换行 */
-  overflow: hidden; /* 隐藏溢出文本 */
-  text-overflow: ellipsis; /* 超出显示省略号 */
-  font-size: clamp(0.75rem, 2vw, 0.9rem); /* 响应式字体大小 */
-  min-width: 0; /* 允许内容收缩 */
+.device-grid>* {
+  white-space: nowrap;
+  /* 强制不换行 */
+  overflow: hidden;
+  /* 隐藏溢出文本 */
+  text-overflow: ellipsis;
+  /* 超出显示省略号 */
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  /* 响应式字体大小 */
+  min-width: 0;
+  /* 允许内容收缩 */
 }
 
 .device-online {
@@ -1522,9 +1532,6 @@ input:checked+.slider:before {
   color: rgb(255, 255, 255, 0.8);
 }
 
-
-
-
 /* 头部小头像 */
 .avatar-img {
   width: 40px;
@@ -1766,6 +1773,243 @@ input:checked+.slider:before {
   font-size: 14px;
   padding: 20px 0;
 }
+
+/* 天气面板 */
+.cute-weather-panel {
+  background: #e0f7fa;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  padding: 0;
+}
+
+.weather-header {
+  background: linear-gradient(135deg, #4fc3f7, #0288d1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-icon {
+  font-size: 20px;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.weather-body {
+  padding: 16px;
+}
+
+.weather-loading {
+  text-align: center;
+  padding: 24px;
+  color: #555;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.weather-icon {
+  width: 48px;
+  height: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 根据描述切换图标背景 */
+.weather-icon.icon-sun {
+  background-image: url('https://img.icons8.com/color/96/000000/sun--v1.png');
+}
+
+.weather-icon.icon-cloud {
+  background-image: url('https://img.icons8.com/color/96/000000/cloud.png');
+}
+
+.weather-icon.icon-rain {
+  background-image: url('https://img.icons8.com/color/96/000000/rain.png');
+}
+
+.weather-temp {
+  font-size: 36px;
+  font-weight: 600;
+  color: #0277bd;
+}
+
+.weather-desc {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.weather-minmax {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 12px;
+}
+
+.min-box,
+.max-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #555;
+}
+
+.arrow-down,
+.arrow-up {
+  font-size: 16px;
+}
+
+.weather-footer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 12px;
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #555;
+  font-size: 14px;
+}
+
+.footer-icon {
+  font-size: 18px;
+}
+
+/* GPS 定位面板 */
+.cute-gps-panel {
+  background: #fff3e0;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+
+.gps-header {
+  background: linear-gradient(135deg, #ffb74d, #f57c00);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.gps-icon {
+  font-size: 20px;
+  animation: bounce 1.5s infinite;
+}
+
+.gps-body {
+  padding: 16px;
+}
+
+.gps-loading {
+  text-align: center;
+  padding: 24px;
+  color: #555;
+}
+
+.gps-error {
+  text-align: center;
+  padding: 24px;
+  color: #e53935;
+}
+
+.gps-coords-card {
+  background: #ffe0b2;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.coord-item {
+  font-size: 14px;
+  color: #5d4037;
+  margin: 4px 0;
+}
+
+.coord-label {
+  font-weight: 500;
+}
+
+.coord-value {
+  color: #3e2723;
+}
+
+.map-container {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.map-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 地图上的小图钉标注 */
+.map-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: 32px;
+  color: #d32f2f;
+  animation: pulse 2s infinite;
+  text-shadow: 0 0 6px rgba(211, 47, 47, 0.5);
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: translate(-50%, -100%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -100%) scale(1.2);
+  }
+}
+
 
 /* 移动端布局 */
 

@@ -229,6 +229,81 @@
           <p class="error-message">&nbsp;您没有权限使用此功能，请联系管理员&nbsp;</p>
         </div>
       </div>
+
+    <!-- 右侧：天气 + GPS 模块 -->
+        <div class="right-column">
+          <!-- 天气 -->
+          <section class="cute-weather-panel">
+            <div class="weather-header">
+              <div class="header-icon">☁️</div>
+              <div class="header-text">天气播报</div>
+            </div>
+            <div class="weather-body" v-if="!weather.loading">
+              <div class="weather-main">
+                <div class="weather-icon" :class="weatherIconClass"></div>
+                <div class="weather-temp">{{ weather.currentTemp }}℃</div>
+              </div>
+              <div class="weather-desc">{{ weather.description }}</div>
+              <div class="weather-minmax">
+                <div class="min-box">
+                  <span class="arrow-down">⬇️</span>
+                  <span>{{ weather.tempMin }}℃</span>
+                </div>
+                <div class="max-box">
+                  <span class="arrow-up">⬆️</span>
+                  <span>{{ weather.tempMax }}℃</span>
+                </div>
+              </div>
+              <div class="weather-footer">
+                <div class="footer-item">
+                  <span class="footer-icon">💧</span>
+                  <span class="footer-text">{{ weather.humidity }}%</span>
+                </div>
+                <div class="footer-item">
+                  <span class="footer-icon">💨</span>
+                  <span class="footer-text">{{ weather.windSpeed }}km/h</span>
+                </div>
+              </div>
+            </div>
+            <div class="weather-loading" v-else>加载中…</div>
+          </section>
+
+          <!-- GPS 定位 -->
+          <section class="cute-gps-panel">
+            <div class="gps-header">
+              <div class="gps-icon">📍</div>
+              <div class="gps-text">当前位置</div>
+            </div>
+            <div class="gps-body" v-if="!gps.loading && !gps.error">
+              <div class="gps-coords-card">
+                <div class="coord-item">
+                  <span class="coord-label">城市：</span>
+                  <span class="coord-value">{{ gps.city }}</span>
+                </div>
+                <div class="coord-item">
+                  <span class="coord-label">纬度：</span>
+                  <span class="coord-value">{{ gps.latitude.toFixed(5) }}</span>
+                </div>
+                <div class="coord-item">
+                  <span class="coord-label">经度：</span>
+                  <span class="coord-value">{{ gps.longitude.toFixed(5) }}</span>
+                </div>
+              </div>
+                <div class="map-container">
+                  <iframe
+                    v-if="!gps.loading && !gps.error"
+                    :src="osmEmbedUrl"
+                    class="map-iframe"
+                    frameborder="0"
+                    scrolling="no"
+                  ></iframe>
+                <div class="map-pin"></div>
+              </div>
+            </div>
+            <div class="gps-loading" v-if="gps.loading">正在获取定位…</div>
+            <div class="gps-error" v-if="gps.error">{{ gps.error }}</div>
+          </section>
+        </div>
     </main>
 
 
@@ -307,6 +382,142 @@ function goToProfile() {
   router.push('/profile')
 }
 
+// 天气预报
+const weather = ref({
+  loading: true,
+  currentTemp: '--',
+  tempMin: '--',
+  tempMax: '--',
+  humidity: '--',
+  windSpeed: '--',
+  description: '…'
+})
+// 根据温度、时间段判断一个简单图标类
+const weatherIconClass = computed(() => {
+  if (weather.value.description.includes('晴')) return 'icon-sun'
+  if (weather.value.description.includes('云')) return 'icon-cloud'
+  if (weather.value.description.includes('雨')) return 'icon-rain'
+  return 'icon-sun'
+})
+
+async function loadWeather(lat, lon) {
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&current_weather=true&timezone=auto`
+    const res = await axios.get(url)
+    const data = res.data
+    if (data.current_weather) {
+      const cw = data.current_weather
+      weather.value.currentTemp = Math.round(cw.temperature)
+      // 查找当日最高/最低
+      const todayHourly = data.hourly.time.map((t, i) => {
+        const dt = new Date(t)
+        if (
+          dt.getFullYear() === new Date().getFullYear() &&
+          dt.getMonth() === new Date().getMonth() &&
+          dt.getDate() === new Date().getDate()
+        ) {
+          return {
+            temp: data.hourly.temperature_2m[i],
+            humid: data.hourly.relativehumidity_2m[i],
+            wind: data.hourly.windspeed_10m[i]
+          }
+        }
+        return null
+      }).filter((x) => x !== null)
+      if (todayHourly.length) {
+        const temps = todayHourly.map((h) => h.temp)
+        weather.value.tempMin = Math.round(Math.min(...temps))
+        weather.value.tempMax = Math.round(Math.max(...temps))
+        // 当下湿度、风速
+        const idxNow = data.hourly.time.indexOf(data.current_weather.time)
+        if (idxNow >= 0) {
+          weather.value.humidity = data.hourly.relativehumidity_2m[idxNow]
+          weather.value.windSpeed = data.hourly.windspeed_10m[idxNow]
+        }
+      }
+      // 简单描述：根据温度与湿度判断
+      if (weather.value.currentTemp >= weather.value.tempMax * 0.8) {
+        weather.value.description = '晴天'
+      } else if (weather.value.humidity >= 80) {
+        weather.value.description = '潮湿'
+      } else {
+        weather.value.description = '多云'
+      }
+    }
+  } catch (e) {
+    console.error('获取天气失败', e)
+    weather.value.description = '数据获取失败'
+  } finally {
+    weather.value.loading = false
+  }
+}
+
+// GPS 定位
+const gps = ref({
+  loading: true,
+  error: '',
+  latitude: 0,
+  longitude: 0,
+  city: '未知'
+})
+// 反向地理解析函数
+async function reverseGeocode(lat, lon) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+    const res = await axios.get(url)
+    if (res.data && res.data.address) {
+      const addr = res.data.address
+      gps.value.city = addr.city || addr.town || addr.village || '未知'
+    }
+  } catch (e) {
+    console.warn('反向地理解析失败', e)
+    gps.value.city = '未知'
+  }
+}
+
+function loadGPS() {
+  if (!navigator.geolocation) {
+    gps.value.error = '浏览器不支持定位'
+    gps.value.loading = false
+    weather.value.loading = false
+    return
+  }
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      gps.value.latitude = pos.coords.latitude
+      gps.value.longitude = pos.coords.longitude
+      await reverseGeocode(gps.value.latitude, gps.value.longitude)
+      gps.value.loading = false
+      loadWeather(gps.value.latitude, gps.value.longitude)
+    },
+    (err) => {
+      gps.value.error = '定位授权失败'
+      gps.value.loading = false
+      weather.value.loading = false
+    }
+  )
+}
+
+onMounted(() => {
+  loadGPS()
+})
+
+// OSM 嵌入式地图 URL
+const osmEmbedUrl = computed(() => {
+  if (!gps.value.latitude) return ''
+  const lat = gps.value.latitude
+  const lon = gps.value.longitude
+  const delta = 0.01
+  const minLat = (lat - delta).toFixed(5)
+  const maxLat = (lat + delta).toFixed(5)
+  const minLon = (lon - delta).toFixed(5)
+  const maxLon = (lon + delta).toFixed(5)
+  // bbox=最小经度,最小纬度,最大经度,最大纬度
+  // marker=纬度,经度
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${minLon},${minLat},${maxLon},${maxLat}&layer=mapnik&marker=${lat},${lon}`
+})
+
+
 // 获取网络强度
 const getNetworkStrength = () => {
   const networkDevice = quickDevices.value.find(d => d.type === 'network')
@@ -339,7 +550,7 @@ const fetchAllDevices = async () => {
 }
 
 // 设备管理相关逻辑
-onMounted(fetchAllDevices)
+onMounted(fetchAllDevices);
 // 设备管理相关状态
 const showAddDeviceModal = ref(false)
 const showRemoveDeviceModal = ref(false)
