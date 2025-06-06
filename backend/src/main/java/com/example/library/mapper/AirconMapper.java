@@ -20,6 +20,8 @@ public interface AirconMapper extends BaseMapper<Aircon> {
     int deleteByDeviceId(@Param("deviceId") String deviceId);
 
 
+
+
     //打开节能模式
     @Update("""
     UPDATE aircon a

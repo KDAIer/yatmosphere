@@ -21,8 +21,18 @@ public interface DeviceMapper extends BaseMapper<Device> {
     Device selectById(String deviceId);
 
 
+    @Select("SELECT * FROM device WHERE device_id = #{deviceId}")
+    Device selectDeviceById(@Param("deviceId") String deviceId);
+
+
     @Delete("DELETE FROM device WHERE device_name = #{deviceName}")
     int deleteByDeviceName(@Param("deviceName") String deviceName);
+
+    @Delete("DELETE FROM device WHERE device_id = #{deviceId}")
+    int deleteByDeviceId(@Param("deviceId") String deviceId);
+
+
+
 
 
     @Insert("""

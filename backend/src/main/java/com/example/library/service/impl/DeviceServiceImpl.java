@@ -43,24 +43,23 @@ public class DeviceServiceImpl extends BaseServiceImpl<Device, DeviceMapper> imp
     @Resource
     private LightMapper lightMapper;
 
-    @Override
     @Transactional
-    public boolean deleteByDeviceName(String deviceName) {
+    public boolean deleteByDeviceId(String deviceId) {
         // 查询设备信息
-        Device device = deviceMapper.selectDeviceByName(deviceName);
+        Device device = deviceMapper.selectDeviceById(deviceId);
         if (device == null) {
-            throw new ServiceException("设备不存在: " + deviceName);
+            throw new ServiceException("设备不存在: " + deviceId);
         }
 
         // 根据设备类型删除对应表中的记录
         if ("aircon".equalsIgnoreCase(device.getCategory())) {
-            airconMapper.deleteByDeviceId(device.getDeviceId());
+            airconMapper.deleteByDeviceId(deviceId);
         } else if ("light".equalsIgnoreCase(device.getCategory())) {
-            lightMapper.deleteByDeviceId(device.getDeviceId());
+            lightMapper.deleteByDeviceId(deviceId);
         }
 
         // 删除设备表中的记录
-        int deleted = deviceMapper.deleteByDeviceName(deviceName);
+        int deleted = deviceMapper.deleteByDeviceId(deviceId);
         return deleted > 0;
     }
 

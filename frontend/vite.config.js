@@ -30,6 +30,12 @@ export default defineConfig({
         target: 'http://localhost:81',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/device/, '/device')
+      },
+
+        '/light': {
+        target: 'http://localhost:81',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/light/, '/light')
       }
     }
   },

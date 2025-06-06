@@ -665,38 +665,82 @@ const resetDeviceForm = () => {
 }
 
 // 添加设备
-const addDevice = () => {
-  const device = { ...newDevice.value }
+// 添加设备
+const addDevice = async () => {
+  const device = { ...newDevice.value };
+  const token = localStorage.getItem('authToken');
+  let apiUrl = '';
+  let payload = {};
+
   if (device.type === 'airConditioner') {
-    deviceList.value.push({
-      id: device.deviceId,
-      name: device.deviceName,
-      status: device.status ? '开启' : '关闭',
-      temperature: `${device.temperature}℃`,
+    apiUrl = '/aircon/add';
+    payload = {
+      deviceName: device.deviceName,
+      deviceId: device.deviceId,
+      category: '空调',
+      status: device.status,
+      detail: `${device.temperature}℃ ${device.mode === 'cool' ? '制冷模式' : device.mode === 'heat' ? '制热模式' : ''}`,
+      temperature: device.temperature,
       mode: {
         cool: '制冷',
         heat: '制热',
         dry: '除湿',
         fan: '送风'
       }[device.mode],
-      fanLevel: `${device.fanLevel}档`
-    })
-  } else {
-    deviceList.value.push({
-      id: device.deviceId,
-      name: device.deviceName,
-      status: device.status ? '开启' : '关闭',
-      brightness: `${device.brightness}%`,
-      colorTemp: {
+      fanLevel: device.fanLevel,
+      timer: 0
+    };
+  } else if (device.type === 'light') {  
+    apiUrl = '/light/add';
+    payload = {
+      deviceName: device.deviceName,
+      deviceId: device.deviceId,
+      category: '灯',
+      status: device.status,
+      detail: {
         natural: '自然',
         warm: '暖光',
         cool: '冷光'
-      }[device.colorTemp]
-    })
+      }[device.colorTemp],
+      colorTemp: device.colorTemp,
+      brightness: device.brightness
+    };
   }
-  showAddDeviceModal.value = false
-  resetDeviceForm()
-}
+
+  try {
+    const res = await axios.post(apiUrl, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    });
+
+    if (res.data.status === 200 && (res.data.data === true||res.data.data.success== true)) {
+      console.log('设备添加成功:', device.deviceName);
+
+      // 将新设备加入到前端的 devices 列表中
+      devices.value.push({
+        id: device.deviceId,
+        name: device.deviceName,
+        category: device.type === 'airConditioner' ? '空调' : '灯',
+        state: device.status,
+        details: device.type === 'airConditioner'
+          ? `${device.temperature}℃ ${device.mode === 'cool' ? '制冷模式' : device.mode === 'heat' ? '制热模式' : ''}`
+          : `${device.brightness}% ${device.colorTemp === 'natural' ? '自然' : device.colorTemp === 'warm' ? '暖光' : '冷光'}`
+      });
+
+      // `${device.brightness}% ${device.colorTemp === 'natural' ? '自然' : device.colorTemp === 'warm' ? '暖光' : '冷光'}`
+
+      fetchAllDevices(); // 刷新设备列表
+      showAddDeviceModal.value = false;
+      resetDeviceForm();
+    } else {
+      console.error('设备添加失败:', res.data.data.message);
+    }
+  } catch (err) {
+    console.error('添加设备请求异常:', err);
+  }
+};
 
 // 移除设备
 const removeDevice = async () => {
@@ -707,8 +751,8 @@ const removeDevice = async () => {
 
   try {
     const token = localStorage.getItem('authToken');
-    const res = await axios.post(`/device/deleteByDeviceName`, null, {
-      params: { deviceName: selectedDeviceToRemove.value.deviceName },
+    const res = await axios.post(`/device/deleteByDeviceId`, null, {
+      params: { deviceId: selectedDeviceToRemove.value.deviceId },
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token

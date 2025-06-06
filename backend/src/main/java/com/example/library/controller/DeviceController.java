@@ -54,10 +54,10 @@ public class DeviceController extends BaseExtController<Device, DeviceDTO, Devic
 
     }
 
-    @PostMapping("/deleteByDeviceName")
-    @Operation(summary = "删除设备", description = "根据deviceName删除设备，同时删除aircon或light表中的内容")
-    public Boolean deleteByDeviceName(@RequestParam String deviceName) {
-        return deviceservice.deleteByDeviceName(deviceName);
+    @PostMapping("/deleteByDeviceId")
+    @Operation(summary = "删除设备", description = "根据deviceId删除设备，同时删除aircon或light表中的内容")
+    public Boolean deleteByDeviceId(@RequestParam String deviceId) {
+        return deviceservice.deleteByDeviceId(deviceId);
     }
 
 
