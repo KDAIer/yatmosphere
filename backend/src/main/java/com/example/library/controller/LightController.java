@@ -54,4 +54,23 @@ public class LightController {
     public Boolean turnOffLight(@RequestParam String deviceName) {
         return lightService.turnOffLight(deviceName);
     }
+
+    @PostMapping("/brightness")
+    @Operation(summary = "调节灯的亮度", description = "调节灯的亮度")
+    public Boolean brightness(@RequestParam String deviceName, @RequestParam int brightness) {
+        return lightService.brightness(deviceName,brightness);
+    }
+
+    @PostMapping("/naturelight")
+    @Operation(summary = "调节灯为自然模式", description = "调节灯为自然模式")
+    public Boolean naturelight(@RequestParam String deviceName) {
+        return lightService.naturelight(deviceName);
+    }
+
+    @PostMapping("/warmlight")
+    @Operation(summary = "调节灯为暖光模式", description = "调节灯为暖光模式")
+    public Boolean warmlight(@RequestParam String deviceName) {
+        return lightService.warmlight(deviceName);
+    }
+
 }

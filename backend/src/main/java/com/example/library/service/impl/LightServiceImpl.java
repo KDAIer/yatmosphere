@@ -62,4 +62,22 @@ public class LightServiceImpl extends BaseServiceImpl<Light, LightMapper> implem
     public boolean turnOffLight(String deviceName) {
         return lightMapper.turnOffLight(deviceName) > 0;
     }
+
+    @Override
+    @Transactional
+    public boolean brightness(String deviceName, int brightness) {
+        return lightMapper.brightness(deviceName,brightness) > 0;
+    }
+
+    @Override
+    @Transactional
+    public boolean naturelight(String deviceName) {
+        return lightMapper.naturelight(deviceName) > 0;
+    }
+    @Override
+    @Transactional
+    public boolean warmlight(String deviceName) {
+        return lightMapper.warmlight(deviceName) > 0;
+    }
+
 }

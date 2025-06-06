@@ -10,4 +10,7 @@ public interface LightService extends BaseService<Light> {
     boolean addLight(Light light);
     boolean turnOnLight(String deviceName);
     boolean turnOffLight(String deviceName);
+    boolean brightness(String deviceName, int brightness);
+    boolean naturelight(String deviceName);
+    boolean warmlight(String deviceName);
 }

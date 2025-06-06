@@ -38,6 +38,28 @@ public interface LightMapper extends BaseMapper<Light> {
         """)
     int turnOffLight(@Param("deviceName") String deviceName);
 
+    @Update("""
+        UPDATE light l
+        LEFT JOIN device d ON l.device_id = d.device_id
+        SET l.brightness = #{brightness}
+        WHERE d.device_name = #{deviceName}
+        """)
+    int brightness(@Param("deviceName") String deviceName, @Param("brightness") int brightness);
+    @Update("""
+        UPDATE light l
+        LEFT JOIN device d ON l.device_id = d.device_id
+        SET l.color_temp = "自然"
+        WHERE d.device_name = #{deviceName}
+        """)
+    int naturelight(@Param("deviceName") String deviceName);
+    @Update("""
+        UPDATE light l
+        LEFT JOIN device d ON l.device_id = d.device_id
+        SET l.color_temp = "暖光"
+        WHERE d.device_name = #{deviceName}
+        """)
+    int warmlight(@Param("deviceName") String deviceName);
+
     // 查询灯信息
     @Select("""
         SELECT l.*, d.device_name, d.status, d.category, d.detail, d.create_time, d.update_time
