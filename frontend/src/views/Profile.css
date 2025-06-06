@@ -1,44 +1,280 @@
-/* 整页背景与间距 */
-.profile-page {
+/* src/views/Profile.css */
+
+/* ---------- 整页背景与间距 ---------- */
+/* 白天模式 (light) */
+:root[data-theme="light"] .profile-page {
     display: flex;
     flex-direction: column;
     gap: 24px;
     padding: 24px;
-    background-color: #f5f7fa;
+    background: var(--color-device-card-on-bg);
+    min-height: 100vh;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 通用卡片样式 */
-.card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    padding: 24px;
-}
-
-/* 个人信息卡片 */
-.profile-container {
+/* 黑夜模式 (dark) */
+:root[data-theme="dark"] .profile-page {
     display: flex;
     flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    background: var(--color-device-card-on-bg);
+    min-height: 100vh;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #e0e0e0;
 }
 
-.profile-header {
+/* ---------- 顶部横幅 ---------- */
+.banner {
+    text-align: center;
+    font-size: 20px;
+    color: #d63384;
+    background-color: rgba(255, 223, 223, 0.8);
+    padding: 12px 0;
+    border-radius: 12px;
+    border: 2px dashed #ffb6c1;
+    box-shadow: 0 2px 6px rgba(255, 182, 193, 0.4);
+}
+
+/* ---------- 通用卡片样式 ---------- */
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ---------- 待办事项样式 ---------- */
+.todo-summary {
+    background-color: #fff0f5;
+    border: 2px dashed #ffb6c1;
+}
+
+.section-title {
+    margin: 0 0 12px;
+    font-size: 20px;
+    color: #d63384;
+    text-shadow: 1px 1px 1px rgba(214, 51, 132, 0.2);
+}
+
+.todo-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.todo-item {
+    background-color: #ffe3e3;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(255, 105, 180, 0.3);
+    font-size: 14px;
+    color: #333;
+}
+
+.todo-item .member-name {
+    font-weight: 500;
+    margin-right: 4px;
+}
+
+.todo-item .count {
+    color: #d63384;
+    font-weight: bold;
+}
+
+/* 待办输入框和按钮 */
+.todo-input {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.todo-input-text,
+.todo-input-date {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.add-todo-btn {
+    background: linear-gradient(120deg, #74c0fc, #228be6);
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(34, 139, 230, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.add-todo-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(34, 139, 230, 0.6);
+}
+
+/* ---------- 环境数据概览 ---------- */
+.env-summary {
+    background-color: #e3fff3;
+    border: 2px dashed #96f2d7;
+}
+
+.env-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.env-item {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 8px;
+    background-color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(46, 125, 50, 0.2);
 }
 
+.env-label {
+    font-size: 14px;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.env-value {
+    font-size: 16px;
+    color: #0f5132;
+    font-weight: bold;
+}
+
+/* ---------- 一周待办日历 ---------- */
+.calendar-section {
+    background-color: #faf3e0;
+    border: 2px dashed #ffd43b;
+}
+
+.calendar-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 16px;
+}
+
+.cal-btn {
+    background: linear-gradient(120deg, #ffd43b, #ffa94d);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(255, 149, 0, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cal-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(255, 149, 0, 0.6);
+}
+
+.cal-month {
+    font-size: 18px;
+    font-weight: 500;
+    color: #d97706;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.day-header {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #c2410c;
+}
+
+.day-cell {
+    width: 100%;
+    aspect-ratio: 1;
+    text-align: right;
+    padding: 4px;
+    border-radius: 4px;
+    position: relative;
+    background-color: #ffffff;
+    transition: background-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-cell.other-month {
+    color: #aaa;
+    background-color: #f0f0f0;
+}
+
+.day-cell.today {
+    background-color: #ffeed4;
+    border: 2px solid #ffaa00;
+}
+
+.day-cell:hover {
+    background-color: #ffe8a1;
+    cursor: pointer;
+}
+
+.date-number {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.day-todos {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.day-todos .todo-item {
+    background-color: #e7f5ff;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #1c7ed6;
+}
+
+/* 反应式处理：小屏时使网格自适应宽度 */
+@media (max-width: 600px) {
+    .calendar-grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+}
+
+/* ---------- 下面是原有样式，保持不变 ---------- */
+
+/* 大头像 */
 .avatar-large {
-    width: 96px;
-    height: 96px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-    border: 2px solid #d9d9d9;
-    transition: border-color 0.2s ease;
+    border: 3px solid #ffc0cb;
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    background-color: #fff0f5;
 }
 
 .avatar-large:hover {
-    border-color: #409eff;
+    transform: scale(1.05) rotate(-3deg);
+    border-color: #ff69b4;
 }
 
 .avatar-large-img {
@@ -47,63 +283,91 @@
     object-fit: cover;
 }
 
+/* 可爱小星星装饰 */
+.star-decor {
+    position: absolute;
+    font-size: 18px;
+}
+
+.star-decor-1 {
+    top: -8px;
+    left: -8px;
+}
+
+.star-decor-2 {
+    bottom: -8px;
+    right: -8px;
+}
+
 /* 用户信息详情 */
 .profile-info {
     flex: 1;
 }
 
-.profile-info h1 {
+.profile-title {
     margin: 0;
-    font-size: 24px;
-    color: #333;
+    font-size: 26px;
+    color: #d63384;
+    text-shadow: 1px 1px 2px rgba(214, 51, 132, 0.3);
 }
 
-.profile-info p {
+.role-line {
     margin: 8px 0;
-    color: #666;
+    color: #555;
+    font-size: 16px;
 }
 
 .invite-code {
     display: flex;
     align-items: center;
     gap: 12px;
+    margin: 8px 0;
+    font-size: 16px;
+    color: #555;
 }
 
 .copy-btn {
-    background-color: #409eff;
+    background: linear-gradient(120deg, #ffb6c1, #ff69b4);
     color: #fff;
     border: none;
-    padding: 4px 10px;
-    border-radius: 4px;
+    padding: 6px 12px;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(255, 105, 180, 0.4);
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .copy-btn:hover {
-    background-color: #2879c7;
+    background: linear-gradient(120deg, #ff69b4, #ff1493);
+    transform: scale(1.05);
 }
 
 .logout-btn {
     margin-top: 12px;
-    background-color: #ff4d4f;
+    background: linear-gradient(120deg, #ff7f7f, #ff4d4f);
     color: #fff;
     border: none;
-    padding: 6px 14px;
-    border-radius: 4px;
+    padding: 8px 16px;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(255, 77, 79, 0.4);
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .logout-btn:hover {
-    background-color: #d9363e;
+    background: linear-gradient(120deg, #ff4d4f, #e60000);
+    transform: scale(1.05);
 }
 
 /* 家庭成员列表 */
-.member-list h2 {
+.member-list h2.member-title {
     margin-top: 0;
-    color: #333;
-    font-size: 20px;
+    color: #d63384;
+    font-size: 22px;
     margin-bottom: 16px;
+    text-shadow: 1px 1px 1px rgba(214, 51, 132, 0.2);
 }
 
 .member-table-container {
@@ -112,27 +376,36 @@
 
 .member-table {
     width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #eee;
 }
 
 .table-body {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
-/* 单行成员 */
 .member-row {
-    padding: 12px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    padding: 14px 18px;
+    border: 2px dashed #f0f0f0;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     background-color: #fafafa;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.member-row:hover {
+    background-color: #fff0f5;
+    transform: translateY(-2px);
 }
 
 .member-row.admin {
-    border-color: #409eff;
+    border-color: #ff69b4;
+    background-color: #ffe3e3;
 }
 
 .member-info {
@@ -143,58 +416,66 @@
 }
 
 .member-name {
-    font-weight: 500;
+    font-weight: 600;
     color: #333;
+    font-size: 17px;
 }
 
 .admin-badge {
-    background-color: #409eff;
+    background-color: #ff69b4;
     color: #fff;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
     font-size: 12px;
+    box-shadow: 0 1px 3px rgba(255, 105, 180, 0.3);
 }
 
 .home-badge {
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 6px;
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .home-badge.home {
     background-color: #d1f0d1;
     color: #2e7d32;
+    box-shadow: 0 1px 3px rgba(46, 125, 50, 0.3);
 }
 
 .home-badge.away {
     background-color: #ffe0e0;
     color: #c62828;
+    box-shadow: 0 1px 3px rgba(198, 40, 40, 0.3);
 }
 
 .home-badge:hover {
-    filter: brightness(95%);
+    transform: scale(1.05);
 }
 
-/* 待办事项 */
 .member-todos {
-    margin-left: 24px;
+    margin-left: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .todo-item {
     background-color: #fff;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 15px;
     color: #444;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .no-todos {
-    margin-left: 24px;
-    font-size: 14px;
+    margin-left: 28px;
+    font-size: 15px;
     color: #999;
+    font-style: italic;
 }
 
 /* 淡入淡出动画 */

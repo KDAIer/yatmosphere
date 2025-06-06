@@ -34,10 +34,10 @@
                 </li>
                 <li>
                     <router-link to="/profile" class="nav-link" :class="{ active: isActive('/profile') }"
-                        :title="collapsed ? '个人信息' : ''">
+                        :title="collapsed ? '家庭管理' : ''">
                         <span class="icon">👤</span>
                         <transition name="fade">
-                            <span v-if="!collapsed" class="label">个人信息</span>
+                            <span v-if="!collapsed" class="label">家庭管理</span>
                         </transition>
                         <span v-if="isActive('/profile')" class="active-bar"></span>
                     </router-link>
