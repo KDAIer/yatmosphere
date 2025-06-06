@@ -507,4 +507,77 @@ function handleLogout() {
     opacity: 1;
     transform: translateX(0);
 }
+
+
+
+
+
+
+
+/* 基础侧边栏样式 */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: linear-gradient(to bottom, #2e3a4e, #1f2732);
+    color: #e0e6ed;
+    z-index: 1000;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+}
+
+/* 桌面端样式 */
+.sidebar:not(.mobile-view) {
+    width: 220px;
+    transition: width 0.3s ease;
+}
+
+.sidebar:not(.mobile-view).collapsed {
+    width: 64px;
+}
+
+/* 移动端样式 */
+.sidebar.mobile-view {
+    width: 220px;
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.sidebar.mobile-view:not(.collapsed) {
+    transform: translateX(0);
+}
+
+/* 遮罩层样式 */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+}
+
+/* 主内容区域调整 */
+.main-content {
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar-open .main-content {
+    margin-left: 220px;
+}
+
+.sidebar-collapsed .main-content {
+    margin-left: 64px;
+}
+
+
+
+
 </style>

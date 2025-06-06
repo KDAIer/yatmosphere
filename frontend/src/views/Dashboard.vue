@@ -1,75 +1,64 @@
 <!-- src/components/Dashboard.vue -->
 <template>
   <div class="dashboard" :class="{ 'mobile-layout': isMobileView }">
-
-    <!-- <audio ref="bgMusicRef" autoplay loop preload="auto" style="display: none;">
-      <source src="/src/assets/audio/海愿 - 塞壬唱片-MSR、Eagle Wei.mp3" type="audio/mpeg">
-      您的浏览器不支持音频播放。
-    </audio> -->
-
     <!-- 头部 -->
     <header class="header">
-      <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
-      <h1>智能家居控制中心</h1>
-
-      <!-- <button class="view-toggle-btn" @click="toggleViewMode" :title="isMobileView ? '切换到电脑版' : '切换到移动版'">
-        <span class="icon">{{ isMobileView ? '💻切换到电脑版' : '📱切换到移动版' }}</span>
-      </button> -->
-
-      <div class="user-info">
-        <!-- <button @click="toggleMusic" class="music-btn">
-          <font-awesome-icon icon="music" class="music-icon" />
-          <font-awesome-icon :icon="isPlaying ? 'pause' : 'play'" class="player-icon" />
-          <!-- {{ isPlaying ? '暂停音乐' : '播放音乐' }} </button>
-
-
-        <button @click="toggleTheme" class="theme-btn">
-          <font-awesome-icon :icon="theme === 'light' ? 'moon' : 'sun'" />
-          {{ theme === 'light' ? '黑夜模式' : '白天模式' }} </button> -->
-
-        <!-- 头部小头像：只做“打开弹窗” -->
-        <!-- <div class="user-avatar" @click="showUserModal = true">
-          <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-img" />
-        </div> -->
-        <!-- <span>当前用户：{{ username }} {{ roleName }}</span> -->
-        <!-- <button @click="logout" class="logout-btn">退出登录</button> -->
+      <!-- 左侧：Logo + 标题 -->
+      <div class="header-left">
+        <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
+        <h1 class="header-title">智能家居控制中心</h1>
       </div>
 
-      <!-- 用户信息弹窗 -->
-      <div class="user-modal" v-if="showUserModal" @click.self="showUserModal = false">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3>个人信息</h3>
-            <button class="close-btn" @click="showUserModal = false">×</button>
-          </div>
-          <div class="modal-body">
-            <div class="avatar-large">
-              <img :src="user.avatar || defaultAvatar" alt="用户头像" @click="onClickAvatar" class="avatar-large-img" />
-            </div>
-            <div class="user-details">
-              <div class="detail-item">
-                <span class="detail-label">用户名:</span>
-                <span class="detail-value">{{ username }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">角色:</span>
-                <span class="detail-value">{{ roleName }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">家庭邀请码:</span>
-                <span class="detail-value">{{ inviteCode }}</span>
-                <button class="copy-btn" @click="copyInviteCode">复制</button>
+      <!-- 右侧：搜索框 + 通知 + 头像 -->
+      <div class="header-right">
+        <!-- 搜索框 -->
+        <div class="search-container">
+          <input type="text" v-model="searchQuery" @focus="showSearchResults = true" @keyup.enter="onSearch"
+            placeholder="搜索设备…" class="search-input" />
+          <button class="search-btn" @click="onSearch" title="搜索">🔍</button>
+          <!-- 搜索结果下拉 -->
+          <div v-if="showSearchResults" class="search-results">
+            <div v-if="filteredResults.length">
+              <div v-for="(result, idx) in filteredResults" :key="idx" class="result-item"
+                @click="selectResult(result)">
+                {{ result }}
               </div>
             </div>
+            <div v-else class="no-results">未找到相关设备</div>
           </div>
+        </div>
+
+        <!-- 通知图标 -->
+        <div class="notification-container" @click="openNotifications" title="查看通知">
+          <span class="notification-icon">🔔</span>
+          <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+        </div>
+
+        <!-- 用户头像，点击跳转到 /profile -->
+        <div class="user-avatar" @click="goToProfile" title="查看个人信息">
+          <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-img" />
         </div>
       </div>
     </header>
 
-    <!-- 隐藏的文件输入框，用于弹窗中大头像选择 -->
-    <input type="file" ref="avatarInput" accept="image/png, image/jpeg" style="display: none;" @change="onFileChange" />
-
-
+    <!-- 通知弹窗 -->
+    <div v-if="showNotifications" class="modal-backdrop" @click.self="closeNotifications">
+      <div class="notification-modal">
+        <div class="modal-header">
+          <h2>通知中心</h2>
+          <button class="close-modal-btn" @click="closeNotifications">×</button>
+        </div>
+        <div class="modal-body">
+          <div v-if="notifications.length">
+            <div v-for="(note, idx) in notifications" :key="idx" class="notification-item">
+              <p class="note-text">{{ note.text }}</p>
+              <span class="note-time">{{ note.time }}</span>
+            </div>
+          </div>
+          <div v-else class="no-notifications">暂无通知</div>
+        </div>
+      </div>
+    </div>
 
     <!-- 主内容区 -->
     <main class="main-content">
@@ -151,8 +140,6 @@
         <!-- @refresh-devices="fetchAllDevices" -->
         <!-- @update-device="updateDeviceInfo" -->
 
-
-
         <!-- 第二行 -->
         <div class="grid-row">
           <!-- 环境监测 -->
@@ -180,8 +167,6 @@
                 <span>+ 自定义场景</span>
               </button>
             </div>
-
-
 
             <div class="scenes-container">
               <div class="scenes-grid">
@@ -379,33 +364,6 @@
             </div>
           </div>
         </section>
-
-        <!-- 家庭成员
-        <section class="member-list card">
-          <h2>家庭成员</h2>
-          <div class="member-table-container">
-            <div class="member-table">
-              <div class="table-body">
-                <div v-for="member in familyMembers" :key="member.id" class="member-row"
-                  :class="{ admin: member.isAdmin }">
-                  <div class="member-info">
-                    <span class="member-name">{{ member.name }}</span>
-                    <span v-if="member.isAdmin" class="admin-badge">管理员</span>
-                    <span class="home-badge" :class="member.isHome ? 'home' : 'away'" @click="toggleHomeStatus(member)">
-                      {{ member.isHome ? '在家' : '不在家' }}
-                    </span>
-                  </div>
-                  <div class="member-todos" v-if="member.todos && member.todos.length">
-                    <div v-for="(todo, idx) in member.todos" :key="idx" class="todo-item">
-                      {{ todo }}
-                    </div>
-                  </div>
-                  <div v-else class="no-todos">暂无待办</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> -->
       </div>
 
       <!--权限错误弹窗-->
@@ -428,6 +386,9 @@ const devices = ref([])
 import { defineEmits } from 'vue'
 import defaultAvatar from '@/assets/images/user.png'
 const emit = defineEmits(['refresh-devices'])
+import { ref, onMounted, computed, nextTick } from 'vue'
+import { watch } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   theme,
   toggleTheme,
@@ -512,125 +473,28 @@ const updateDeviceInfo = ({ id, temperature, mode }) => {
   }
 }
 
-import { ref, onMounted, nextTick } from 'vue'
-// import { useMusicPlayer } from './DashboardLogic.js'
+// 用户头像相关逻辑
+const router = useRouter()
 
-// 音频相关
-// const bgMusicRef = ref(null)
+const user = ref({ avatar: '' })
 
-// const { initMusic, bgMusic } = useMusicPlayer()
-
-
-onMounted(fetchAllDevices)
-
-// const isPlaying = ref(false)
-
-// // 修改后的播放/暂停音频函数
-// const toggleMusic = () => {
-//   if (bgMusicRef.value) {
-//     if (isPlaying.value) {
-//       // 当前正在播放，点击暂停
-//       bgMusicRef.value.pause()
-//       isPlaying.value = false
-//       console.log('音频已暂停')
-//     } else {
-//       // 当前暂停中，点击播放
-//       bgMusicRef.value.volume = 0.2
-//       bgMusicRef.value.play().then(() => {
-//         isPlaying.value = true
-//         console.log('音频播放成功')
-//       }).catch(err => {
-//         console.error('音频播放失败:', err)
-//       })
-//     }
-//   } else {
-//     console.error('音频元素未找到，无法操作')
-//   }
-// }
-
-import { watch } from 'vue'
-
-// 用户数据
-const showUserModal = ref(false)
-const user = ref({
-  avatar: '',
-  username: username.value,
-  // fullName: '张伟', (注册时也没有显示真实姓名，这块感觉没有必要)
-  inviteCode: ''
-  // registerTime: '2023-05-15 14:30:22' （注册时间显示也没有必要）
+// 页面挂载时可从 localStorage 或后端获取用户头像
+onMounted(async () => {
+  const storedAvatar = localStorage.getItem('dashboard_user_avatar_' + localStorage.getItem('username'))
+  if (storedAvatar) {
+    user.value.avatar = storedAvatar
+  } else {
+  }
 })
 
-// 仅在弹窗中点击大头像才触发
-const avatarInput = ref(null)
-
-const AVATAR_KEY_PREFIX = 'dashboard_user_avatar_'  // 键名前缀
-
-// 点击弹窗中大头像时触发文件选择
-const onClickAvatar = () => {
-  if (avatarInput.value) {
-    avatarInput.value.click()
-  }
+// 点击头像直接跳转到 /profile
+function goToProfile() {
+  router.push('/profile')
 }
 
-// 用户选完新头像后保存到 localStorage（键名带当前用户名前缀）
-const onFileChange = (e) => {
-  const file = e.target.files[0]
-  if (!file) return
-  if (!file.type.match(/^image\/(png|jpeg)$/) || file.size > 2 * 1024 * 1024) {
-    alert('请上传 JPG/PNG 且小于 2MB 的图片')
-    return
-  }
-  const reader = new FileReader()
-  reader.onload = (ev) => {
-    const base64Data = ev.target.result
-    user.value.avatar = base64Data
-    // 存到localStorage
-    const key = AVATAR_KEY_PREFIX + username.value
-    localStorage.setItem(key, base64Data)
-  }
-  reader.readAsDataURL(file)
-}
 
-// 监视 username 变化：包括页面首次挂载和后续登录/登出导致 username 改变
-watch(
-  username,
-  (newUsername) => {
-    // 如果 newUsername 为空或未定义，直接清空 avatar，让页面显示默认头像
-    if (!newUsername) {
-      user.value.avatar = ''
-      user.value.username = ''  // modal 里用户名也置空
-      return
-    }
-    // 读取key
-    const key = AVATAR_KEY_PREFIX + newUsername
-    const saved = localStorage.getItem(key)
-    if (saved) {
-      user.value.avatar = saved
-    } else {
-      user.value.avatar = ''  // 没找到，显示默认
-    }
-    user.value.username = newUsername
-  },
-  {
-    immediate: true,
-  }
-)
-
-const doLogout = () => {
-  logout()
-}
-
-// 复制邀请码函数
-const copyInviteCode = () => {
-  navigator.clipboard.writeText(user.value.inviteCode)
-    .then(() => {
-      alert('邀请码已复制到剪贴板')
-    })
-    .catch(err => {
-      console.error('复制失败:', err)
-    })
-}
-
+// 设备管理相关逻辑
+onMounted(fetchAllDevices)
 // 设备管理相关状态
 const showAddDeviceModal = ref(false)
 const showRemoveDeviceModal = ref(false)
@@ -912,6 +776,62 @@ onMounted(() => {
     isMobileView.value = savedView === 'mobile'
   }
 })
+
+
+// 搜索状态与模拟结果
+const searchQuery = ref('')
+const showSearchResults = ref(false)
+
+// 模拟设备列表
+const devicesList = [
+  '客厅空调',
+  '卧室灯光',
+  '厨房冰箱',
+  '阳台空气净化器',
+  '车库门传感器',
+  '书房加湿器'
+]
+
+// 根据 searchQuery 过滤结果
+const filteredResults = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return []
+  return devicesList.filter(d => d.includes(q))
+})
+
+function onSearch() {
+  if (!searchQuery.value.trim()) {
+    showSearchResults.value = false
+    return
+  }
+  // 保持下拉打开，用户可点击结果
+  showSearchResults.value = true
+}
+
+function selectResult(result) {
+  // 示例：点击结果弹一个 alert，实际可跳转到设备详情页
+  alert(`已选择设备：${result}`)
+  showSearchResults.value = false
+  searchQuery.value = ''
+}
+
+// 通知状态与模拟数据
+const unreadCount = ref(3)
+const showNotifications = ref(false)
+const notifications = ref([
+  { text: '客厅空调温度已调至 24℃', time: '10分钟前' },
+  { text: '卧室灯光已开启', time: '30分钟前' },
+  { text: '厨房冰箱门未关闭', time: '1小时前' }
+])
+
+function openNotifications() {
+  showNotifications.value = true
+  unreadCount.value = 0
+}
+
+function closeNotifications() {
+  showNotifications.value = false
+}
 
 // 角色权限相关
 const roleAccess = ref(false)
