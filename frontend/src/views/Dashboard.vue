@@ -599,7 +599,11 @@ const addDevice = async () => {
       showAddDeviceModal.value = false;
       resetDeviceForm();
     } else {
-      console.error('设备添加失败:', res.data.data.message);
+      if(device.type === 'airConditioner'){
+        console.error('设备添加失败:', res.data.msg);
+      }else{
+        console.error('设备添加失败:', res.data.data.message);
+      }
     }
   } catch (err) {
     console.error('添加设备请求异常:', err);
@@ -628,7 +632,7 @@ const removeDevice = async () => {
 
       // 更新前端设备列表
       devices.value = devices.value.filter(device => device.id !== selectedDeviceToRemove.value.deviceId);
-
+      console.log('当前设备列表:', devices.value);
       // 触发设备刷新事件
       emit('refresh-devices');
 

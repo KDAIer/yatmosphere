@@ -51,15 +51,17 @@ public class DeviceServiceImpl extends BaseServiceImpl<Device, DeviceMapper> imp
             throw new ServiceException("设备不存在: " + deviceId);
         }
 
+        int deleted = deviceMapper.deleteByDeviceId(deviceId);
+
         // 根据设备类型删除对应表中的记录
         if ("aircon".equalsIgnoreCase(device.getCategory())) {
-            airconMapper.deleteByDeviceId(deviceId);
+            return airconMapper.deleteByDeviceId(deviceId)>0 && deleted>0;
         } else if ("light".equalsIgnoreCase(device.getCategory())) {
-            lightMapper.deleteByDeviceId(deviceId);
+            return lightMapper.deleteByDeviceId(deviceId)>0 && deleted>0;
         }
 
         // 删除设备表中的记录
-        int deleted = deviceMapper.deleteByDeviceId(deviceId);
+
         return deleted > 0;
     }
 

@@ -194,7 +194,7 @@ CREATE TABLE `device` (
                           `device_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ISBN号',
                           `category` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类别',
                           `status` boolean NOT NULL COMMENT '状态', #0为开启1为关闭
-        `light` boolean NOT NULL  COMMENT '灯光', #0为关闭1为开启
+        `light` boolean DEFAULT false NOT NULL  COMMENT '灯光', #0为关闭1为开启
                         `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                           `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                           `detail` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '详情',
@@ -236,7 +236,7 @@ CREATE TABLE aircon (
                                light BOOLEAN NOT NULL DEFAULT FALSE,
                                fan_level INT NOT NULL CHECK (fan_level BETWEEN 1 AND 5),
                                timer INT NOT NULL DEFAULT 0,
-                               FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE,
+                               FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE,
                                UNIQUE KEY (`device_id`)
 #                                FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE
 );
