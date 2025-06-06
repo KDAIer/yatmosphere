@@ -22,7 +22,7 @@
         <div class="light-control">
           <div class="light-switch">
             <label class="switch">
-              <input type="checkbox" v-model="mainLightOn" />
+              <input type="checkbox" v-model="mainLightOn" @change="toggleMainLight"/>
               <span class="slider round"></span>
             </label>
             <span class="control-label">{{ mainLightOn ? '开启' : '关闭' }}</span>
@@ -190,7 +190,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { defineEmits, ref } from 'vue'
+import axios from 'axios'
 
 // 房间选择
 const selectedRoom = ref('master')
@@ -254,12 +255,90 @@ const loadRoomSettings = () => {
   // 加载房间设置的逻辑
 }
 
-const adjustMainLightBrightness = () => {
-  // 调整主照明亮度的逻辑
-}
+const adjustMainLightBrightness = async () => {//???????????
+  // console.log(mainLightBrightness.value)
+  try {
+    const token = localStorage.getItem('authToken')
+    const res = await axios.post(
+      `/light/brightness?deviceName=卧室灯&brightness=${mainLightBrightness.value}`,
+      null,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    );
 
-const changeLightColorTemp = (temp) => {
+    if (res.data.data === true) {
+      console.log('Brightness adjusted successfully:', res.data);
+      emit('refresh-devices'  )
+    } else {
+      console.error("卧室灯光设置失败")
+    }
+  } catch (error) {
+    console.error('Failed to adjust brightness:', error);
+  }
+};
+const changeLightColorTemp =async (temp) => {
   mainLightColorTemp.value = temp
+  const bedlight = '卧室灯'
+  const token = localStorage.getItem('authToken')
+  if(mainLightColorTemp.value == 'warm'){
+    const res = await axios.post(
+
+      `/light/warmlight?deviceName=${encodeURIComponent(bedlight)}`,
+      null,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    )
+    if (res.data.data === true) {
+      console.log(`温暖设置成功`)
+      emit('refresh-devices')
+    } else {
+      console.error("卧室灯光温暖设置失败")
+    }
+  }else if (mainLightColorTemp.value == 'cool'){
+    const res = await axios.post(
+
+      `/light/coldlight?deviceName=${encodeURIComponent(bedlight)}`,
+      null,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    )
+    if (res.data.data === true) {
+      console.log(`冷设置成功`)
+      emit('refresh-devices')
+    } else {
+      console.error("卧室灯光冷设置失败")
+    }
+  }else {
+    const res = await axios.post(
+
+      `/light/naturelight?deviceName=${encodeURIComponent(bedlight)}`,
+      null,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }
+    )
+    if (res.data.data === true) {
+      console.log(`自然设置成功`)
+      emit('refresh-devices')
+    } else {
+      console.error("卧室灯光自然设置失败")
+    }
+  }
 }
 
 const updateAmbientLightColor = () => {
@@ -285,7 +364,61 @@ const controlCurtain = (action) => {
 const adjustCurtainPosition = () => {
   // 调整窗帘位置的逻辑
 }
+const emit = defineEmits(['refresh-devices'])
+const toggleMainLight =async () =>{
+  //主照明开启关闭逻辑
 
+  // mainLightOn.value = mainLightOn.value
+  console.log('mainlighton',mainLightOn.value)
+
+  try {
+
+    const bedlight = '卧室灯'
+    const token = localStorage.getItem('authToken')
+
+    // console.log(`/light/on?deviceName=${encodeURIComponent(bedlight)}`)
+    if (mainLightOn.value){
+      const res = await axios.post(
+
+        `/light/on?deviceName=${encodeURIComponent(bedlight)}`,
+        null,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        }
+      )
+      if (res.data.data === true) {
+          console.log(`设置成功`)
+        emit('refresh-devices')
+      } else {
+        console.error("卧室灯光设置失败")
+      }
+    }else {
+      const res = await axios.post(
+        `/light/off?deviceName=${encodeURIComponent(bedlight)}`,
+        null,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        }
+      )
+      if (res.data.data === true) {
+        console.log(`设置成功`)
+        emit('refresh-devices')
+      } else {
+        console.error("卧室灯光设置失败")
+      }
+    }
+
+  } catch (e) {
+    console.error("卧室灯光设置失败", e)
+  }
+
+}
 const toggleOutlet = (outletId) => {
   const outlet = outlets.value.find((o) => o.id === outletId)
   if (outlet) {
