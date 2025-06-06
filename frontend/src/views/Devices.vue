@@ -3,7 +3,7 @@
     <div class="device-page">
         <h1 class="page-title">设备管理</h1>
 
-        <!-- 设备列表卡片 -->
+        <!-- 设备列表 -->
         <section class="device-list card">
             <div class="device-list-header">
                 <h2>设备列表</h2>
@@ -14,7 +14,7 @@
             </div>
 
             <!-- 表格头部 -->
-            <div class="device-table-container">
+            <div class="device-table-container" @refresh-devices="fetchAllDevices">
                 <div class="device-table">
                     <div class="table-header">
                         <span>设备ID</span>
@@ -24,6 +24,15 @@
                     </div>
                     <div class="table-body">
                         <div v-for="device in devices" :key="device.id" class="table-row"
+                            :class="{ 'device-on': device.state }">
+                            <span>{{ device.id }}</span>
+                            <span>{{ device.name }}</span>
+                            <span>{{ device.state ? '开启' : '关闭' }}</span>
+                            <span>{{ device.details || '-' }}</span>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        <div v-for="device in allDevices" :key="device.id" class="table-row"
                             :class="{ 'device-on': device.state }">
                             <span>{{ device.id }}</span>
                             <span>{{ device.name }}</span>
@@ -52,11 +61,11 @@
                 <!-- 通用字段 -->
                 <div class="form-group">
                     <label>设备名称：</label>
-                    <input type="text" v-model="newDevice.deviceName" placeholder="例如：客厅空调 / 卧室灯" />
+                    <input type="text" v-model="newDevice.deviceName" placeholder="例如: 客厅空调 / 卧室灯" />
                 </div>
                 <div class="form-group">
                     <label>设备ID：</label>
-                    <input type="text" v-model="newDevice.deviceId" placeholder="例如：AC001 / LT001" />
+                    <input type="text" v-model="newDevice.deviceId" placeholder="例如: AC001 / LT001" />
                 </div>
 
                 <!-- 初始状态开关 -->
@@ -76,55 +85,55 @@
                     </label>
                 </div>
 
-                <!-- 空调专属字段 -->
-                <div v-if="newDevice.type === 'airConditioner'">
-                    <div class="form-group">
-                        <label>温度 (℃)：</label>
-                        <input type="number" v-model.number="newDevice.temperature" min="16" max="30" />
-                    </div>
-                    <div class="form-group">
-                        <label>模式：</label>
-                        <select v-model="newDevice.mode">
-                            <option value="cool">制冷</option>
-                            <option value="heat">制热</option>
-                            <option value="dry">除湿</option>
-                            <option value="fan">送风</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>风速 (档)：</label>
-                        <select v-model.number="newDevice.fanLevel">
-                            <option v-for="n in 5" :key="n" :value="n">{{ n }} 档</option>
-                        </select>
-                    </div>
+              <!-- 空调特有字段 -->
+              <template v-if="newDevice.type === 'airConditioner'">
+                <div class="form-group">
+                  <br>
+                  <label>温度(℃):</label>
+                  <input type="range" v-model="newDevice.temperature" min="16" max="30" step="0.5">
+                  <span class="value-display">{{ newDevice.temperature }}℃</span>
                 </div>
+                <div class="form-group">
+                  <label>模式:</label>
+                  <select v-model="newDevice.mode">
+                    <option value="cool">制冷</option>
+                    <option value="heat">制热</option>
+                    <option value="dry">除湿</option>
+                    <option value="fan">送风</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>风速等级:</label>
+                  <select v-model="newDevice.fanLevel">
+                    <option v-for="n in 5" :value="n">{{ n }}档</option>
+                  </select>
+                </div>
+              </template>
 
-                <!-- 灯专属字段 -->
-                <div v-if="newDevice.type === 'light'">
-                    <div class="form-group">
-                        <label>亮度 (%)：</label>
-                        <input type="number" v-model.number="newDevice.brightness" min="0" max="100" />
-                    </div>
-                    <div class="form-group">
-                        <label>色温：</label>
-                        <select v-model="newDevice.colorTemp">
-                            <option value="natural">自然</option>
-                            <option value="warm">暖光</option>
-                            <option value="cool">冷光</option>
-                        </select>
-                    </div>
+              <!-- 灯特有字段 -->
+              <template v-if="newDevice.type === 'light'">
+                <div class="form-group">
+                  <br>
+                  <label>亮度(%):</label>
+                  <input type="range" v-model="newDevice.brightness" min="0" max="100">
+                  <span class="value-display">{{ newDevice.brightness }}%</span>
                 </div>
+                <div class="form-group">
+                  <label>色温:</label>
+                  <select v-model="newDevice.colorTemp">
+                    <option value="natural">自然</option>
+                    <option value="warm">暖光</option>
+                    <option value="cool">冷光</option>
+                  </select>
+                </div>
+              </template>
 
-                <div class="modal-actions">
-                    <button class="cancel-btn" @click="showAddDeviceModal = false">
-                        取消
-                    </button>
-                    <button class="confirm-btn" @click="addDevice" :disabled="!canConfirmAdd">
-                        添加
-                    </button>
-                </div>
+              <div class="modal-actions">
+                <button class="cancel-btn" @click="showAddDeviceModal = false">取消</button>
+                <button class="confirm-btn" @click="addDevice">确认添加</button>
+              </div>
             </div>
-        </div>
+          </div>
 
         <!-- 移除设备弹窗 -->
         <div class="device-modal" v-if="showRemoveDeviceModal" @click.self="showRemoveDeviceModal = false">
@@ -150,30 +159,80 @@
             </div>
         </div>
 
-        <!-- 权限错误弹窗 -->
-        <div class="access-error-modal" v-if="showAccessError" @click.self="showAccessError = false">
-            <div class="modal-content error-modal-content">
-                <h3 class="error-title">
-                    <span style="color: red">⚠</span> 权限错误
-                </h3>
-                <p class="error-message">
-                    您没有权限使用此功能，请联系管理员
-                </p>
-            </div>
+      <!--权限错误弹窗-->
+      <div class="access-error-modal" v-if="showAccessError" @click.self="showAccessError = false">
+        <div class="modal-content">
+          <h3 class="error-title"><span style="color: red">⚠</span>权限错误</h3>
+          <p class="error-message">&nbsp;您没有权限使用此功能，请联系管理员&nbsp;</p>
         </div>
+      </div>
     </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
+import {
+  allDevices,
+  activeParticle,
+  triggerParticleEffect,
+  useTimeUpdater, // 导入时间更新组合函数
+} from './DashboardLogic.js'
 
-// 设备列表
-const devices = ref([])
+// 调用时间更新组合函数
+useTimeUpdater()
 
-// 新设备表单数据
+// 从后端拉取设备列表
+const fetchAllDevices = async () => {
+  try {
+    const token = localStorage.getItem('authToken')
+    const res = await axios.get('/device/getall', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    })
+    if (res.data && Array.isArray(res.data.data)) {
+      devices.value = res.data.data.map(item => ({
+        id: item.deviceId,
+        name: item.deviceName,
+        category: item.category,
+        state: item.status,
+        details: item.detail
+      }))
+    }
+    console.log('设备列表', devices.value)
+  } catch (e) {
+    console.error('获取设备列表失败', e)
+  }
+}
+
+// 设备管理相关逻辑
+onMounted(fetchAllDevices)
+// 设备管理相关状态
+const showAddDeviceModal = ref(false)
+const showRemoveDeviceModal = ref(false)
+const selectedDeviceToRemove = ref('')
+const devices = ref([]) // 存储设备列表
 const newDevice = ref({
-    type: 'airConditioner',
+  type: 'airConditioner',
+  deviceName: '',
+  deviceId: '',
+  status: true,
+  // 空调参数
+  temperature: 24,
+  mode: 'cool',
+  fanLevel: 3,
+  // 灯参数
+  brightness: 80,
+  colorTemp: 'natural'
+})
+
+// 重置设备表单
+const resetDeviceForm = () => {
+  newDevice.value = {
+    type: newDevice.value.type,
     deviceName: '',
     deviceId: '',
     status: true,
@@ -182,142 +241,111 @@ const newDevice = ref({
     fanLevel: 3,
     brightness: 80,
     colorTemp: 'natural'
-})
-
-// 控制弹窗显示
-const showAddDeviceModal = ref(false)
-const showRemoveDeviceModal = ref(false)
-const showAccessError = ref(false)
-
-// 粒子特效控制
-const activeParticle = ref(null)
-function triggerParticleEffect(event, identifier) {
-    activeParticle.value = identifier
-    setTimeout(() => {
-        activeParticle.value = null
-    }, 400)
+  }
 }
 
-// 选中的待移除设备
-const selectedDeviceToRemove = ref(null)
-
-// 权限逻辑
-const roleAccess = ref(false)
-function checkRoleAccess() {
-    roleAccess.value = localStorage.getItem('role') === 'admin'
-    if (!roleAccess.value) {
-        showAccessError.value = true
-    }
-    return roleAccess.value
-}
-function canAddDevice() {
-    if (!checkRoleAccess()) return
-    resetDeviceForm()
-    showAddDeviceModal.value = true
-}
-function canRemoveDevice() {
-    if (!checkRoleAccess()) return
-    showRemoveDeviceModal.value = true
-}
-
-// 重置添加设备表单
-function resetDeviceForm() {
-    newDevice.value = {
-        type: newDevice.value.type,
-        deviceName: '',
-        deviceId: '',
-        status: true,
-        temperature: 24,
-        mode: 'cool',
-        fanLevel: 3,
-        brightness: 80,
-        colorTemp: 'natural'
-    }
+// 添加设备
+const addDevice = () => {
+  const device = { ...newDevice.value }
+  if (device.type === 'airConditioner') {
+    deviceList.value.push({
+      id: device.deviceId,
+      name: device.deviceName,
+      status: device.status ? '开启' : '关闭',
+      temperature: `${device.temperature}℃`,
+      mode: {
+        cool: '制冷',
+        heat: '制热',
+        dry: '除湿',
+        fan: '送风'
+      }[device.mode],
+      fanLevel: `${device.fanLevel}档`
+    })
+  } else {
+    deviceList.value.push({
+      id: device.deviceId,
+      name: device.deviceName,
+      status: device.status ? '开启' : '关闭',
+      brightness: `${device.brightness}%`,
+      colorTemp: {
+        natural: '自然',
+        warm: '暖光',
+        cool: '冷光'
+      }[device.colorTemp]
+    })
+  }
+  showAddDeviceModal.value = false
+  resetDeviceForm()
 }
 
-// 是否可以确认添加
-const canConfirmAdd = computed(() => {
-    const d = newDevice.value
-    return d.deviceName && d.deviceId
-})
+// 移除设备
+const removeDevice = async () => {
+  if (!selectedDeviceToRemove.value || !selectedDeviceToRemove.value.deviceName) {
+    console.error('未选择设备或设备名称为空');
+    return;
+  }
 
-// 添加设备 (前端模拟)
-function addDevice() {
-    const d = { ...newDevice.value }
-    if (d.type === 'airConditioner') {
-        devices.value.push({
-            id: d.deviceId,
-            name: d.deviceName,
-            state: d.status,
-            details: `模式: ${{ cool: '制冷', heat: '制热', dry: '除湿', fan: '送风' }[d.mode]
-                }，温度: ${d.temperature}℃，风速: ${d.fanLevel}档`
-        })
+  try {
+    const token = localStorage.getItem('authToken');
+    const res = await axios.post(`/device/deleteByDeviceName`, null, {
+      params: { deviceName: selectedDeviceToRemove.value.deviceName },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    });
+
+    if (res.data.status === 200 && res.data.data === true) {
+      console.log('设备删除成功:', selectedDeviceToRemove.value.deviceName);
+
+      // 更新前端设备列表
+      devices.value = devices.value.filter(device => device.id !== selectedDeviceToRemove.value.deviceId);
+
+      // 触发设备刷新事件
+      emit('refresh-devices');
+
+      // 清除选择并关闭弹窗
+      selectedDeviceToRemove.value = null;
+      showRemoveDeviceModal.value = false;
     } else {
-        devices.value.push({
-            id: d.deviceId,
-            name: d.deviceName,
-            state: d.status,
-            details: `亮度: ${d.brightness}%，色温: ${{ natural: '自然', warm: '暖光', cool: '冷光' }[d.colorTemp]
-                }`
-        })
+      console.error('设备删除失败:', res.data.msg);
     }
-    showAddDeviceModal.value = false
-    resetDeviceForm()
+  } catch (err) {
+    console.error('删除设备请求异常:', err);
+  }
+};
+
+// 角色权限相关
+const roleAccess = ref(false)
+const showAccessError = ref(false)
+// 检查角色权限函数
+const checkRoleAccess = () => {
+  localStorage.getItem('role') === 'admin' ? roleAccess.value = true : roleAccess.value = false
+  if (!roleAccess.value) {
+    console.error('当前角色没有权限访问此功能')
+    showAccessError.value = true
+  } else {
+    showAccessError.value = false
+  }
+  return roleAccess.value
+}
+// 添加设备按钮需要检查角色权限
+const canAddDevice = () => {
+  if (!checkRoleAccess()) {
+    console.error('没有权限添加设备，当前角色:', localStorage.getItem('role'), '当前value:', roleAccess.value)
+    return
+  }
+  showAddDeviceModal.value = true
+}
+// 移除设备按钮需要检查角色权限
+const canRemoveDevice = () => {
+  if (!checkRoleAccess()) {
+    console.error('没有权限移除设备，当前角色:', localStorage.getItem('role'), '当前value:', roleAccess.value)
+    return
+  }
+  showRemoveDeviceModal.value = true
 }
 
-// 移除设备 (调用后端)
-async function removeDevice() {
-    if (!selectedDeviceToRemove.value) return
-    try {
-        const token = localStorage.getItem('authToken')
-        const res = await axios.post(
-            '/device/deleteByDeviceName',
-            null,
-            {
-                params: { deviceName: selectedDeviceToRemove.value.deviceName },
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: token
-                }
-            }
-        )
-        if (res.data.status === 200 && res.data.data === true) {
-            devices.value = devices.value.filter(
-                (d) => d.id !== selectedDeviceToRemove.value.deviceId
-            )
-            showRemoveDeviceModal.value = false
-            selectedDeviceToRemove.value = null
-            fetchAllDevices()
-        } else {
-            console.error('设备删除失败:', res.data.msg)
-        }
-    } catch (err) {
-        console.error('删除设备请求异常:', err)
-    }
-}
-
-// 从后端拉取设备列表
-async function fetchAllDevices() {
-    try {
-        const token = localStorage.getItem('authToken')
-        const res = await axios.get('/device/getall', {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: token
-            }
-        })
-        if (res.data && Array.isArray(res.data.data)) {
-            devices.value = res.data.data.map((item) => ({
-                id: item.deviceId,
-                name: item.deviceName,
-                state: item.status === '开启',
-                details: item.detail || ''
-            }))
-        }
-    } catch (err) {
-        console.error('获取设备列表失败', err)
-    }
-}
 
 // 页面挂载后加载设备
 onMounted(() => {
@@ -326,306 +354,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.device-page {
-    padding: 24px;
-    background-color: #f5f7fa;
-}
-
-/* 页面标题 */
-.page-title {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 16px;
-}
-
-/* 通用卡片样式 */
-.card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    padding: 24px;
-    margin-bottom: 24px;
-}
-
-/* 设备列表头部 */
-.device-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.device-actions .action-btn {
-    margin-left: 8px;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.add-btn {
-    background-color: #409eff;
-    color: #fff;
-}
-
-.add-btn:hover {
-    background-color: #2879c7;
-}
-
-.remove-btn {
-    background-color: #f56c6c;
-    color: #fff;
-}
-
-.remove-btn:hover {
-    background-color: #d43834;
-}
-
-/* 设备表格 */
-.device-table-container {
-    overflow-x: auto;
-}
-
-.device-table {
-    width: 100%;
-}
-
-.table-header,
-.table-row {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr 3fr;
-    gap: 16px;
-    align-items: center;
-    padding: 8px 0;
-}
-
-.table-header {
-    font-weight: bold;
-    border-bottom: 2px solid #e0e0e0;
-}
-
-.table-row {
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.device-on {
-    background-color: #f0f9eb;
-}
-
-/* 弹窗通用样式 */
-.device-modal,
-.access-error-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-.modal-content {
-    width: 360px;
-    max-width: 90%;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 24px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
-}
-
-.modal-content h3 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #333;
-}
-
-.form-group {
-    margin: 12px 0;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: #555;
-}
-
-.form-group input[type='text'],
-.form-group input[type='number'],
-.form-group select {
-    width: 100%;
-    padding: 6px 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-/* 开关样式 */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-    margin-right: 8px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.2s;
-    border-radius: 24px;
-}
-
-.slider:before {
-    position: absolute;
-    content: '';
-    height: 20px;
-    width: 20px;
-    left: 2px;
-    bottom: 2px;
-    background-color: #fff;
-    transition: 0.2s;
-    border-radius: 50%;
-}
-
-input:checked+.slider {
-    background-color: #409eff;
-}
-
-input:checked+.slider:before {
-    transform: translateX(26px);
-}
-
-.switch-label {
-    font-size: 14px;
-    vertical-align: middle;
-}
-
-/* 粒子特效 */
-.particle-container {
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-}
-
-.particle-container.active .particle {
-    animation: explode 0.4s ease-out forwards;
-}
-
-.particle {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background-color: #409eff;
-    border-radius: 50%;
-    top: 0;
-    left: 0;
-    transform-origin: 0 0;
-    opacity: 0;
-}
-
-@keyframes explode {
-    0% {
-        transform: scale(0.5);
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(1.5) translateY(-8px);
-        opacity: 0;
-    }
-}
-
-/* 弹窗按钮组 */
-.modal-actions {
-    margin-top: 16px;
-    text-align: right;
-}
-
-.cancel-btn,
-.confirm-btn {
-    padding: 6px 12px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.cancel-btn {
-    background-color: #f0f0f0;
-    color: #333;
-    margin-right: 8px;
-}
-
-.cancel-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.confirm-btn {
-    background-color: #409eff;
-    color: #fff;
-}
-
-.confirm-btn:disabled {
-    background-color: #a0cfff;
-    cursor: not-allowed;
-}
-
-.confirm-btn:hover:enabled {
-    background-color: #2879c7;
-}
-
-/* 权限弹窗样式*/
-.access-error-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.access-error-modal .modal-content {
-    border: rgb(78, 205, 196) solid 2px;
-    border-radius: 15px;
-}
-
-.access-error-modal .error-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--color-text);
-    background-color: rgb(78, 205, 196);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.access-error-modal .error-message {
-    font-size: 1rem;
-    font-style: italic;
-    color: var(--color-text);
-    margin-bottom: 20px;
-    text-align: center;
-}
+@import './Devices.css';
 </style>
