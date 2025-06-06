@@ -57,7 +57,7 @@ const activeArea = ref(null)
 
 // 区域配置
 const areas = ref([
-  { id: 'ac', name: '空调控制', icon: aircondition, component: 'AirConditioner' },
+  { id: 'ac', name: '空调', icon: aircondition, component: 'AirConditioner' },
   { id: 'living', name: '客厅', icon: livingroom, component: 'LivingRoomControl' },
   { id: 'kitchen', name: '厨房', icon: kitchen, component: 'KitchenControl' },
   { id: 'bedroom', name: '卧室', icon: bedroom, component: 'BedroomControl' },
