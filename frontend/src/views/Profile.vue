@@ -12,7 +12,6 @@
         <!-- 大头像，可点击上传新头像 -->
         <div class="avatar-large" @click="onClickAvatar" title="点击上传头像">
           <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-large-img" />
-          <!-- 可爱外框小星星 -->
           <div class="star-decor star-decor-1">✨</div>
           <div class="star-decor star-decor-2">🌟</div>
         </div>
@@ -32,16 +31,8 @@
     <section class="todo-summary card">
       <h2 class="section-title">📝 个人待办</h2>
       <div class="todo-input">
-        <input
-          v-model="newTodoText"
-          placeholder="输入待办事项"
-          class="todo-input-text"
-        />
-        <input
-          type="date"
-          v-model="newTodoDate"
-          class="todo-input-date"
-        />
+        <input v-model="newTodoText" placeholder="输入待办事项" class="todo-input-text" />
+        <input type="date" v-model="newTodoDate" class="todo-input-date" />
         <button class="add-todo-btn" @click="addTodo">添加</button>
       </div>
     </section>
@@ -153,12 +144,13 @@
 
 <script setup>
 import { ref, onMounted, watch, watchEffect, computed } from 'vue'
-import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 // 从 Profile.js 导入家庭成员相关逻辑
 import {
   familyMembers,
-  loadFamilyMembersFromApi
+  loadFamilyMembersFromApi,
+  mergeTodosFromStorage
 } from './Profile.js'
 
 // 从 DashboardLogic.js 导入全局状态与方法
@@ -167,194 +159,146 @@ import {
   roleName,
   inviteCode,
   toggleHomeStatus,
-  environmentData
+  environmentData, 
+  useTimeUpdater
 } from './DashboardLogic.js'
 
-import { useRouter } from 'vue-router'
+function formatLocalDate(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+useTimeUpdater()
 
 // 默认头像占位
 const defaultAvatar = '/src/assets/images/user.png'
 
-// 本地用户数据：avatar、username、inviteCode，来自 localStorage 或默认值
-const user = ref({
-  avatar: '',
-  username: '',
-  inviteCode: ''
-})
+// 本地用户数据：avatar
+const user = ref({ avatar: '' })
 
-// 文件输入框引用，用来触发系统文件选择
+// 文件输入框引用
 const avatarInput = ref(null)
-const AVATAR_KEY_PREFIX = 'dashboard_user_avatar_' // localStorage 键名前缀
+const AVATAR_KEY_PREFIX = 'dashboard_user_avatar_'
 
 const router = useRouter()
 
-// 点击大头像触发文件上传
-const onClickAvatar = () => {
-  if (avatarInput.value) {
-    avatarInput.value.click()
-  }
-}
-
-// 选择完文件后读取并存储到 localStorage
-const onFileChange = (e) => {
+// 头像上传 & 本地存储
+const onClickAvatar = () => avatarInput.value?.click()
+const onFileChange = e => {
   const file = e.target.files[0]
   if (!file) return
-
-  // 仅限 JPG/PNG 且小于 2MB
   if (!file.type.match(/^image\/(png|jpeg)$/) || file.size > 2 * 1024 * 1024) {
     alert('请上传 JPG/PNG 且小于 2MB 的图片')
     return
   }
-
   const reader = new FileReader()
-  reader.onload = (ev) => {
-    const base64Data = ev.target.result
-    user.value.avatar = base64Data
-    // 将头像存到 localStorage，以 “键前缀 + 用户名” 作为键
-    const key = AVATAR_KEY_PREFIX + username.value
-    localStorage.setItem(key, base64Data)
+  reader.onload = ev => {
+    user.value.avatar = ev.target.result
+    localStorage.setItem(AVATAR_KEY_PREFIX + username.value, ev.target.result)
   }
   reader.readAsDataURL(file)
 }
 
-// 监听 username 变化，在登录/登出或页面刷新时从 localStorage 读取头像
-watch(
-  username,
-  (newUsername) => {
-    if (!newUsername) {
-      user.value.avatar = ''
-      user.value.username = ''
-      user.value.inviteCode = ''
-      return
-    }
-    const key = AVATAR_KEY_PREFIX + newUsername
-    const saved = localStorage.getItem(key)
-    if (saved) {
-      user.value.avatar = saved
-    } else {
-      user.value.avatar = ''
-    }
-    user.value.username = newUsername
-    user.value.inviteCode = inviteCode.value || ''
-  },
-  { immediate: true }
-)
+// 监听 username 变化，加载头像 & 邀请码
+watch(username, newName => {
+  if (!newName) return (user.value.avatar = '')
+  const saved = localStorage.getItem(AVATAR_KEY_PREFIX + newName)
+  user.value.avatar = saved || ''
+}, { immediate: true })
 
-// 登出逻辑，清空 token 并跳转登录
+// 登出 & 复制邀请码
 const doLogout = () => {
   localStorage.removeItem('authToken')
   localStorage.removeItem('username')
   localStorage.removeItem('role')
   router.push('/login')
 }
-
-// 复制邀请码到剪贴板
 const copyInviteCode = () => {
-  if (!user.value.inviteCode) return
-  navigator.clipboard.writeText(user.value.inviteCode)
-    .then(() => {
-      alert('邀请码已复制到剪贴板')
-    })
-    .catch(err => {
-      console.error('复制失败:', err)
-    })
+  if (!inviteCode.value) return
+  navigator.clipboard.writeText(inviteCode.value)
+    .then(() => alert('邀请码已复制到剪贴板'))
+    .catch(() => {})
 }
 
-// 页面挂载时，初始化数据
+// 页面挂载：本地缓存优先，否则调用 API
 onMounted(async () => {
-  // 从 localStorage 提取用户名和角色
-  const storedUser = localStorage.getItem('username') || ''
-  const storedRole = localStorage.getItem('role')
-  if (storedUser) {
-    // username.value 已被 watch 监听，触发头像加载
-  }
-  // inviteCode 在 DashboardLogic.js 里已初始化为 localStorage 中的值
+  username.value = localStorage.getItem('username') || ''
+  roleName.value = localStorage.getItem('role') === 'admin' ? '管理员' : '普通用户'
+  inviteCode.value = localStorage.getItem('inviteCode') || ''
 
-  // 如果 familyMembers 为空，则调用 API 加载
-  if (familyMembers.value.length === 0) {
-    await loadFamilyMembersFromApi()
-  }
+  // —— 强制走 API 拿最新家庭成员 —— 
+  await loadFamilyMembersFromApi()
+
+  // —— 合并本地待办，不覆盖 todos —— 
+  mergeTodosFromStorage()
 })
 
-// 在监测到 environmentData.people 里更新后，解析出数字
-
-// 实时同步“在家人数”到 environmentData
+// 同步在家人数
 watchEffect(() => {
   const count = familyMembers.value.filter(m => m.isHome).length
   environmentData.people.value = `${count}人`
 })
 
-// 本地存储 familyMembers
-watch(familyMembers, (newVal) => {
-  localStorage.setItem('familyMembers', JSON.stringify(newVal))
+// —— 新增：初始化完成前的标志 —— 
+const isInitializing = ref(true)
+
+// —— 替换掉原有的深度 watch(familyMembers) 用下面的 —— 
+watch(familyMembers, newVal => {
+  // 只有在初始化阶段结束后，才把更新写入 localStorage
+  if (!isInitializing.value) {
+    localStorage.setItem(
+      'familyMembers',
+      JSON.stringify(familyMembers.value)
+    )
+  }
 }, { deep: true })
 
-const peopleCount = computed(() => {
-  const val = environmentData.people.value // e.g. "3人"
-  return val
-})
 
+const peopleCount = computed(() => environmentData.people.value)
 
-// 本地存储 familyMembers
-watch(familyMembers, (newVal) => {
-  localStorage.setItem('familyMembers', JSON.stringify(newVal))
-}, { deep: true })
+// —— 待办事项相关 ——
 
-// —— 新增：待办事项相关逻辑 ——
+// 当前用户对象
+const currentMember = computed(() =>
+  familyMembers.value.find(m => m.name === username.value)
+)
 
-// 获取当前用户在 familyMembers 中对应的成员对象
-const currentMember = computed(() => {
-  return familyMembers.value.find(m => m.name === username.value)
-})
-
-// 新待办输入状态
 const newTodoText = ref('')
 const newTodoDate = ref('')
 
-// 添加待办
 const addTodo = () => {
   if (!newTodoText.value || !newTodoDate.value) {
-    alert('请输入待办事项内容并选择日期')
-    return
+    return alert('请输入待办事项内容并选择日期')
   }
   if (!currentMember.value) {
-    alert('未能找到当前用户，请先确认用户名是否正确')
-    return
+    return alert('未找到当前用户，请确认用户名')
   }
-  // 初始化 todos 数组（如果之前只有字符串，这里直接转换为对象数组）
   if (!Array.isArray(currentMember.value.todos)) {
     currentMember.value.todos = []
   }
-  // 如果原 todos 中是字符串模式，将其保留为今天的任务
-  currentMember.value.todos = currentMember.value.todos.map(item => {
-    if (typeof item === 'string') {
-      // 假设旧格式的未指定日期，默认归为今天
-      return { text: item, date: new Date().toISOString().split('T')[0] }
-    }
-    return item
-  })
-  // 添加新的待办
+  currentMember.value.todos = currentMember.value.todos.map(item =>
+    typeof item === 'string'
+      ? { text: item, date: formatLocalDate(new Date()) }
+      : item
+  )
   currentMember.value.todos.push({
     text: newTodoText.value,
     date: newTodoDate.value
   })
-  // 清空输入
   newTodoText.value = ''
   newTodoDate.value = ''
-  // 更新 localStorage
   localStorage.setItem('familyMembers', JSON.stringify(familyMembers.value))
 }
 
-// 今日待办数量
 const todaysTodosCount = computed(() => {
-  if (!currentMember.value || !currentMember.value.todos) return 0
-  const todayStr = new Date().toISOString().split('T')[0]
-  return currentMember.value.todos.filter(todo => todo.date === todayStr).length
+  if (!currentMember.value?.todos) return 0
+  const today = formatLocalDate(new Date())
+  return currentMember.value.todos.filter(t => t.date === today).length
 })
 
-// —— 新增：一周待办日历逻辑 ——
-
-// 获取本周周一日期
+// —— 一周待办日历 —— 
 function getMonday(d) {
   const date = new Date(d)
   const day = date.getDay()
@@ -362,73 +306,41 @@ function getMonday(d) {
   date.setDate(date.getDate() + diff)
   return new Date(date.getFullYear(), date.getMonth(), date.getDate())
 }
-
-// 存储当前周一
 const weekStart = ref(getMonday(new Date()))
-
-// 生成本周 7 天日期数组
-const weekDates = computed(() => {
-  const arr = []
-  for (let i = 0; i < 7; i++) {
-    const tmp = new Date(weekStart.value)
-    tmp.setDate(tmp.getDate() + i)
-    arr.push(tmp)
-  }
-  return arr
-})
-
-// 星期几中文简写
-const dayNames = ['一', '二', '三', '四', '五', '六', '日']
-
-// 判断是否为今天
-function isToday(date) {
-  const today = new Date()
+const weekDates = computed(() =>
+  Array.from({ length: 7 }, (_, i) => {
+    const dt = new Date(weekStart.value)
+    dt.setDate(dt.getDate() + i)
+    return dt
+  })
+)
+const dayNames = ['一','二','三','四','五','六','日']
+const isToday = date => {
+  const t = new Date()
   return (
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate()
+    date.getFullYear() === t.getFullYear() &&
+    date.getMonth() === t.getMonth() &&
+    date.getDate() === t.getDate()
   )
 }
-
-// 获取某天所有待办（含成员名称）
 function todosForDate(date) {
-  const dateStr = date.toISOString().split('T')[0]
+  const ds = formatLocalDate(date)
   const list = []
-  familyMembers.value.forEach(member => {
-    if (member.todos && Array.isArray(member.todos)) {
-      member.todos.forEach(todo => {
-        if (todo.date === dateStr) {
-          list.push({ text: `${member.name}: ${todo.text}` })
-        }
-      })
-    }
+  familyMembers.value.forEach(m => {
+    m.todos?.forEach(t => {
+      if (t.date === ds) list.push({ text: `${m.name}: ${t.text}` })
+    })
   })
   return list
 }
-
-// 上一周/下一周
-const prevWeek = () => {
-  const tmp = new Date(weekStart.value)
-  tmp.setDate(tmp.getDate() - 7)
-  weekStart.value = tmp
-}
-const nextWeek = () => {
-  const tmp = new Date(weekStart.value)
-  tmp.setDate(tmp.getDate() + 7)
-  weekStart.value = tmp
-}
-
-// 周展示范围文字
+const prevWeek = () => weekStart.value.setDate(weekStart.value.getDate() - 7)
+const nextWeek = () => weekStart.value.setDate(weekStart.value.getDate() + 7)
 const weekRangeText = computed(() => {
-  const start = weekStart.value
-  const end = new Date(start)
-  end.setDate(end.getDate() + 6)
-  const padZero = (n) => (n < 10 ? '0' + n : n)
-  return (
-    `${start.getFullYear()}/${padZero(start.getMonth() + 1)}/${padZero(start.getDate())}` +
-    ' - ' +
-    `${end.getFullYear()}/${padZero(end.getMonth() + 1)}/${padZero(end.getDate())}`
-  )
+  const s = weekStart.value
+  const e = new Date(s); e.setDate(e.getDate() + 6)
+  const f = n => (n<10?'0'+n:n)
+  return `${s.getFullYear()}/${f(s.getMonth()+1)}/${f(s.getDate())}` +
+         ` - ${e.getFullYear()}/${f(e.getMonth()+1)}/${f(e.getDate())}`
 })
 </script>
 
