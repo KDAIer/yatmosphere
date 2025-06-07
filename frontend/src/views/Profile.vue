@@ -55,7 +55,6 @@
           <h2 class="section-title">📊 今日待办统计</h2>
           <div class="todo-counts">
             <div class="todo-item">
-              <span class="member-name">你</span>
               <span class="count">{{ todaysTodosCount }}</span> 条待办
             </div>
           </div>
