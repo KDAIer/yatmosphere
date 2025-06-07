@@ -3,7 +3,7 @@
   <div class="profile-page">
     <!-- 顶部可爱横幅 -->
   <div class="banner">
-     <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
+     <!-- <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" /> -->
     <span class="gradient-text">Yatmosphere</span> 家庭管理中心
   </div>
 

@@ -2,7 +2,7 @@
 <template>
   <div class="device-page">
     <div class="banner">
-      <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
+      <!-- <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" /> -->
       <span class="gradient-text">Yatmosphere</span> 设备管理中心</div>
 
 
@@ -13,11 +13,11 @@
         <h2>📋 设备列表</h2>
         <div class="device-actions">
           <button class="action-btn add-btn" @click="canAddDevice">
-            ➕ 添加设备
+            添加设备
 
           </button>
           <button class="action-btn remove-btn" @click="canRemoveDevice">
-            ➖ 移除设备
+            移除设备
 
           </button>
         </div>
@@ -71,8 +71,8 @@
       v-if="showAddDeviceModal"
       @click.self="showAddDeviceModal = false"
     >
-      <div class="modal-content">
-        <h3>➕ 添加新设备</h3>
+      <div class="modal-card">
+        <h3>添加新设备</h3>
 
         <!-- 设备类型 -->
         <div class="form-group">
@@ -167,8 +167,8 @@
         </template>
 
         <div class="modal-actions">
-          <button class="cancel-btn" @click="showAddDeviceModal = false">❌ 取消</button>
-          <button class="confirm-btn" @click="addDevice">✅ 确认添加</button>
+          <button class="cancel-btn" @click="showAddDeviceModal = false">取消</button>
+          <button class="confirm-btn" @click="addDevice">确认</button>
         </div>
       </div>
     </div>
@@ -179,8 +179,8 @@
       v-if="showRemoveDeviceModal"
       @click.self="showRemoveDeviceModal = false"
     >
-      <div class="modal-content">
-        <h3>➖ 移除设备</h3>
+      <div class="modal-card">
+        <h3>移除设备</h3>
         <div class="form-group">
           <label>选择要移除的设备：</label>
           <select v-model="selectedDeviceToRemove">
@@ -195,14 +195,14 @@
         </div>
         <div class="modal-actions">
           <button class="cancel-btn" @click="showRemoveDeviceModal = false">
-            ❌ 取消
+             取消
           </button>
           <button
             class="confirm-btn"
             @click="removeDevice"
             :disabled="!selectedDeviceToRemove"
           >
-            ✅ 确认移除
+            确认
           </button>
         </div>
       </div>
@@ -215,6 +215,7 @@
       @click.self="showAccessError = false"
     >
       <div class="modal-content">
+        <button class="close-btn" @click="showAccessError = false">✖</button>
         <h3 class="error-title"><span style="color: #ff6b6b">⚠️</span> 权限错误</h3>
         <p class="error-message">您没有权限使用此功能，请联系管理员</p>
       </div>
@@ -441,7 +442,9 @@ const removeDevice = async () => {
 
 // 角色权限相关
 const roleAccess = ref(false)
+// const showAccessError = ref(true) //前端调试
 const showAccessError = ref(false)
+
 // 检查角色权限函数
 const checkRoleAccess = () => {
   localStorage.getItem('role') === 'admin'

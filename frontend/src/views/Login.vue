@@ -268,12 +268,11 @@ try {
     errorMessage.value = '请求发送失败：' + error.message
   }
 }
-
 }
 
 
 
-// 模拟登录
+// //模拟登录
 // const handleLogin = async () => {
 //   if (!username.value || !password.value) {
 //     errorMessage.value = '请填写所有字段'

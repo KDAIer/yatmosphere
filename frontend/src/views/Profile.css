@@ -49,7 +49,7 @@
 /* 合并后的待办卡片 */
 .todo-card.card {
   background: var(--color-device-card-bg); /* 使用主题背景 */
-  border: 2px dashed #4851f293;
+  border: 2px  #4851f293;
   border-radius: 2px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -132,7 +132,7 @@
 /* ---------- 环境数据概览 ---------- */
 .env-summary {
     background-color: var(--color-device-card-bg);
-    border: 2px dashed #96f2d693;
+    border: 2px  #96f2d693;
 }
 
 .env-items {
@@ -166,7 +166,7 @@
 /* ---------- 一周待办日历 ---------- */
 .calendar-section {
     background-color:var(--color-device-card-bg);
-    border: 2px dashed #ffd53b91;
+    border: 2px  #ffd53b91;
 }
 
 .calendar-controls {
@@ -451,15 +451,15 @@
 }
 
 .logout-btn {
-    margin-top: 12px;
-    background: linear-gradient(120deg, #a0cef896, #0d3b608e);
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.1);
     color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 12px;
+    border:1px solid #ffffff;
+    padding-inline:10px;
+    padding-block: 8px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 15px;
-    box-shadow: 0 2px 4px rgba(2, 6, 48, 0.4);
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
@@ -474,7 +474,7 @@
     color: var(--color-text);
     font-size: 22px;
     margin-bottom: 16px;
-    text-shadow: 1px 1px 1px rgba(214, 51, 132, 0.2);
+    text-shadow: 1px 1px 1px rgba(29, 1, 15, 0.2);
 }
 
 .member-table-container {
