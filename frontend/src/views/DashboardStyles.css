@@ -1781,13 +1781,14 @@ input:checked+.slider:before {
   overflow: hidden;
   position: relative;
   padding: 0;
+  min-height: 300px; /* 调整为所需高度，例如 300px */
 }
 
 .weather-header {
   background: linear-gradient(135deg, #4fc3f7, #0288d1);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   padding: 8px 12px;
   color: #fff;
   font-weight: 600;
@@ -1825,12 +1826,12 @@ input:checked+.slider:before {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 18px;
 }
 
 .weather-icon {
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   background-size: contain;
   background-repeat: no-repeat;
   animation: spin 10s linear infinite;
@@ -1867,7 +1868,7 @@ input:checked+.slider:before {
 
 .weather-desc {
   text-align: center;
-  margin-top: 8px;
+  margin-top: 12px;
   font-size: 14px;
   color: #555;
 }
@@ -1875,14 +1876,14 @@ input:checked+.slider:before {
 .weather-minmax {
   display: flex;
   justify-content: space-around;
-  margin-top: 12px;
+  margin-top: 18px;
 }
 
 .min-box,
 .max-box {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
   font-size: 14px;
   color: #555;
 }
@@ -1901,7 +1902,7 @@ input:checked+.slider:before {
 .footer-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   color: #555;
   font-size: 14px;
 }
@@ -1917,6 +1918,7 @@ input:checked+.slider:before {
   overflow: hidden;
   padding: 0;
   position: relative;
+  min-height: 300px; /* 增加高度，使面板更长 */
 }
 
 .gps-header {
@@ -2154,7 +2156,7 @@ input:checked+.slider:before {
 }
 
 .mode-dialog {
-  background: white;
+  background: var(--color-modal-bg);
   padding: 2rem;
   border-radius: 8px;
   text-align: center;

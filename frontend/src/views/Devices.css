@@ -1,71 +1,48 @@
-/* 整页布局与背景 */
-
-:root[data-theme="light"] .banner {
-    text-align: center;
-    font-size: 20px;
-    color: #d63384;
-    background-color: rgba(255, 223, 223, 0.8);
-    padding: 10px 0;
-    border-radius: 12px;
-    border: 2px dashed #ffb6c1;
-    box-shadow: 0 2px 6px rgba(255, 182, 193, 0.4);
-    margin-bottom: 16px;
-}
-
-:root[data-theme="light"] .page-title {
-    font-size: 26px;
-    color: #d63384;
-    margin-bottom: 24px;
-    text-shadow: 1px 1px 2px rgba(214, 51, 132, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* 通用卡片 */
-:root[data-theme="light"] .card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 24px;
-}
 
 /* 可爱横幅 */
 .banner {
     text-align: center;
-    font-size: 20px;
-    color: #d63384;
-    background-color: rgba(255, 223, 223, 0.8);
-    padding: 10px 0;
-    border-radius: 12px;
-    border: 2px dashed #ffb6c1;
-    box-shadow: 0 2px 6px rgba(255, 182, 193, 0.4);
-    margin-bottom: 16px;
+    font-size: 30px;
+    color: var(--color-text);
+    background-color:var(--color-device-card-bg);
+    padding: 12px 0;
+    border-radius:0px;
+
+    width : 60%;
+    margin: 0 auto;
 }
 
-/* 页面标题 */
-.page-title {
-    font-size: 26px;
-    color: #d63384;
-    margin-bottom: 24px;
-    text-shadow: 1px 1px 2px rgba(214, 51, 132, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* 渐变文本样式 */
+.gradient-text {
+  background: linear-gradient(120deg, #e929e2, #1242e2); /* 渐变从左到右，颜色可调整 */
+  -webkit-background-clip: text; /* 让背景渐变只应用于文本 */
+  background-clip: text; /* 标准属性，兼容性更好 */
+  color: transparent; /* 使文本颜色透明，显示渐变背景 */
+  display: inline-block; /* 确保渐变正确应用 */
+}
+
+.header-logo {
+  width: 60px;
+  /* 调整图标大小 */
+  height: 60px;
+  position: absolute;
+  /* 左上角定位 */
+  top: 0.5rem;
+  left: 0rem;
+  margin-left: 600px;
 }
 
 /* 通用卡片样式 */
 .card {
-    background-color: #ffffff;
-    border-radius: 12px;
+    background-color:var(--color-device-card-bg);
+    border-radius: 0px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 24px;
     position: relative;
     overflow: hidden;
     margin-bottom: 24px;
+    width: 60%;
+    margin: 0 auto;
 }
 
 /* 设备列表头部 */
@@ -78,11 +55,11 @@
 
 .device-list-header h2 {
     font-size: 20px;
-    color: #d63384;
+    color: var(--color-text);
     display: flex;
     align-items: center;
     gap: 6px;
-    text-shadow: 1px 1px 1px rgba(214, 51, 132, 0.2);
+    text-shadow: 1px 1px 1px rgba(71, 0, 36, 0.2);
 }
 
 /* 操作按钮 */
@@ -91,7 +68,7 @@
     margin-left: 8px;
     padding: 8px 16px;
     border: none;
-    border-radius: 999px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     color: #fff;
@@ -99,33 +76,20 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.device-actions .action-btn .btn-star {
+.device-actions .action-btn {
     margin-left: 6px;
-    animation: star-twinkle 1.5s infinite;
 }
 
-@keyframes star-twinkle {
 
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.4;
-        transform: scale(1.3);
-    }
-}
 
 .add-btn {
-    background: linear-gradient(120deg, #ffb6c1, #ff69b4);
-    box-shadow: 0 2px 4px rgba(255, 105, 180, 0.4);
+    background: linear-gradient(120deg, #62b0f08c, #076eb381);
+    box-shadow: 0 2px 4px rgba(4, 21, 119, 0.4);
 }
 
 .add-btn:hover {
     transform: scale(1.05) rotate(-2deg);
-    box-shadow: 0 4px 8px rgba(255, 105, 180, 0.6);
+    box-shadow: 0 4px 8px rgba(8, 70, 150, 0.6);
 }
 
 .remove-btn {
@@ -134,7 +98,7 @@
 }
 
 .remove-btn:hover {
-    transform: scale(1.05) rotate(2deg);
+    transform: scale(1.05) rotate(-2deg);
     box-shadow: 0 4px 8px rgba(245, 108, 108, 0.6);
 }
 
@@ -148,6 +112,7 @@
     border-radius: 8px;
     overflow: hidden;
     border: 2px solid #eee;
+    
 }
 
 /* 表头 */
@@ -157,10 +122,11 @@
     gap: 16px;
     align-items: center;
     padding: 12px 0;
-    background-color: #ffe3e3;
-    color: #333;
+    background: linear-gradient(120deg, #63a6d6, #1277ea93);
+    color: var(--color-text);
     font-weight: bold;
     border-bottom: 2px solid #f0f0f0;
+    text-align: center; /* Added to center text */
 }
 
 /* 表身 */
@@ -181,17 +147,18 @@
     padding: 10px 0;
     border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s ease, transform 0.2s ease;
+    text-align: center; /* Added to center text */
 }
 
 /* 鼠标悬停效果 */
 .table-row:hover {
-    background-color: #fff0f5;
+    background-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-1px);
 }
 
 /* 打开状态高亮 */
 .device-on {
-    background-color: #f0f9eb;
+    background:linear-gradient(120deg, #dcf3cd8e, rgba(123, 237, 167, 0.674));
 }
 
 /* 弹窗背景蒙层 */
@@ -425,8 +392,8 @@ input:checked+.slider:before {
 .device-list::after {
     content: '🌟';
     position: absolute;
-    font-size: 32px;
-    color: rgba(255, 182, 193, 0.3);
+    font-size: 52px;
+    color: rgb(255, 255, 255,0.5);
     animation: float 6s ease-in-out infinite;
 }
 

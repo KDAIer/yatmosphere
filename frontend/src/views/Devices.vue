@@ -1,9 +1,11 @@
 <!-- src/views/Devices.vue -->
 <template>
   <div class="device-page">
-    <div class="banner">🔌✨ 设备管理中心 ✨🔌</div>
+    <div class="banner">
+      <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
+      <span class="gradient-text">Yatmosphere</span> 设备管理中心</div>
 
-    <h1 class="page-title">🛠️ 设备管理</h1>
+
 
     <!-- 设备列表 -->
     <section class="device-list card">
@@ -12,11 +14,11 @@
         <div class="device-actions">
           <button class="action-btn add-btn" @click="canAddDevice">
             ➕ 添加设备
-            <span class="btn-star">★</span>
+
           </button>
           <button class="action-btn remove-btn" @click="canRemoveDevice">
             ➖ 移除设备
-            <span class="btn-star">★</span>
+
           </button>
         </div>
       </div>

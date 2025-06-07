@@ -6,9 +6,9 @@
 
     <!-- 侧边栏主体 -->
     <aside v-show="showSidebar" :class="['sidebar', { collapsed }]">
-        <!-- 侧边栏头部：关闭按钮（✖）和折叠按钮（❯/❮）各占一行 -->
+        <!-- 侧边栏头部：关闭按钮（✖）和折叠按钮（❯/❮） -->
         <div class="sidebar-header">
-            <button class="close-btn" @click="showSidebar = false" title="关闭侧边栏">✖</button>
+            <button v-if="!collapsed" class="close-btn" @click="showSidebar = false" title="关闭侧边栏">✖</button>
 
             <button class="collapse-btn" @click.stop="toggleCollapse" :title="collapsed ? '展开侧边栏' : '收起侧边栏'">
                 <span v-if="collapsed">❯</span>
@@ -16,7 +16,7 @@
             </button>
 
             <!-- 标题仅在展开时显示 -->
-            <h2 v-if="!collapsed" class="header-title">智能家居</h2>
+            <h2 v-if="!collapsed" class="header-title">Yatmosphere</h2>
         </div>
 
         <!-- 导航菜单 -->
@@ -35,7 +35,7 @@
                 <li>
                     <router-link to="/profile" class="nav-link" :class="{ active: isActive('/profile') }"
                         :title="collapsed ? '家庭管理' : ''">
-                        <span class="icon">👤</span>
+                        <span class="icon">👪️</span>
                         <transition name="fade">
                             <span v-if="!collapsed" class="label">家庭管理</span>
                         </transition>
@@ -55,19 +55,12 @@
             </ul>
         </nav>
 
-        <!-- 设置按钮：折叠或展开时均可显示 -->
-        <div class="settings-toggle-container">
-            <button class="settings-toggle-btn" @click="toggleExtras" :title="showExtras ? '隐藏设置面板' : '显示设置面板'">
-                <span class="settings-icon">⚙️</span>
-            </button>
-        </div>
-
-        <!-- 额外控制面板：仅在“设置”按钮被点击且未折叠时显示 -->
+        <!-- 额外控制面板：仅在未折叠时显示 -->
         <transition name="slide-fade">
-            <div v-if="showExtras && !collapsed" class="extras-panel">
+            <div v-if="!collapsed" class="extras-panel">
                 <!-- BGM 播放/暂停 -->
                 <button class="extras-btn" @click="toggleMusic" :title="isPlaying ? '暂停背景音乐' : '播放背景音乐'">
-                    <span class="icon">🎵</span>
+                    <span class="icon">🎼</span>
                     <span class="label">BGM {{ isPlaying ? '暂停' : '播放' }}</span>
                 </button>
                 <!-- 黑夜/白天模式切换 -->
@@ -83,15 +76,15 @@
             </div>
         </transition>
 
-        <!-- 底部：退出登录 -->
-        <div class="sidebar-footer">
-            <button class="logout-btn" @click="handleLogout" :title="collapsed ? '退出登录' : ''">
-                <span class="icon">🚪</span>
-                <transition name="fade">
-                    <span v-if="!collapsed" class="label">退出登录</span>
-                </transition>
-            </button>
-        </div>
+        <!-- 底部：退出登录，仅在未折叠时显示 -->
+        <transition name="slide-fade">
+            <div v-if="!collapsed" class="sidebar-footer">
+                <button class="logout-btn" @click="handleLogout" title="退出登录">
+                    <span class="icon"></span>
+                    <span class="label">退出登录</span>
+                </button>
+            </div>
+        </transition>
 
         <!-- 隐藏的 BGM 播放器 -->
         <audio ref="bgMusicRef" autoplay loop preload="auto" style="display: none;">
@@ -212,25 +205,8 @@ function handleLogout() {
     background-color: rgba(30, 30, 30, 0.9);
 }
 
-/* 整体侧边栏 */
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(to bottom, #2e3a4e, #1f2732);
-    color: #e0e6ed;
-    transition: width 0.3s ease, background 0.3s ease;
-    width: 220px;
-    min-height: 100vh;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
-    position: relative;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    z-index: 999;
-}
 
-/* 折叠状态 */
-.sidebar.collapsed {
-    width: 64px !important;
-}
+
 
 /* 头部：上下两行布局 */
 .sidebar-header {
@@ -242,6 +218,9 @@ function handleLogout() {
 }
 
 .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* 右上角定位 */
     background: none;
     border: none;
     color: #e0e6ed;
@@ -278,8 +257,11 @@ function handleLogout() {
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    white-space: nowrap;
-    color: #f1f5f9;
+    background: linear-gradient(120deg, #c035f7, #22a5fd); /* 渐变从左到右，颜色可调整 */
+  -webkit-background-clip: text; /* 让背景渐变只应用于文本 */
+  background-clip: text; /* 标准属性，兼容性更好 */
+  color: transparent; /* 使文本颜色透明，显示渐变背景 */
+  display: inline-block; /* 确保渐变正确应用 */
 }
 
 /* 导航菜单 */
@@ -320,12 +302,12 @@ function handleLogout() {
 }
 
 .nav-link.active {
-    background-color: #3a4756;
+    background-color: #31557e;
     color: #ffffff;
 }
 
 .nav-link.active:hover {
-    background-color: #3a4756;
+    background-color: #071b32;
     transform: none;
     box-shadow: none;
 }
@@ -512,19 +494,30 @@ function handleLogout() {
 
 
 
-
-
 /* 基础侧边栏样式 */
 .sidebar {
-    position: fixed;
+    display: flex;
+    flex-direction: column;
+    color: #e0e6ed;
+    transition: width 0.3s ease, background 0.3s ease;
+    width: 220px;
+    min-height: 100vh;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 999;
+        position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
-    background: linear-gradient(to bottom, #2e3a4e, #1f2732);
-    color: #e0e6ed;
-    z-index: 1000;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(190deg, #061e46, #0380b5ce);
+
 }
+
+/* 折叠状态 */
+.sidebar.collapsed {
+    width: 64px !important;
+}
+
 
 /* 桌面端样式 */
 .sidebar:not(.mobile-view) {

@@ -1,62 +1,75 @@
-/* src/views/Profile.css */
-
-/* ---------- 整页背景与间距 ---------- */
-/* 白天模式 (light) */
-:root[data-theme="light"] .profile-page {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 24px;
-    background: var(--color-device-card-on-bg);
-    min-height: 100vh;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-}
-
-/* 黑夜模式 (dark) */
-:root[data-theme="dark"] .profile-page {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 24px;
-    background: var(--color-device-card-on-bg);
-    min-height: 100vh;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    color: #e0e0e0;
-}
-
 /* ---------- 顶部横幅 ---------- */
 .banner {
     text-align: center;
-    font-size: 20px;
-    color: #d63384;
-    background-color: rgba(255, 223, 223, 0.8);
+    font-size: 30px;
+    color: var(--color-text);
+    background-color:var(--color-device-card-bg); 
     padding: 12px 0;
-    border-radius: 12px;
-    border: 2px dashed #ffb6c1;
-    box-shadow: 0 2px 6px rgba(255, 182, 193, 0.4);
+    border-radius: 0px;
+    border: 0px;
+
+    width: 60%;
+    margin: 0 auto;
+}
+
+/* 渐变文本样式 */
+.gradient-text {
+  background: linear-gradient(120deg, #e929e2, #1242e2); /* 渐变从左到右，颜色可调整 */
+  -webkit-background-clip: text; /* 让背景渐变只应用于文本 */
+  background-clip: text; /* 标准属性，兼容性更好 */
+  color: transparent; /* 使文本颜色透明，显示渐变背景 */
+  display: inline-block; /* 确保渐变正确应用 */
+}
+
+.header-logo {
+  width: 60px;
+  /* 调整图标大小 */
+  height: 60px;
+  position: absolute;
+  /* 左上角定位 */
+  top: 0.5rem;
+  left: 0rem;
+  margin-left: 600px;
 }
 
 /* ---------- 通用卡片样式 ---------- */
 .card {
-    background-color: #ffffff;
-    border-radius: 12px;
+    width: 60%;
+    background-color:var(--color-device-card-bg);
+    border-radius: 0px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 24px;
     position: relative;
     overflow: hidden;
+    margin: 0 auto; /* 水平居中 */
+    
 }
 
 /* ---------- 待办事项样式 ---------- */
-.todo-summary {
-    background-color: #fff0f5;
-    border: 2px dashed #ffb6c1;
+/* 合并后的待办卡片 */
+.todo-card.card {
+  background: var(--color-device-card-bg); /* 使用主题背景 */
+  border: 2px dashed #4851f293;
+  border-radius: 2px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 两个部分之间的间距 */
+}
+
+/* 个人待办录入部分 */
+.todo-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 标题与输入框之间的间距 */
 }
 
 .section-title {
     margin: 0 0 12px;
     font-size: 20px;
-    color: #d63384;
-    text-shadow: 1px 1px 1px rgba(214, 51, 132, 0.2);
+    color: var(--color-text);
+    text-shadow: 1px 1px 1px rgba(32, 4, 18, 0.2);
 }
 
 .todo-counts {
@@ -66,7 +79,7 @@
 }
 
 .todo-item {
-    background-color: #ffe3e3;
+    background-color: #ffe3e37b;
     padding: 8px 12px;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(255, 105, 180, 0.3);
@@ -80,7 +93,7 @@
 }
 
 .todo-item .count {
-    color: #d63384;
+    color:#333 ;
     font-weight: bold;
 }
 
@@ -101,11 +114,11 @@
 }
 
 .add-todo-btn {
-    background: linear-gradient(120deg, #74c0fc, #228be6);
+    background: linear-gradient(120deg, #74c1fcbd, #228be6be);
     color: #fff;
     border: none;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: 8px;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(34, 139, 230, 0.4);
     transition: transform 0.2s, box-shadow 0.2s;
@@ -118,8 +131,8 @@
 
 /* ---------- 环境数据概览 ---------- */
 .env-summary {
-    background-color: #e3fff3;
-    border: 2px dashed #96f2d7;
+    background-color: var(--color-device-card-bg);
+    border: 2px dashed #96f2d693;
 }
 
 .env-items {
@@ -152,8 +165,8 @@
 
 /* ---------- 一周待办日历 ---------- */
 .calendar-section {
-    background-color: #faf3e0;
-    border: 2px dashed #ffd43b;
+    background-color:var(--color-device-card-bg);
+    border: 2px dashed #ffd53b91;
 }
 
 .calendar-controls {
@@ -165,7 +178,7 @@
 }
 
 .cal-btn {
-    background: linear-gradient(120deg, #ffd43b, #ffa94d);
+    background: linear-gradient(120deg, #ffd53bcf, #ffa94dc4);
     color: #fff;
     border: none;
     border-radius: 50%;
@@ -185,7 +198,7 @@
 .cal-month {
     font-size: 18px;
     font-weight: 500;
-    color: #d97706;
+    color:var(--color-text);
 }
 
 .calendar-grid {
@@ -233,6 +246,7 @@
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 4px;
+    color:#000317;
 }
 
 .day-todos {
@@ -274,7 +288,7 @@
 
 .avatar-large:hover {
     transform: scale(1.05) rotate(-3deg);
-    border-color: #ff69b4;
+    border-color: #04b2ec;
 }
 
 .avatar-large-img {
@@ -283,37 +297,130 @@
     object-fit: cover;
 }
 
-/* 可爱小星星装饰 */
-.star-decor {
-    position: absolute;
-    font-size: 18px;
-}
 
-.star-decor-1 {
-    top: -8px;
-    left: -8px;
-}
-
-.star-decor-2 {
-    bottom: -8px;
-    right: -8px;
-}
 
 /* 用户信息详情 */
-.profile-info {
+.profile-container {
+  position: relative; /* 确保星星相对于卡片定位 */
+  overflow: hidden; /* 防止星星溢出卡片 */
+  padding: 20px;
+  background: var(--color-device-card-bg);
+  border-radius: 0px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 星星容器 */
+.stars-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 70%;
+  height: 100%;
+  pointer-events: none; /* 防止星星干扰用户交互 */
+}
+
+/* 星星样式 */
+.star {
+  position: absolute;
+  font-size: 40px; /* 星星大小 */
+  color: #ffd700; /* 金色星星，可调整 */
+  animation: fall 3.5s linear infinite; /* 动画：3秒，线性，无限循环 */
+}
+
+/* 每个星星的起始位置和延迟 */
+.star:nth-child(1) {
+  top: -13%;
+  right: -13%;
+  animation-delay: 0s;
+}
+.star:nth-child(2) {
+  top: -40%;
+  right: -10%;
+  animation-delay: 0.5s;
+}
+.star:nth-child(3) {
+  top: -20%;
+  right: -15%;
+  animation-delay: 1s;
+}
+.star:nth-child(4) {
+  top: -30%;
+  right: -30%;
+  animation-delay: 1.5s;
+}
+
+/* 星星滑落动画 */
+@keyframes fall {
+  0% {
+    transform: translate(100, -200);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(-600px, 800px); /* 向左下移动 */
+    opacity: 0.0; /* 完全透明 */
+  }
+  100% {
+    transform: translate(-800px, 800px); /* 保持在终点位置 */
+    opacity: 0; /* 保持透明，直到动画重置 */
+  }
+}
+
+/* 太阳样式 */
+.sun {
+  position: absolute;
+  font-size: 450px; /* 太阳稍大 */
+  color: #ffd700; /* 金色，适配白天模式 */
+  top: -100%;
+  right: -35%;
+  animation: rotate 10s linear infinite; /* 旋转动画，10秒一圈 */
+}
+
+/* 旋转动画（太阳） */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* 白天模式：显示太阳，隐藏星星 */
+[data-theme="light"] .sun {
+  display: block;
+}
+[data-theme="light"] .star {
+  display: none;
+}
+
+/* 黑夜模式：显示星星，隐藏太阳 */
+[data-theme="dark"] .sun {
+  display: none;
+}
+[data-theme="dark"] .star {
+  display: block;
+}
+
+
+.profile-header{
+ margin-left: 40px; /* 向右移动 20px，可调整数值 */
+ padding: 15px 0; /* 上下各 15px 内边距，左右保持 0 */
+}
+
+.profile-info { 
+   
     flex: 1;
 }
 
 .profile-title {
     margin: 0;
     font-size: 26px;
-    color: #d63384;
-    text-shadow: 1px 1px 2px rgba(214, 51, 132, 0.3);
+    color:var(--color-text);
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.311);
 }
 
 .role-line {
     margin: 8px 0;
-    color: #555;
+    color: #ffffff;
     font-size: 16px;
 }
 
@@ -323,48 +430,48 @@
     gap: 12px;
     margin: 8px 0;
     font-size: 16px;
-    color: #555;
+    color: #ffffff;
 }
 
 .copy-btn {
-    background: linear-gradient(120deg, #ffb6c1, #ff69b4);
+    background: linear-gradient(120deg, #9eddf073, #04489691);
     color: #fff;
     border: none;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
-    box-shadow: 0 2px 4px rgba(255, 105, 180, 0.4);
+    box-shadow: 0 2px 4px rgba(1, 32, 78, 0.4);
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .copy-btn:hover {
-    background: linear-gradient(120deg, #ff69b4, #ff1493);
+    background: linear-gradient(120deg, #044aa6, #000317);
     transform: scale(1.05);
 }
 
 .logout-btn {
     margin-top: 12px;
-    background: linear-gradient(120deg, #ff7f7f, #ff4d4f);
+    background: linear-gradient(120deg, #a0cef896, #0d3b608e);
     color: #fff;
     border: none;
     padding: 8px 16px;
-    border-radius: 999px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 15px;
-    box-shadow: 0 2px 4px rgba(255, 77, 79, 0.4);
+    box-shadow: 0 2px 4px rgba(2, 6, 48, 0.4);
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .logout-btn:hover {
-    background: linear-gradient(120deg, #ff4d4f, #e60000);
+    background: linear-gradient(120deg, #314d8b, #000f1b);
     transform: scale(1.05);
 }
 
 /* 家庭成员列表 */
 .member-list h2.member-title {
     margin-top: 0;
-    color: #d63384;
+    color: var(--color-text);
     font-size: 22px;
     margin-bottom: 16px;
     text-shadow: 1px 1px 1px rgba(214, 51, 132, 0.2);

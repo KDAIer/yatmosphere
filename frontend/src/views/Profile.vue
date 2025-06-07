@@ -2,9 +2,10 @@
 <template>
   <div class="profile-page">
     <!-- 顶部可爱横幅 -->
-    <div class="banner">
-      🐰 欢迎来到家庭管理中心 🐰
-    </div>
+  <div class="banner">
+     <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
+    <span class="gradient-text">Yatmosphere</span> 家庭管理中心
+  </div>
 
     <!-- 个人信息卡片 -->
     <section class="profile-container card">
@@ -12,41 +13,86 @@
         <!-- 大头像，可点击上传新头像 -->
         <div class="avatar-large" @click="onClickAvatar" title="点击上传头像">
           <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-large-img" />
-          <div class="star-decor star-decor-1">✨</div>
-          <div class="star-decor star-decor-2">🌟</div>
+
         </div>
         <div class="profile-info">
           <h1 class="profile-title">Hi, {{ username }}！</h1>
-          <p class="role-line">🎀 <strong>角色：</strong> {{ roleName }}</p>
+          <p class="role-line"> <strong>角色：</strong> {{ roleName }}</p>
           <p class="invite-code">
-            🎁 <strong>家庭邀请码：</strong> {{ inviteCode }}
+            <strong>家庭邀请码：</strong> {{ inviteCode }}
             <button class="copy-btn" @click="copyInviteCode" title="复制邀请码">复制</button>
           </p>
-          <button class="logout-btn" @click="doLogout" title="退出登录">💖 退出登录 💖</button>
+          <button class="logout-btn" @click="doLogout" title="退出登录"> 退出登录 </button>
         </div>
       </div>
-    </section>
 
-    <!-- 个人待办录入 -->
-    <section class="todo-summary card">
-      <h2 class="section-title">📝 个人待办</h2>
-      <div class="todo-input">
-        <input v-model="newTodoText" placeholder="输入待办事项" class="todo-input-text" />
-        <input type="date" v-model="newTodoDate" class="todo-input-date" />
-        <button class="add-todo-btn" @click="addTodo">添加</button>
+          <!-- 星星动画容器 -->
+      <div class="stars-container">
+        <span class="sun">☀️</span>
+        <span class="star">🌟</span>
+        <span class="star">⭐</span>
+        <span class="star">🌟</span>
+        <span class="star">✨</span>
       </div>
+
     </section>
 
-    <!-- 今日待办统计 -->
-    <section class="todo-summary card">
-      <h2 class="section-title">📊 今日待办统计</h2>
-      <div class="todo-counts">
-        <div class="todo-item">
-          <span class="member-name">你</span>
-          <span class="count">{{ todaysTodosCount }}</span> 条待办
+
+      <!-- 合并后的待办卡片 -->
+      <section class="todo-card card">
+        <!-- 个人待办录入 -->
+        <div class="todo-input-section">
+          <h2 class="section-title">📝 个人待办</h2>
+          <div class="todo-input">
+            <input v-model="newTodoText" placeholder="输入待办事项" class="todo-input-text" />
+            <input type="date" v-model="newTodoDate" class="todo-input-date" />
+            <button class="add-todo-btn" @click="addTodo">添加</button>
+          </div>
         </div>
-      </div>
-    </section>
+
+        <!-- 今日待办统计 -->
+        <div class="todo-summary-section">
+          <h2 class="section-title">📊 今日待办统计</h2>
+          <div class="todo-counts">
+            <div class="todo-item">
+              <span class="member-name">你</span>
+              <span class="count">{{ todaysTodosCount }}</span> 条待办
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 一周待办日历 -->
+      <section class="calendar-section card">
+        <h2 class="section-title">📆 一周待办日历</h2>
+        <div class="calendar-controls">
+          <button class="cal-btn" @click="prevWeek">‹</button>
+          <span class="cal-month">{{ weekRangeText }}</span>
+          <button class="cal-btn" @click="nextWeek">›</button>
+        </div>
+        <div class="calendar-grid">
+          <div class="day-header" v-for="(day, idx) in dayNames" :key="idx">
+            周{{ day }}
+          </div>
+          <div
+            v-for="(date, idx) in weekDates"
+            :key="idx"
+            class="day-cell"
+            :class="{ today: isToday(date) }"
+          >
+            <div class="date-number">{{ date.getDate() }}</div>
+            <div class="day-todos">
+              <div
+                v-for="(todo, i) in todosForDate(date)"
+                :key="i"
+                class="todo-item"
+              >
+                {{ todo.text }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
     <!-- 家庭在家人数统计 -->
     <section class="env-summary card">
@@ -59,37 +105,6 @@
       </div>
     </section>
 
-    <!-- 一周待办日历 -->
-    <section class="calendar-section card">
-      <h2 class="section-title">📆 一周待办日历</h2>
-      <div class="calendar-controls">
-        <button class="cal-btn" @click="prevWeek">‹</button>
-        <span class="cal-month">{{ weekRangeText }}</span>
-        <button class="cal-btn" @click="nextWeek">›</button>
-      </div>
-      <div class="calendar-grid">
-        <div class="day-header" v-for="(day, idx) in dayNames" :key="idx">
-          周{{ day }}
-        </div>
-        <div
-          v-for="(date, idx) in weekDates"
-          :key="idx"
-          class="day-cell"
-          :class="{ today: isToday(date) }"
-        >
-          <div class="date-number">{{ date.getDate() }}</div>
-          <div class="day-todos">
-            <div
-              v-for="(todo, i) in todosForDate(date)"
-              :key="i"
-              class="todo-item"
-            >
-              {{ todo.text }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- 家庭成员列表 -->
     <section class="member-list card">
@@ -104,7 +119,7 @@
               :class="{ admin: member.isAdmin }"
             >
               <div class="member-info">
-                <span class="member-name">🌸 {{ member.name }}</span>
+                <span class="member-name"> {{ member.name }}</span>
                 <span v-if="member.isAdmin" class="admin-badge">管理员</span>
                 <span
                   class="home-badge"

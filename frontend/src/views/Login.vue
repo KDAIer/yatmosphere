@@ -150,78 +150,6 @@ const videoRef = ref(null)
 // 视频淡出状态
 const isVideoFading = ref(false)
 
-// // 组件挂载后确保视频播放
-// onMounted(async () => {
-//   await nextTick()
-  
-//   if (videoRef.value) {
-//     console.log('开始尝试播放视频...')
-//     console.log('视频元素存在:', !!videoRef.value)
-//     console.log('视频src:', videoRef.value.currentSrc || videoRef.value.src)
-    
-//     // 确保视频可见
-//     videoRef.value.style.display = 'block'
-//     videoRef.value.style.visibility = 'visible'
-//     videoRef.value.style.opacity = '1'
-    
-//     // 直接尝试播放
-//     try {
-//       setTimeout(async () => {
-//         try {
-//           console.log('视频readyState:', videoRef.value.readyState)
-//           console.log('视频paused:', videoRef.value.paused)
-          
-//           if (videoRef.value.readyState >= 3) {
-//             await videoRef.value.play()
-//             console.log('视频播放成功')
-//             console.log('视频是否在播放:', !videoRef.value.paused)
-//           } else {
-//             console.log('视频未准备好，等待加载...')
-//             videoRef.value.addEventListener('canplay', async () => {
-//               try {
-//                 await videoRef.value.play()
-//                 console.log('延迟播放成功')
-//               } catch (e) {
-//                 console.log('延迟播放失败:', e)
-//               }
-//             }, { once: true })
-//           }
-//         } catch (error) {
-//           console.log('视频播放失败:', error)
-//           // 添加点击播放的提示
-//           const container = document.querySelector('.auth-container')
-//           if (container && !container.dataset.clickAdded) {
-//             container.dataset.clickAdded = 'true'
-//             container.addEventListener('click', async () => {
-//               try {
-//                 await videoRef.value.play()
-//                 console.log('用户交互后播放成功')
-//               } catch (e) {
-//                 console.log('用户交互后播放仍然失败:', e)
-//                 handleVideoPlayError()
-//               }
-//             }, { once: true })
-//             console.log('请点击页面以播放视频')
-//           }
-//         }
-//       }, 200)
-//     } catch (error) {
-//       console.log('视频加载失败:', error)
-//       handleVideoPlayError()
-//     }
-//   } else {
-//     console.log('视频元素未找到')
-//   }
-// })
-
-// // 视频播放失败处理
-// const handleVideoPlayError = () => {
-//   console.log('使用备用背景')
-//   if (videoRef.value) {
-//     videoRef.value.style.display = 'none'
-//   }
-// }
-
 // 组件挂载后确保视频播放
 onMounted(async () => {
   await nextTick()
@@ -298,6 +226,7 @@ const generateInviteCode = () => {
   return 'FAM-' + Math.random().toString(36).substring(2, 8).toUpperCase()
 }
 
+
 const handleLogin = async () => {
   if (!username.value || !password.value) {
     errorMessage.value = '请填写所有字段'
@@ -341,6 +270,34 @@ try {
 }
 
 }
+
+
+
+// 模拟登录
+// const handleLogin = async () => {
+//   if (!username.value || !password.value) {
+//     errorMessage.value = '请填写所有字段'
+//     return
+//   }
+
+//   // 模拟登录成功
+//   isLoading.value = true
+//   errorMessage.value = ''
+//   successMessage.value = '登录成功！'
+
+//   // 模拟存储 token 和用户信息到 localStorage
+//   localStorage.setItem('authToken', 'mock-token-123')
+//   localStorage.setItem('username', username.value)
+//   localStorage.setItem('role', userType.value || 'member')
+//   localStorage.setItem('inviteCode', '')
+
+//   // 延迟跳转以模拟真实体验
+//   setTimeout(() => {
+//     router.push('/dashboard')
+//   }, 1000)
+// }
+
+
 
 const handleRegister = async () => {
   if (!username.value || !password.value) {

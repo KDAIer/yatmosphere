@@ -36,6 +36,8 @@
   --color-device-table-bg: rgb(127, 183, 209);
   --color-member-row-bg: rgba(174, 212, 218, 0.3);
   --color-modal-bg:rgb(255, 255, 255);
+  --color-date-text:rgb(250, 166, 55);
+  --color-todo:#90eef37e;
 }
 
 /* 黑夜模式 */
@@ -55,6 +57,8 @@
   --color-device-table-bg: rgba(7, 21, 40, 0.9);
   --color-member-row-bg: rgba(4, 20, 47,0.5);
   --color-modal-bg:rgb(0, 0, 0, 0.9);
+  --color-date-text:rgba(68, 33, 0, 0.7);
+  --color-todo:rgba(59, 246, 243, 0.397);
 }
 
 /* 过渡效果 */
