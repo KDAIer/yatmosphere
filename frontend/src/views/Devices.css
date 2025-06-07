@@ -152,12 +152,12 @@
 
 /* 鼠标悬停效果 */
 .table-row:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(245, 68, 68, 0.4);
     transform: translateY(-1px);
 }
 
 /* 打开状态高亮 */
-.device-on {
+.device-on:hover {
     background:linear-gradient(120deg, #dcf3cd8e, rgba(123, 237, 167, 0.674));
 }
 
