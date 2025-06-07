@@ -63,6 +63,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px; /* 标题与输入框之间的间距 */
+  
 }
 
 .section-title {
@@ -107,10 +108,23 @@
 .todo-input-text,
 .todo-input-date {
     flex: 1;
-    padding: 6px 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
+  background-color: transparent; /* 设置背景透明 */
+  border: 2px solid #ffffffc3; /* 保持边框可见，避免完全不可见 */
+  border-radius: 8px;
+  color:var(--color-text); /* 确保文字可见 */
+  padding: 8px; /* 保持内边距，优化用户体验 */
+  outline: none; /* 移除默认焦点边框（可选） */
+  transition: border-color 0.3s; /* 添加平滑的边框颜色过渡效果 */
+}
+/* 可选：输入框聚焦时的样式 */
+.todo-input-text:focus,
+.todo-input-date:focus {
+  border-color: #409eff; /* 聚焦时边框高亮 */
+}
+
+/* 可选：占位符样式，确保占位文字可见 */
+.todo-input-text::placeholder {
+  color:var(--color-text); /* 占位符文字颜色 */
 }
 
 .add-todo-btn {
@@ -221,7 +235,7 @@
     padding: 4px;
     border-radius: 4px;
     position: relative;
-    background-color: #ffffff;
+    background-color: #ffffff97;
     transition: background-color 0.2s ease;
     display: flex;
     flex-direction: column;
@@ -496,17 +510,17 @@
 
 .member-row {
     padding: 14px 18px;
-    border: 2px dashed #f0f0f0;
-    border-radius: 12px;
+    border: 1px #f0f0f0;
+    border-radius: 0px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background-color: #fafafa;
+    background-color: var(--color-device-card-bg);
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .member-row:hover {
-    background-color: #fff0f5;
+    background-color: #fff0f588;
     transform: translateY(-2px);
 }
 
@@ -524,7 +538,7 @@
 
 .member-name {
     font-weight: 600;
-    color: #333;
+    color:var(--color-text);
     font-size: 17px;
 }
 

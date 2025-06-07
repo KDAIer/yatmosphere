@@ -755,6 +755,16 @@ function closeNotifications() {
   showNotifications.value = false
 }
 
+// 处理点击外部关闭下拉框
+const searchContainer = ref(null); // 用于存储 search-container 的 DOM 引用
+const handleClickOutside = (event) => {
+  if (searchContainer.value && !searchContainer.value.contains(event.target)) {
+    showSearchResults.value = false;
+  }
+};
+
+
+
 // 角色权限相关
 const roleAccess = ref(false)
 const showAccessError = ref(false)
@@ -785,6 +795,8 @@ const canRemoveDevice = () => {
   }
   showRemoveDeviceModal.value = true
 }
+
+
 
 </script>
 

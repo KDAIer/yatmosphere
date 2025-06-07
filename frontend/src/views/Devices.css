@@ -192,7 +192,7 @@
 .access-error-modal .modal-content {
   width: 350px; /* 稍宽，提升视觉舒适度 */
   max-width: 90%;
-  background: var(--color-device-card-on-bg); /* 使用主题背景 */
+  background: var(--color-error); /* 使用主题背景 */
   border-radius: 16px; /* 更大圆角，更柔和 */
   border-color: #333;
   padding: 30px; /* 增加内边距 */

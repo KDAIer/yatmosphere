@@ -1048,25 +1048,34 @@
 }
 
 .access-error-modal .modal-content {
-  border: rgb(78, 205, 196) solid 2px;
-  border-radius: 15px;
+  width: 350px; /* 稍宽，提升视觉舒适度 */
+  max-width: 90%;
+  background: var(--color-error); /* 使用主题背景 */
+  border-radius: 16px; /* 更大圆角，更柔和 */
+  border-color: #333;
+  padding: 30px; /* 增加内边距 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.527); /* 更明显阴影 */
+  position: relative;
+  animation: modalFadeIn 0.3s ease-out; /* 淡入动画 */
 }
 
 .access-error-modal .error-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--color-text);
-  background-color: rgb(78, 205, 196);
-  margin-bottom: 20px;
+  margin: 5px 40px 16px;
+  font-size: 30px; /* 稍大字体 */
+  font-weight: 700;
+  background: var(--color-text); /* 渐变标题 */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* 渐变效果 */
   text-align: center;
 }
 
 .access-error-modal .error-message {
-  font-size: 1rem;
-  font-style: italic;
-  color: var(--color-text);
-  margin-bottom: 20px;
+  font-size: 16px;
+  color: var(--color-text); /* 使用主题文字颜色 */
   text-align: center;
+  line-height: 1.5; /* 增加行高，提升可读性 */
+  margin-bottom: 24px;
 }
 
 /* 表单组样式 */
@@ -1591,73 +1600,117 @@ input:checked+.slider:before {
 }
 
 /* --- 搜索框 --- */
+/* 搜索框容器 */
 .search-container {
   position: relative;
   display: flex;
   align-items: center;
+  width: 200px; /* 可根据需要调整宽度 */
 }
 
+/* 搜索输入框 */
 .search-input {
-  width: 180px;
-  padding: 6px 32px 6px 12px;
+  width: 100%;
+  padding: 10px 40px 10px 15px; /* 留出右侧按钮空间 */
+  background-color: rgba(255, 255, 255, 0.084); /* 半透明背景 */
+  border: 1px solid #ffffff; /* 浅灰边框 */
+  border-radius: 15px; /* 圆角 */
+  color: #ffffff; /* 文字颜色 */
   font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: width 0.2s ease, border-color 0.2s;
-}
-
-.search-input:focus {
-  width: 220px;
   outline: none;
-  border-color: #409eff;
+  transition: all 0.3s ease; /* 平滑过渡 */
+  backdrop-filter: blur(5px); /* 玻璃磨砂效果 */
 }
 
+/* 输入框聚焦效果 */
+.search-input:focus {
+  border-color: #409eff; /* 聚焦时边框高亮 */
+  background-color: rgba(255, 255, 255, 0.2); /* 略微加深背景 */
+  box-shadow: 0 0 8px rgba(64, 158, 255, 0.3); /* 聚焦阴影 */
+}
+
+/* 输入框占位符 */
+.search-input::placeholder {
+  color: #ffffffa2; /* 占位符颜色 */
+  font-style: italic; /* 可选：斜体占位符 */
+}
+
+/* 搜索按钮 */
 .search-btn {
   position: absolute;
-  right: 4px;
+  right: 10px;
   background: none;
   border: none;
+  font-size: 18px;
+  color: #ffffff;
   cursor: pointer;
-  font-size: 16px;
-  color: #888;
-  transition: color 0.2s;
+  transition: color 0.3s ease, transform 0.2s ease;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; /* 圆形按钮 */
 }
 
+/* 搜索按钮悬停效果 */
 .search-btn:hover {
-  color: #333;
+  color: #409eff;
+  background-color: rgba(64, 158, 255, 0.1); /* 悬停时背景 */
+  transform: scale(1.1); /* 轻微放大 */
 }
 
-/* --- 搜索结果下拉 --- */
+/* 搜索结果下拉框 */
 .search-results {
   position: absolute;
-  top: 38px;
+  top: 100%;
   left: 0;
-  width: 100%;
-  max-height: 180px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-top: none;
-  overflow-y: auto;
-  border-radius: 0 0 4px 4px;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  right: 0;
+  background-color: #fff; /* 白色背景 */
+  border-radius: 10px; /* 圆角 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 阴影 */
+  max-height: 200px; /* 限制高度 */
+  overflow-y: auto; /* 启用滚动 */
+  z-index: 1000; /* 确保在其他元素上方 */
+  margin-top: 5px;
 }
 
+/* 搜索结果项 */
 .result-item {
-  padding: 8px 12px;
+  padding: 10px 15px;
   font-size: 14px;
+  color: #333;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
+/* 结果项悬停效果 */
 .result-item:hover {
-  background-color: #f0f0f0;
+  background-color: #f5f7fa; /* 悬停背景 */
+  color: #409eff; /* 文字高亮 */
 }
 
+/* 无结果提示 */
 .no-results {
-  padding: 8px 12px;
+  padding: 10px 15px;
   font-size: 14px;
-  color: #666;
+  color: #999;
+  text-align: center;
+}
+
+/* 优化滚动条（可选，现代浏览器支持） */
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* --- 通知图标 --- */
@@ -1667,9 +1720,45 @@ input:checked+.slider:before {
 }
 
 .notification-icon {
-  font-size: 20px;
+  display: inline-block; /* 确保 transform 生效 */
+  font-size: 25px;
   color: #555;
   transition: color 0.2s;
+  cursor: pointer;
+  animation: swing 5.6s ease-in-out infinite; /* 5秒静止 + 0.6秒摇晃 */
+  transform-origin: top center; /* 支点设在顶部 */
+}
+
+@keyframes swing {
+  /* 前5秒保持静止 */
+  0% {
+    transform: rotate(0deg);
+  }
+  89.29% { /* 5s / 5.6s ≈ 89.29% */
+    transform: rotate(0deg);
+  }
+  /* 快速摇晃三下（0.6秒内完成） */
+  90.18% { /* 5.01s / 5.6s */
+    transform: rotate(10deg); /* 第一次向右 */
+  }
+  91.07% { /* 5.06s / 5.6s */
+    transform: rotate(-10deg); /* 第一次向左 */
+  }
+  92.86% { /* 5.2s / 5.6s */
+    transform: rotate(10deg); /* 第二次向右 */
+  }
+  94.64% { /* 5.3s / 5.6s */
+    transform: rotate(-10deg); /* 第二次向左 */
+  }
+  96.43% { /* 5.4s / 5.6s */
+    transform: rotate(10deg); /* 第三次向右 */
+  }
+  98.21% { /* 5.5s / 5.6s */
+    transform: rotate(-10deg); /* 第三次向左 */
+  }
+  100% { /* 5.6s / 5.6s */
+    transform: rotate(0deg); /* 回到原位 */
+  }
 }
 
 .notification-container:hover .notification-icon {
@@ -1678,8 +1767,8 @@ input:checked+.slider:before {
 
 .notification-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -1px;
+  right: -1px;
   background-color: #ff4d4f;
   color: #fff;
   font-size: 10px;
@@ -1695,59 +1784,95 @@ input:checked+.slider:before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5); /* 背景略加深，增强对比 */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 50;
+  z-index: 1000; /* 提高 z-index，确保在其他元素上方 */
+  animation: fadeIn 0.3s ease-in; /* 弹窗背景淡入 */
 }
 
 .notification-modal {
   width: 360px;
   max-width: 90%;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+  background-color:var(--color-modal-bg); /* 半透明白色背景 */
+  border-radius: 12px; /* 更大圆角，现代感 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* 柔和阴影 */
   overflow: hidden;
+  backdrop-filter: blur(8px); /* 玻璃磨砂效果 */
+  animation: slideIn 0.3s ease-out; /* 弹窗滑入动画 */
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
+  padding: 14px 20px;
+  background-color: transparent; /* 移除单独背景，与 modal 统一 */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* 更淡的分割线 */
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #333;
+  font-weight: 500; /* 减轻字体粗细，优雅感 */
+  color:var(--color-text); /* 更深的文字颜色 */
+  letter-spacing: 0.5px; /* 增加字间距 */
 }
 
 .close-modal-btn {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 22px; /* 按钮稍大 */
   color: #777;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* 圆形按钮 */
 }
 
 .close-modal-btn:hover {
-  color: #333;
+  color: #409eff; /* 与搜索框高亮色一致 */
+  background-color: rgba(64, 158, 255, 0.1); /* 悬停背景 */
+  transform: scale(1.1); /* 轻微放大 */
 }
 
 .modal-body {
-  max-height: 300px;
+  max-height: 320px; /* 略增高度，容纳更多通知 */
   overflow-y: auto;
-  padding: 12px 16px;
+  padding: 16px 20px;
+}
+
+/* 美化滚动条 */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .notification-item {
-  padding: 10px 8px;
-  border-bottom: 1px solid #eee;
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* 更淡的分割线 */
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer; /* 通知项可点击 */
+  animation: fadeInItem 0.3s ease-in forwards; /* 通知项逐个淡入 */
+  animation-delay: calc(var(--index) * 0.1s); /* 每项延迟显示 */
+}
+
+.notification-item:hover {
+  background-color: rgba(64, 158, 255, 0.05); /* 悬停浅蓝背景 */
+  transform: translateX(5px); /* 轻微右移 */
 }
 
 .notification-item:last-child {
@@ -1757,21 +1882,56 @@ input:checked+.slider:before {
 .note-text {
   margin: 0;
   font-size: 14px;
-  color: #444;
+  color:var(--color-text);
+  line-height: 1.5; /* 增加行高，易读 */
 }
 
 .note-time {
   display: block;
-  margin-top: 4px;
+  margin-top: 6px;
   font-size: 12px;
   color: #999;
+  font-style: italic; /* 斜体时间，增加层次 */
 }
 
 .no-notifications {
   text-align: center;
   color: #999;
   font-size: 14px;
-  padding: 20px 0;
+  padding: 24px 0;
+  font-style: italic;
+}
+
+/* 动画 keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInItem {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 天气面板 */
