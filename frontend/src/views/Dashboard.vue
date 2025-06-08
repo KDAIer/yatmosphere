@@ -329,7 +329,7 @@ const devices = ref([])
 import { defineEmits } from 'vue'
 import defaultAvatar from '@/assets/images/user.png'
 const emit = defineEmits(['refresh-devices'])
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, computed, nextTick, onActivated } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   theme,
@@ -380,20 +380,25 @@ const router = useRouter()
 
 const user = ref({ avatar: '' })
 
-// 页面挂载时可从 localStorage 或后端获取用户头像
-onMounted(async () => {
-  const storedAvatar = localStorage.getItem('dashboard_user_avatar_' + localStorage.getItem('username'))
+// 抽离出一个加载头像的方法
+async function loadAvatar() {
+  const key = 'dashboard_user_avatar_' + localStorage.getItem('username')
+  const storedAvatar = localStorage.getItem(key)
   if (storedAvatar) {
     user.value.avatar = storedAvatar
-  } else {
   }
-})
+}
+
+// 首次挂载加载一次
+onMounted(loadAvatar)
+
+// 每次 keep-alive 激活时也加载一次
+onActivated(loadAvatar)
 
 // 点击头像直接跳转到 /profile
 function goToProfile() {
   router.push('/profile')
 }
-
 // 天气预报
 const weather = ref({
   loading: true,
