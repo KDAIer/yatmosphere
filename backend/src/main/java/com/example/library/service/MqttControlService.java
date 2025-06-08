@@ -69,6 +69,19 @@ public class MqttControlService implements MqttCallback {
         System.out.println("Published create command to topic " + topic + ": " + payload);
     }
 
+    // 发布删除设备的命令到删除主题
+    public void deleteDevice(String deviceId, String deviceType) throws MqttException {
+        String topic = "device/unregister";
+        // 构建 JSON 负载
+        String payload = String.format(
+                "{\"msg_id\": \"%s\", \"device_id\": \"%s\", \"device_type\": \"%s\"}",
+                System.currentTimeMillis(), deviceId, deviceType);
+        MqttMessage message = new MqttMessage(payload.getBytes());
+        message.setQos(1);
+        client.publish(topic, message);
+        System.out.println("Published delete command to topic " + topic + ": " + payload);
+    }
+
     // 在 bean 初始化后订阅响应主题
     @PostConstruct
     public void subscribeResponseTopic() {
