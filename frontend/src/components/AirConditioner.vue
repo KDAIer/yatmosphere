@@ -150,8 +150,8 @@ const fetchDevices = async () => {
       name: item.deviceName,
       temperature: item.temperature ?? 22,
       mode: item.mode || '制冷',
-      isPowerOn: item.isPowerOn ?? false,
-      fanSpeed: item.fanSpeed ?? 3 // Default fan speed
+      isPowerOn: item.status ?? false,
+      fanSpeed: item.fanLevel ?? 3 // Default fan speed
     }))
     if (devices.value.length > 0) {
       selectedDevice.value = devices.value[0].id
