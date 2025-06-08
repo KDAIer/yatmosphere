@@ -24,7 +24,6 @@
       </div>
 
       <!-- 右侧：搜索框 + 通知 + 头像 -->
-      <div class="header-right">
         <!-- 搜索框 -->
         <div class="search-container">
           <input type="text" v-model="searchQuery" @focus="showSearchResults = true" @keyup.enter="onSearch"
@@ -52,7 +51,6 @@
         <div class="user-avatar" @click="goToProfile" title="查看个人信息">
           <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar-img" />
         </div>
-      </div>
     </header>
 
     <!-- 通知弹窗 -->
