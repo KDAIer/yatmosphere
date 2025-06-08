@@ -79,13 +79,13 @@
     gap: 16px;
 }
 
-.todo-item {
-    background-color: #ffe3e37b;
+.todo-counts .todo-item {
+    background-color:var(--color-day-cell);
     padding: 8px 12px;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(255, 105, 180, 0.3);
     font-size: 14px;
-    color: #333;
+    color: var(--color-text);
 }
 
 .todo-item .member-name {
@@ -94,7 +94,7 @@
 }
 
 .todo-item .count {
-    color:#333 ;
+    color:var(--color-text);
     font-weight: bold;
 }
 
@@ -159,21 +159,21 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #ffffff;
+    background-color: var(--color-day-cell);
     padding: 8px 12px;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(46, 125, 50, 0.2);
+    box-shadow: 0 1px 3px rgba(36, 108, 39, 0.256);
 }
 
 .env-label {
-    font-size: 14px;
-    color: #2e7d32;
+    font-size: 16px;
+    color:var(--color-num-home);
     font-weight: 500;
 }
 
 .env-value {
     font-size: 16px;
-    color: #0f5132;
+    color: #55d398;
     font-weight: bold;
 }
 
@@ -235,7 +235,7 @@
     padding: 4px;
     border-radius: 4px;
     position: relative;
-    background-color: #ffffff97;
+    background-color:var(--color-day-cell);
     transition: background-color 0.2s ease;
     display: flex;
     flex-direction: column;
@@ -247,7 +247,7 @@
 }
 
 .day-cell.today {
-    background-color: #ffeed4;
+    background-color: rgba(184, 141, 47, 0.317);
     border: 2px solid #ffaa00;
 }
 
@@ -260,7 +260,7 @@
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 4px;
-    color:#000317;
+    color:var(--color-text);
 }
 
 .day-todos {
@@ -515,7 +515,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background-color: var(--color-device-card-bg);
+    background-color: var(--color-member-row);
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -566,8 +566,8 @@
 }
 
 .home-badge.away {
-    background-color: #ffe0e0;
-    color: #c62828;
+    background-color: var(--color-homw-away);
+    color: #ea4242;
     box-shadow: 0 1px 3px rgba(198, 40, 40, 0.3);
 }
 
@@ -582,12 +582,12 @@
     gap: 6px;
 }
 
-.todo-item {
-    background-color: #fff;
+.member-todos .todo-item {
+    background-color:var(--color-day-cell);
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 15px;
-    color: #444;
+    color:var(--color-text);
     border: 1px solid #f0f0f0;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
