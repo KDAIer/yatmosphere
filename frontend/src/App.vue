@@ -1,17 +1,24 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
-    <!-- 如果路由是 /login，就只渲染登录页 -->
+    <!-- 登录页单独处理 -->
     <template v-if="isLoginRoute">
       <router-view />
     </template>
 
-    <!-- 其他路由，渲染带侧边栏的布局 -->
+    <!-- 主布局 -->
     <template v-else>
       <div class="layout-wrapper">
         <Sidebar />
         <div class="main-content">
-          <router-view />
+          <router-view v-slot="{ Component, route }">
+            <!-- 只对Dashboard组件进行缓存 -->
+            <keep-alive include="Dashboard">
+              <component
+                :is="Component"
+                :key="route.meta.usePathKey ? route.path : undefined"
+              />
+            </keep-alive>
+          </router-view>
         </div>
       </div>
     </template>
