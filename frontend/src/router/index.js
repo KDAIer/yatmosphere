@@ -6,10 +6,17 @@ import Devices from '@/views/Devices.vue'
 
 const routes = [
   { path: '/login', component: Login },
-  { path: '/dashboard', component: Dashboard },
+  {
+    path: '/dashboard',
+    component: Dashboard,
+    meta: {
+      keepAlive: true // 添加此元标记
+    }
+  },
+
   { path: '/profile', component: Profile },
   { path: '/devices', component: Devices },
-  { path: '/', redirect: '/login' } // 修改根路径重定向为登录页面
+  { path: '/', redirect: '/login' }
 ]
 
 const router = createRouter({
@@ -17,7 +24,7 @@ const router = createRouter({
   routes
 })
 
-// 添加全局路由守卫，未登录时跳转到 /login
+// 添加全局路由守卫
 router.beforeEach((to, from, next) => {
   const authToken = localStorage.getItem('authToken')
   if (!authToken && to.path !== '/login') {
