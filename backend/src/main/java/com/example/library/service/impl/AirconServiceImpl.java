@@ -1,6 +1,7 @@
 package com.example.library.service.impl;
 
 import com.example.library.common.service.impl.BaseServiceImpl;
+import com.example.library.controller.DeviceControlController;
 import com.example.library.etc.ServiceException;
 import com.example.library.mapper.AirconMapper;
 import com.example.library.mapper.DeviceMapper;
@@ -9,7 +10,9 @@ import com.example.library.pojo.entity.Device;
 import com.example.library.pojo.vo.Result;
 import com.example.library.service.AirconService;
 import com.example.library.service.DeviceService;
+import com.example.library.service.MqttControlService;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,8 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
     private AirconMapper airconMapper;
     @Resource
     private DeviceMapper deviceMapper;
+    @Autowired
+    private MqttControlService mqttControlService;
 
 
     @Override
@@ -44,6 +49,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
 //            // 更新设备详情
 //            airconMapper.updateDeviceDetail(deviceName, detail);
 //        }
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_eco");
+            request.setValue("on");
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         // 返回更新结果
         return updated > 0;
     }
@@ -59,6 +78,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
 //        double newTemp = aircon.getTemperature();
 //        String newDetail = updateDetailTemperature(oldDetail, newTemp);
 //        airconMapper.updateDeviceDetail(deviceName, newDetail);
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_eco");
+            request.setValue("off");
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         return updated > 0;
     }
 
@@ -69,7 +102,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         if (level < 1 || level > 5) {
             throw new IllegalArgumentException("风量等级必须在 1-5 范围内");
         }
-
+        // 发送 MQTT 命令
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_fan_level");
+            request.setValue(level);
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         System.out.println("deviceName:" + deviceName + ", level:" + level);
         int updated = airconMapper.setWindLevel(deviceName, level);
         return updated > 0;
@@ -94,6 +140,19 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         String newDetail = formatDetail(aircon.getTemperature(), mode);
         // 更新空调mode和设备描述detail
         int updated = airconMapper.updateModeByDeviceId(deviceId, mode, newDetail);
+        // 发送 MQTT 命令
+        try {
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_mode");
+            request.setValue(mode);
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         return updated > 0;
     }
 
@@ -102,6 +161,19 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
     public boolean updateAirconPower(String deviceId, int status) {
         int updatedAircon = airconMapper.updatePowerByDeviceId(deviceId, status);
         int updatedDevice = deviceMapper.updateStatusByDeviceId(deviceId, status);
+        // 发送 MQTT 命令
+        try {
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_power");
+            request.setValue(status == 1 ? "on" : "off");
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         return updatedAircon > 0 && updatedDevice > 0;
     }
 
@@ -135,6 +207,13 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         // 再插入aircon表
         int airconResult = airconMapper.insertAircon(aircon);
 
+        // 发送MQTT命令
+        try {
+            mqttControlService.createDevice(aircon.getDeviceId(), "air_conditioner");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         return deviceResult > 0 && airconResult > 0;
     }
 
@@ -149,6 +228,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
         double newTemp = aircon.getTemperature();
         String newDetail = updateDetailTemperature(oldDetail, newTemp);
         airconMapper.updateDeviceDetail(deviceName, newDetail);
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_temperature");
+            request.setValue(newTemp);
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         return updated > 0;
     }
 
@@ -166,6 +259,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
             // 更新设备详情
             airconMapper.updateDeviceDetail(deviceName, detail);
         }
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_temperature");
+            request.setValue(aircon.getTemperature());
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         // 返回更新结果
         return updated > 0;
     }
@@ -180,6 +287,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
             String detail = formatDetail(aircon.getTemperature(), aircon.getMode());
             // 更新设备详情
             airconMapper.updateDeviceDetail(deviceName, detail);
+        }
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_mode");
+            request.setValue("制冷");
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
         }
         // 返回更新结果
         return updated > 0;
@@ -198,6 +319,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
             // 更新设备详情
             airconMapper.updateDeviceDetail(deviceName, detail);
         }
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_mode");
+            request.setValue("制热");
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         // 返回更新结果
         return updated > 0;
     }
@@ -212,6 +347,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
             // 更新设备详情
             airconMapper.updateDeviceDetail(deviceName, detail);
         }
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_mode");
+            request.setValue("除湿");
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
+        }
         // 返回更新结果
         return updated > 0;
     }
@@ -225,6 +374,20 @@ public class AirconServiceImpl extends BaseServiceImpl<Aircon, AirconMapper> imp
             String detail = formatDetail(aircon.getTemperature(), aircon.getMode());
             // 更新设备详情
             airconMapper.updateDeviceDetail(deviceName, detail);
+        }
+        // 发送mqtt消息
+        try {
+            String deviceId = airconMapper.selectDeviceIdByDeviceName(deviceName);
+            DeviceControlController.ControlRequest request = new DeviceControlController.ControlRequest();
+            request.setmsg_id(System.currentTimeMillis());
+            request.setdevice_id(deviceId);
+            request.setdevice_type("air_conditioner");
+            request.setAction("set_mode");
+            request.setValue("送风");
+            mqttControlService.sendCommand(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("发送MQTT命令失败: " + e.getMessage());
         }
         // 返回更新结果
         return updated > 0;

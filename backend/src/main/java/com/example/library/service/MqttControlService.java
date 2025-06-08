@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Service
 public class MqttControlService implements MqttCallback {
 
-    private static final String BROKER_URL = "tcp://localhost:1883";
+    private static final String BROKER_URL = "tcp://149.88.73.107:1883";
     private static final String CLIENT_ID = "SpringBootMqttClient";
 
     private MqttClient client;
@@ -54,6 +54,19 @@ public class MqttControlService implements MqttCallback {
         message.setQos(1);
         client.publish(topic, message);
         System.out.println("Published command to topic " + topic + ": " + payload);
+    }
+
+    // 发布创建设备的命令到创建主题
+    public void createDevice(String deviceId, String deviceType) throws MqttException {
+        String topic = "device/register";
+        // 构建 JSON 负载
+        String payload = String.format(
+                "{\"msg_id\": \"%s\", \"device_id\": \"%s\", \"device_type\": \"%s\"}",
+                System.currentTimeMillis(), deviceId, deviceType);
+        MqttMessage message = new MqttMessage(payload.getBytes());
+        message.setQos(1);
+        client.publish(topic, message);
+        System.out.println("Published create command to topic " + topic + ": " + payload);
     }
 
     // 在 bean 初始化后订阅响应主题

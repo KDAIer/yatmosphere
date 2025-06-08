@@ -143,7 +143,14 @@ public interface AirconMapper extends BaseMapper<Aircon> {
         """)
     int updateDeviceDetail(@Param("deviceName") String deviceName, @Param("detail") String detail);
 
-
+    // 查询设备ID
+    @Select("""
+        SELECT a.device_id
+        FROM aircon a
+        LEFT JOIN device d ON a.device_id = d.device_id
+        WHERE d.device_name = #{deviceName}
+    """)
+    String selectDeviceIdByDeviceName(@Param("deviceName") String deviceName);
 
 
 }
