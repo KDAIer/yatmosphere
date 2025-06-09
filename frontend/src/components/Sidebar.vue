@@ -69,9 +69,9 @@
                     <span class="label">{{ theme === 'light' ? '黑夜模式' : '白天模式' }}</span>
                 </button>
                 <!-- 移动/电脑版切换 -->
-                <button class="extras-btn" @click="toggleViewMode" :title="isMobileView ? '切换到电脑版' : '切换到移动版'">
-                    <span class="icon">{{ isMobileView ? '💻' : '📱' }}</span>
-                    <span class="label">{{ isMobileView ? '电脑版' : '移动版' }}</span>
+                <button class="extras-btn" @click="toggleViewMode" >
+                    <span class="icon">{{ isMobileView2 ? '💻' : '📱' }}</span>
+                    <span class="label">{{ isMobileView2 ? '电脑版' : '移动版' }}</span>
                 </button>
             </div>
         </transition>
@@ -110,9 +110,11 @@ const collapsed = ref(false)
 const isActive = (path) => route.path === path
 
 // 视图模式：移动或电脑
-const isMobileView = ref(window.innerWidth < 768)
+import isMobileView from '@/views/Dashboard.vue'
+const isMobileView2 = ref(isMobileView.value)
 function toggleViewMode() {
     isMobileView.value = !isMobileView.value
+    isMobileView2.value = isMobileView.value
     if (isMobileView.value) {
         document.body.classList.add('mobile-layout')
     } else {
