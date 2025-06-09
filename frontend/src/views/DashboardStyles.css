@@ -1602,6 +1602,7 @@ input:checked+.slider:before {
   align-items: center;
   width: 200px; /* 可根据需要调整宽度 */
   margin-left: auto;
+  margin-right: 20px; /* 调整间距大小，例如 20px */
 }
 
 /* 搜索输入框 */
@@ -1714,7 +1715,7 @@ input:checked+.slider:before {
   position: relative;
   cursor: pointer;
   justify-content: flex-end; /* 向左靠（默认） */
-
+  margin-right: 20px;
 }
 
 .notification-icon {
