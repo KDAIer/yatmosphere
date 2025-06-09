@@ -21,10 +21,16 @@ class Light(Device):
       try:
           # 保持原有逻辑，但调整数据格式
           if command['action'] == 'set_power':
+              if command['value'] not in ['on', 'off']:
+                  self.handle_response(400, f"无效开关状态：{command['value']}", command)
+                  return
               self.data['power'] = command['value'] == 'on'
               self.handle_state()
               
           elif command['action'] == 'set_brightness':
+              if not (0 <= command['value'] <= 100):
+                  self.handle_response(400, f"亮度值必须在0到100之间：{command['value']}", command)
+                  return
               self.data['brightness'] = command['value']
               self.handle_state()
               

@@ -23,10 +23,16 @@ class AirConditioner(Device):
     def handle_command(self, command):
         try:
             if command['action'] == 'set_power':
+                if command['value'] not in ['on', 'off']:
+                    self.handle_response(400, f"无效开关状态：{command['value']}", command)
+                    return
                 self.data['power'] = command['value'] == 'on'
                 self.handle_state()
 
             elif command['action'] == 'set_temperature':
+                if not (16 <= command['value'] <= 30):
+                    self.handle_response(400, f"温度值必须在16到30之间：{command['value']}", command)
+                    return
                 self.data['temperature'] = command['value']
                 self.handle_state()
 
@@ -40,6 +46,9 @@ class AirConditioner(Device):
                     return
                 
             elif command['action'] == 'set_eco':
+                if command['value'] not in ['on', 'off']:
+                    self.handle_response(400, f"无效节能模式状态：{command['value']}", command)
+                    return
                 self.data['eco'] = command['value'] == 'on'
                 self.handle_state()
 
