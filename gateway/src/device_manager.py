@@ -74,6 +74,7 @@ class DeviceManager:
             device = AirConditioner(device_id)
         # 其他设备类型
         else:
+            logging.warning(f"未知设备类型: {device_type}，无法创建设备实例")
             raise ValueError(f"未知设备类型: {device_type}")
         
         # 启动设备线程，设备主循环run函数
