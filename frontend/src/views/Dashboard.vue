@@ -18,10 +18,8 @@
     <!-- 头部 -->
     <header class="header">
       <!-- 左侧：Logo + 标题 -->
-      <div class="header-left">
         <img src="/src/assets/images/logo.png" alt="Logo" class="header-logo" />
         <h1 class="header-title">智能家居控制中心</h1>
-      </div>
 
       <!-- 右侧：搜索框 + 通知 + 头像 -->
         <!-- 搜索框 -->
@@ -695,8 +693,13 @@ const isMobileView = ref(false)
 const showModeDialog = ref(true)
 
 // 双端切换按钮
-const toggleViewMode = () => {
-  isMobileView.value = !isMobileView.value
+function toggleViewMode() {
+    isMobileView.value = !isMobileView.value
+    if (isMobileView.value) {
+        document.body.classList.add('mobile-layout')
+    } else {
+        document.body.classList.remove('mobile-layout')
+    }
 }
 
 const close_toggleViewMode = () => {
