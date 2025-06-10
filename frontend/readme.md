@@ -112,7 +112,7 @@ VITE_THEME=light    # 默认主题(light/dark)
 插件配置
 参考文档：Vite配置参考
 
-🚀 项目脚本
+### 🚀 项目脚本
 ### 安装依赖
 ```
 npm install
@@ -186,12 +186,12 @@ const service = axios.create({
   timeout: 10000
 })
 ```
-🎨 主题定制
+### 🎨 主题定制
 - 通过修改 /assets/main.css 中的CSS变量
 
 - 或使用预处理器变量覆盖
 
-🐛 调试技巧
+### 🐛 调试技巧
 - 使用Vue Devtools调试组件
 
 - 开发模式下支持热重载
