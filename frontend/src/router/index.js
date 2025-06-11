@@ -3,6 +3,7 @@ import Login from '@/views/Login.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import Profile from '@/views/Profile.vue'
 import Devices from '@/views/Devices.vue'
+import Chat from '@/views/Chat.vue'    // 新增
 
 const routes = [
   { path: '/login', component: Login },
@@ -16,6 +17,7 @@ const routes = [
 
   { path: '/profile', component: Profile },
   { path: '/devices', component: Devices },
+  { path: '/chat', component: Chat },   // 智能问答
   { path: '/', redirect: '/login' }
 ]
 

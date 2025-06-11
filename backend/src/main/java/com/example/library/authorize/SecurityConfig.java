@@ -29,16 +29,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // http.authorizeHttpRequests(request -> request.requestMatchers("/auth/**",
-        // "/anon/**").permitAll()
-        // .anyRequest().authenticated());
-
-        // 允许匿名访问注册接口
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("/auth/login", "/auth/register","/api/family-members").permitAll()
+                // 允许匿名访问登录、注册、家庭成员查询，以及聊天接口
+                .requestMatchers("/auth/login", "/auth/register", "/api/family-members", "/api/chat/**").permitAll()
                 .anyRequest().authenticated());
         http.csrf(AbstractHttpConfigurer::disable);
-        http.exceptionHandling(handler -> handler.authenticationEntryPoint(new AuthEntryHandler())
+        http.exceptionHandling(handler -> handler
+                .authenticationEntryPoint(new AuthEntryHandler())
                 .accessDeniedHandler(new AuthAccessDeniedHandler()));
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -53,12 +50,13 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-//<<<<<<< HEAD
-//        System.out.println(encoder.encode("123456"));
-//        return new BCryptPasswordEncoder();
-//=======
+        // <<<<<<< HEAD
+        // System.out.println(encoder.encode("123456"));
+        // return new BCryptPasswordEncoder();
+        // =======
         System.out.println(encoder.encode("1234"));
         return encoder;
-//>>>>>>> 2a9e10a63fd57a2146a6822c7d4cac315e689fac
+        // >>>>>>> 2a9e10a63fd57a2146a6822c7d4cac315e689fac
     }
+
 }

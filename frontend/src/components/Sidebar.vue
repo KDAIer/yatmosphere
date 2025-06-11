@@ -52,6 +52,20 @@
                         <span v-if="isActive('/devices')" class="active-bar"></span>
                     </router-link>
                 </li>
+                      <li>
+        <router-link
+          to="/chat"
+          class="nav-link"
+          :class="{ active: isActive('/chat') }"
+          :title="collapsed ? '智能问答' : ''"
+        >
+          <span class="icon">🤖</span>
+          <transition name="fade">
+            <span v-if="!collapsed" class="label">智能问答</span>
+          </transition>
+          <span v-if="isActive('/chat')" class="active-bar"></span>
+        </router-link>
+      </li>
             </ul>
         </nav>
 

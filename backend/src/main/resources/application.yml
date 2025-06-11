@@ -43,7 +43,15 @@ common:
   jwt:
     valid:
       seconds: 7200
+# Custom chat properties (requires a corresponding @ConfigurationProperties class)
+chat:
+  system-prompt: "你是 Yatmosphere 智能助手，回答简明扼要。"
+  welcome-message: "欢迎使用智能问答，有什么我可以帮您？"
 
+llm:
+  api:
+    url: "https://llm.yatcc-ai.com/v1/chat/completions"
+    key: "sk-zltDTBaajI2yyBO8967eEfEcD8Ae4aE3BcC19eAd283127B5"  
 #blade:
 #  redis:
 #    serializerType: json
