@@ -11,7 +11,11 @@
         :class="['chat-message', msg.role]"
       >
         <div class="bubble">
-          <p>{{ msg.content }}</p>
+          <!-- 将原来的 <p>{{ msg.content }}</p> 改为渲染 HTML -->
+          <div 
+            class="markdown-body" 
+            v-html="renderMarkdown(msg.content)">
+          </div>
         </div>
       </div>
       <!-- 等待指示器 -->
@@ -47,10 +51,48 @@
 import { ref, nextTick, onMounted } from 'vue'
 import axios from 'axios'
 
+// 导入 Markdown-it 和 DOMPurify
+import MarkdownIt from 'markdown-it'
+import DOMPurify from 'dompurify'
+// 如果需要代码高亮：
+import hljs from 'highlight.js'  // 确保已安装 highlight.js
+import 'highlight.js/styles/github.css'  // 可选：高亮样式
+
 const messages = ref([])
 const userInput = ref('')
 const loading = ref(false)
 const chatWindow = ref(null)
+
+// 初始化 Markdown-it 实例，开启代码高亮支持
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+  highlight(str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return '<pre class="hljs"><code>' +
+               hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+               '</code></pre>';
+      } catch (__) {}
+    }
+    // 不是特定语言或高亮失败，使用自动检测
+    try {
+      const res = hljs.highlightAuto(str);
+      return '<pre class="hljs"><code>' + res.value + '</code></pre>';
+    } catch (__) {}
+    // 最后回退，不高亮
+    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  }
+});
+
+// 将 Markdown 转为安全的 HTML
+function renderMarkdown(text) {
+  if (!text) return '';
+  const rawHtml = md.render(text);
+  // 使用 DOMPurify 清理，防止 XSS
+  return DOMPurify.sanitize(rawHtml);
+}
 
 // 滚动到底部
 async function scrollToBottom() {
@@ -75,7 +117,6 @@ function handleEnter(e) {
     sendMessage()
   }
 }
-
 
 // 初始化对话
 onMounted(async () => {
@@ -122,7 +163,6 @@ async function sendMessage() {
     await scrollToBottom()
   }
 }
-
 </script>
 
 <style scoped>
