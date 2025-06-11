@@ -1,13 +1,13 @@
 <template>
   <div class="chat-page">
     <div class="chat-header">
-      <h2>Yatmosphere 智能问答 🤖</h2>
+      <h2><span class="gradient-text">Yatmosphere</span> 智能问答</h2>
     </div>
 
-    <div class="chat-window" ref="chatWindow">
+    <div class="chat-window" ref="chat-window">
       <div
-        v-for="(msg, idx) in messages"
-        :key="idx"
+        v-for="(msg, i) in messages"
+        :key="i"
         :class="['chat-message', msg.role]"
       >
         <div class="bubble">
@@ -22,22 +22,23 @@
       </div>
     </div>
 
-    <form class="chat-input-area" @submit.prevent="sendMessage">
-      <input
-        v-model="userInput"
-        type="text"
-        placeholder="请输入问题…"
-        class="chat-input"
-        :disabled="loading"
-      />
-      <button
-        type="submit"
-        class="send-btn"
-        :disabled="loading || !userInput.trim()"
-      >
-        发送
-      </button>
-    </form>
+    <div class="chat-input-card">
+      <form class="chat-input-area" @submit.prevent="sendMessage">
+        <textarea
+          v-model="userInput"
+          placeholder="请输入问题…"
+          class="chat-input"
+          :disabled="loading"
+        ></textarea>
+        <button
+          type="submit"
+          class="send-btn"
+          :disabled="loading || !userInput.trim()"
+        >
+          <span class="arrow-icon">↑</span>
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
