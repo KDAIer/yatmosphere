@@ -1,7 +1,7 @@
 <template>
   <div class="chat-page">
     <div class="chat-header">
-      <h2><span class="gradient-text">Yatmosphere</span> 智能问答</h2>
+      <h2><span class="gradient-text">Yatmosphere</span> 智能助手</h2>
     </div>
 
     <div class="chat-window" ref="chat-window">
@@ -86,8 +86,8 @@ onMounted(async () => {
     } else {
       // 兜底
       messages.value = [
-        { role: 'system', content: '你是 Yatmosphere 智能助手，回答简明扼要。' },
-        { role: 'assistant', content: '欢迎使用智能问答，有什么我可以帮您？' }
+        { role: 'system', content: '智汇云端，问道未来' },
+        { role: 'assistant', content: '您好！我是 Yatmosphere 智能助手，随时为您解答疑惑，开启智能对话新体验！' }
       ]
     }
     await scrollToBottom()
