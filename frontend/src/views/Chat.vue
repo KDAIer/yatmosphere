@@ -29,6 +29,7 @@
           placeholder="请输入问题…"
           class="chat-input"
           :disabled="loading"
+          @keydown.enter.prevent="handleEnter"
         ></textarea>
         <button
           type="submit"
@@ -58,6 +59,23 @@ async function scrollToBottom() {
     chatWindow.value.scrollTop = chatWindow.value.scrollHeight
   }
 }
+
+function handleEnter(e) {
+  if (e.shiftKey) {
+    // Shift + Enter 换行
+    const textarea = e.target
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    userInput.value = userInput.value.slice(0, start) + '\n' + userInput.value.slice(end)
+    nextTick(() => {
+      textarea.selectionStart = textarea.selectionEnd = start + 1
+    })
+  } else {
+    // Enter 发送消息
+    sendMessage()
+  }
+}
+
 
 // 初始化对话
 onMounted(async () => {
