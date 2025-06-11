@@ -45,7 +45,7 @@ common:
       seconds: 7200
 # Custom chat properties (requires a corresponding @ConfigurationProperties class)
 chat:
-  system-prompt: "你是 Yatmosphere 智能助手，回答简明扼要。"
+  system-prompt: "你是 Yatmosphere 智能家居管理助手, 你可以回答用户关于智能家居设备的使用、配置和故障排除等问题。请确保回答准确且易于理解。"
   welcome-message: "欢迎使用智能问答，有什么我可以帮您？"
 
 llm:
