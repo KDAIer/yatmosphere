@@ -35,7 +35,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100vh; /* 占满视口高度 */
+    height: 100vh;
+    /* 占满视口高度 */
     background: var(--color-device-card-bg);
     overflow: hidden;
     z-index: 1;
@@ -50,7 +51,8 @@
     padding: 12px 24px;
 
     /* border-bottom: 2px solid #ddd; */
-    position: sticky; top: 0;
+    position: sticky;
+    top: 0;
     z-index: 2;
 }
 
@@ -64,7 +66,8 @@
 .chat-window {
     flex: 1;
     height: calc(100vh - 150px - 54px);
-    overflow-y: auto; /* 启用垂直滚动 */
+    overflow-y: auto;
+    /* 启用垂直滚动 */
     padding: 16px;
 
     position: relative;
@@ -103,7 +106,7 @@
 }
 
 .chat-message.user .bubble {
-    background:  rgba(96, 237, 129, 0.137);
+    background: rgba(96, 237, 129, 0.137);
     color: var(--color-text);
     border-bottom-right-radius: 4px;
 }
@@ -153,20 +156,24 @@
 /* 输入卡片 */
 .chat-input-card {
     padding: 12px 24px;
-   
+
 
     box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    position: sticky; bottom: 0;
+    position: sticky;
+    bottom: 0;
     z-index: 2;
-    height: 150px; /* 保留你指定的卡片高度 */
+    height: 150px;
+    /* 保留你指定的卡片高度 */
 }
 
 /* 输入区域 */
 .chat-input-area {
     position: relative;
     display: flex;
-    align-items: stretch; /* 让 textarea 充满容器高度 */
-    height: 100%; /* 充满卡片高度 */
+    align-items: stretch;
+    /* 让 textarea 充满容器高度 */
+    height: 100%;
+    /* 充满卡片高度 */
     background: rgba(0, 0, 0, 0);
 }
 
@@ -175,22 +182,27 @@
     flex: 1;
     padding: 12px 16px;
     border: 2px solid #ccc;
-    border-radius: 18px; /* 调整为更柔和的圆角 */
+    border-radius: 18px;
+    /* 调整为更柔和的圆角 */
     background: var(--color-device-card-bg);
     font-size: 18px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
-    resize: none; /* 禁止用户调整大小 */
-    line-height: 1.5; /* 行高优化阅读 */
-    vertical-align: top; /* 确保光标从顶部开始 */
+    resize: none;
+    /* 禁止用户调整大小 */
+    line-height: 1.5;
+    /* 行高优化阅读 */
+    vertical-align: top;
+    /* 确保光标从顶部开始 */
     box-sizing: border-box;
-    height: 100%; /* 充满输入区域高度 */
-    color:var(--color-text);
+    height: 100%;
+    /* 充满输入区域高度 */
+    color: var(--color-text);
 }
 
 /* 输入框聚焦效果 */
 .chat-input:focus {
-    border-color:  rgba(18, 67, 226, 0.066);
+    border-color: rgba(18, 67, 226, 0.066);
     box-shadow: 0 0 6px rgba(18, 67, 226, 0.114);
 }
 
@@ -199,11 +211,14 @@
     position: absolute;
     right: 24px;
     bottom: 12px;
-    width: 42px; /* 固定宽度，形成近似圆形 */
-    height: 42px; /* 固定高度 */
+    width: 42px;
+    /* 固定宽度，形成近似圆形 */
+    height: 42px;
+    /* 固定高度 */
     background: var(--color-btn);
     border: none;
-    border-radius: 50%; /* 圆形按钮 */
+    border-radius: 50%;
+    /* 圆形按钮 */
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -224,10 +239,13 @@
 
 /* 箭头图标 */
 .arrow-icon {
-    font-size: 36px; /* 保持箭头大小 */
+    font-size: 36px;
+    /* 保持箭头大小 */
     line-height: 1;
-    color: #fff; /* 白色箭头，与按钮文字一致 */
-    transform: scale(1, 0.6) translateY(-4px); /* 扁平化并向上移动 */
+    color: #fff;
+    /* 白色箭头，与按钮文字一致 */
+    transform: scale(1, 0.6) translateY(-4px);
+    /* 扁平化并向上移动 */
 }
 
 /* 浮动星星动画 */
@@ -236,10 +254,12 @@
         transform: translateY(0) scale(1);
         opacity: 0.4;
     }
+
     50% {
         transform: translateY(-15px) scale(1.2);
         opacity: 0.8;
     }
+
     100% {
         transform: translateY(0) scale(1);
         opacity: 0.4;
@@ -250,25 +270,29 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
 
 @keyframes blink {
+
     0%,
     80%,
     100% {
         opacity: 0;
     }
+
     40% {
         opacity: 1;
     }
 }
 
 .mobile-layout .chat-page {
-    width: 90%;
+    width: 95%;
 }
+
 .mobile-layout .bubble {
     max-width: 80%;
 }
