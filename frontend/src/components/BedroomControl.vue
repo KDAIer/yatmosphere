@@ -230,6 +230,77 @@ const presetColors = ref([
 const curtainPosition = ref(50)
 const curtainState = ref('stopped')
 
+// const jpfcolor = ref({ name: '暖光', value: 'warm', color: '#FFD39B' })
+const initializeLights = async () => {
+  try {
+    // 等待获取主灯状态
+    mainLightOn.value = await fetchLightStatus()
+    mainLightBrightness.value = await fetchLightBrightness()
+    //colorTemps.value.find(temp => temp.name === '冷光')
+    const flag = await fetchLightColor()
+    if(flag == 0){
+      mainLightColorTemp.value = "warm"
+      // jpfcolor.value = colorTemps.value.find(temp => temp.name === '暖光');
+    }else if(flag == 1){
+      mainLightColorTemp.value = "cool"
+      // jpfcolor.value = colorTemps.value.find(temp => temp.name === '冷光');
+    }else {
+      mainLightColorTemp.value = "natural"
+      // jpfcolor.value = colorTemps.value.find(temp => temp.name === '自然');
+    }
+    // mainLightColorTemp.value = jpfcolor.value.name
+    console.log(mainLightColorTemp.value)
+  } catch (error) {
+    console.error('初始化灯具状态失败:', error)
+  }
+}
+import {  onMounted } from 'vue'; // 添加 onMounted 导入
+// 在组件挂载时调用初始化函数
+onMounted(() => {
+
+  initializeLights()
+})
+const fetchLightColor = async () =>{
+  console.log("this is woshi color fechtlight")
+  const token = localStorage.getItem('authToken')
+  const res = await axios.get('/light/getcolor', {
+      params: { deviceName: '卧室灯' },
+      headers: {
+        'Authorization': token
+      }
+    }
+  )
+  console.log(res.data.data)
+  return res.data.data
+}
+const fetchLightBrightness = async () =>{
+  console.log("this is woshi 亮度 fechtlight")
+  const token = localStorage.getItem('authToken')
+  const res = await axios.get('/light/getbrightness', {
+      params: { deviceName: '卧室灯' },
+      headers: {
+        'Authorization': token
+      }
+    }
+  )
+  console.log(res.data.data)
+  return res.data.data
+}
+const fetchLightStatus = async () => {
+  // mainLight.value = lights.value[0] || null
+  console.log("this is woshi fechtlight")
+  // try {
+  const token = localStorage.getItem('authToken')
+  const res = await axios.get('/light/getstatus', {
+      params: { deviceName: '卧室灯' },
+      headers: {
+        'Authorization': token
+      }
+    }
+  )
+  console.log(res.data.data)
+  return res.data.data
+}
 // 插座控制
 const outlets = ref([
   { id: 'outlet1', name: '床头插座', status: true },

@@ -127,7 +127,7 @@ import { defineEmits, ref, watch } from 'vue'
 import axios from 'axios'
 
 const lights = ref([
-  { name: '主灯', icon: '💡', status: true },
+  { name: '主灯', icon: '💡', status: true},
   { name: '沙发灯', icon: '🛋', status: false },
   { name: '落地灯', icon: '🪔', status: false },
   { name: '氛围灯', icon: '✨', status: false },
@@ -146,6 +146,58 @@ const selectedAppliance = ref(null)
 const temperature = ref(24)
 const humidity = ref(50)
 const emit = defineEmits(['refresh-devices'])
+// 组件挂载时获取设备状态
+// const mainLight = ref(null)
+// // 获取主灯状态的方法
+//
+// import { onActivated, onDeactivated } from 'vue'
+
+// 替代onMounted/onUnmounted
+// onActivated(() => {
+//   fetchLightStatus()
+//   // 组件激活时执行
+// })
+
+// onDeactivated(() => {
+//   // 组件停用时清理资源
+// })
+const initializeLights = async () => {
+  try {
+    // 等待获取主灯状态
+    const mainLightStatus = await fetchLightStatus()
+
+    // 更新主灯状态
+    if (lights.value.length > 0) {
+      lights.value[0].status = mainLightStatus
+    }
+  } catch (error) {
+    console.error('初始化灯具状态失败:', error)
+  }
+}
+import {  onMounted } from 'vue'; // 添加 onMounted 导入
+// 在组件挂载时调用初始化函数
+onMounted(() => {
+
+  initializeLights()
+})
+const fetchLightStatus = async () => {
+  // mainLight.value = lights.value[0] || null
+  console.log("this is fechtlight")
+  // try {
+    const token = localStorage.getItem('authToken')
+    const res = await axios.get('/light/getstatus', {
+      params: { deviceName: '客厅灯' },
+      headers: {
+        'Authorization': token
+      }
+    }
+    )
+    console.log(res.data.data)
+    return res.data.data
+
+}
+
+
 const toggleDevice = async (device, type) => {
   device.status = !device.status
   if (device.type === 'tv') {

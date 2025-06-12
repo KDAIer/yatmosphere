@@ -68,6 +68,30 @@ public interface LightMapper extends BaseMapper<Light> {
         """)
     int coldlight(@Param("deviceName") String deviceName);
 
+    @Select("""
+        SELECT d.status
+        FROM light l
+        LEFT JOIN device d ON l.device_id = d.device_id
+        WHERE d.device_name = #{deviceName}
+        """)
+    int getstatus(@Param("deviceName") String deviceName);
+
+    @Select("""
+        SELECT l.color_temp
+        FROM light l
+        LEFT JOIN device d ON l.device_id = d.device_id
+        WHERE d.device_name = #{deviceName}
+        """)
+    String getcolor(@Param("deviceName") String deviceName);
+
+
+    @Select("""
+        SELECT l.brightness
+        FROM light l
+        LEFT JOIN device d ON l.device_id = d.device_id
+        WHERE d.device_name = #{deviceName}
+        """)
+    int getbrightness(@Param("deviceName") String deviceName);
     // 查询灯信息
     @Select("""
         SELECT l.*, d.device_name, d.status, d.category, d.detail, d.create_time, d.update_time

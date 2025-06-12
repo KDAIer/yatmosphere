@@ -86,4 +86,30 @@ public class LightServiceImpl extends BaseServiceImpl<Light, LightMapper> implem
         return lightMapper.coldlight(deviceName) > 0;
     }
 
+
+    @Override
+    @Transactional
+    public boolean getstatus(String deviceName) {
+        return lightMapper.getstatus(deviceName) > 0;
+    }
+
+    @Override
+    @Transactional
+    public Integer getcolor(String deviceName) {
+        String color = lightMapper.getcolor(deviceName);
+        if (color.equals("暖光") ) {
+            return 0;
+        }else if (color.equals( "冷光") ){
+            return 1;
+        }else {
+            return 2;
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public Integer getbrightness(String deviceName) {
+        return lightMapper.getbrightness(deviceName) ;
+    }
 }

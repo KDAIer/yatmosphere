@@ -49,6 +49,23 @@ public class LightController {
         return lightService.turnOnLight(deviceName);
     }
 
+
+    @GetMapping("/getstatus")
+    @Operation(summary = "获取灯的状态灯", description = "根据deviceName获取灯的开关状态")
+    public Boolean getstatus(@RequestParam String deviceName) {
+        return lightService.getstatus(deviceName);
+    }
+    @GetMapping("/getcolor")
+    @Operation(summary = "获取灯的colar_temp", description = "根据deviceName获取灯的colar")
+    public Integer getcolor(@RequestParam String deviceName) {
+        return lightService.getcolor(deviceName);
+    }
+    @GetMapping("/getbrightness")
+    @Operation(summary = "获取灯的亮度", description = "根据deviceName获取灯的亮度")
+    public Integer getbrighteness(@RequestParam String deviceName) {
+        return lightService.getbrightness(deviceName);
+    }
+
     @PostMapping("/off")
     @Operation(summary = "关灯", description = "根据deviceName关灯")
     public Boolean turnOffLight(@RequestParam String deviceName) {
