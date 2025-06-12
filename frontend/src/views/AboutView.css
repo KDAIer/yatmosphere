@@ -11,7 +11,18 @@
     margin: 0 auto;
     color: var(--color-text); /* 使用主题文字颜色 */
 }
-
+.mobile-layout .about-container {
+    background-color:var(--color-device-card-bg);
+    border-radius: 0px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    width: 90%;
+    margin: 0 auto;
+    color: var(--color-text); /* 使用主题文字颜色 */
+}
 /* 头部样式 */
 .about-header {
   text-align: center;
