@@ -11,7 +11,11 @@
     width : 60%;
     margin: 0 auto;
 }
+.mobile-layout .banner {
+    padding: 0 0;
+    width: 95%;
 
+}
 /* 渐变文本样式 */
 .gradient-text {
   background: linear-gradient(120deg, #e929e2, #1242e2); /* 渐变从左到右，颜色可调整 */
@@ -44,7 +48,11 @@
     width: 60%;
     margin: 0 auto;
 }
+.mobile-layout .card {
+    padding: 0 0;
+    width: 95%;
 
+}
 /* 设备列表头部 */
 .device-list-header {
     display: flex;
@@ -112,7 +120,7 @@
     border-radius: 8px;
     overflow: hidden;
     border: 2px solid #eee;
-    
+
 }
 
 /* 表头 */
