@@ -16,9 +16,9 @@
           <p><strong>Yatmosphere</strong>智能家居控制系统，是一款集中管理智能设备的平台。</p>
           <br>
           <div class="developer-info">
-            <h3>开发团队：1111</h3>
-            <h3>项目开始时间: {{ teamIntro.established }}</h3>
-            <h3>团队规模: 10人</h3>
+            <h3>开发团队：Yatmosphere软工小组</h3>
+            <h3>启动时间：2025年5月</h3>
+            <h3>团队规模：10人</h3>
             <!-- <p>{{ teamIntro.description }}</p> -->
             <!-- <p>成立时间: {{ teamIntro.established }}</p>
             <p>团队规模: {{ teamIntro.memberCount }}人</p> -->
@@ -205,7 +205,7 @@
             <li><a @click="openPolicy('terms')">服务条款</a></li>
             <li><a @click="openPolicy('license')">开源许可证</a></li>
           </ul>
-          <p class="copyright">© 2024 AtmoTech. 保留所有权利。</p>
+          <p class="copyright">© 2025 Yatmosphere软工小组. 保留所有权利。</p>
         </div>
       </section>
 
@@ -218,16 +218,16 @@
         <div v-show="expandedSections.support" class="section-content">
           <div class="compatibility">
             <h3>兼容性信息</h3>
-            <p>支持操作系统: iOS 12+, Android 8.0+, Windows 10+, macOS 10.15+</p>
-            <p>推荐浏览器: Chrome 最新版, Safari 最新版</p>
+            <p>支持操作系统: iOS 12+, Android 8.0+, Windows 7+, macOS 10.15+</p>
+            <p>推荐浏览器: Google浏览器 最新版, edge 最新版</p>
           </div>
           <div class="update-info">
             <h3>更新日志</h3>
-            <p>v1.2.3 (2024-03-15)</p>
+            <p>v1.2.3 (2025-06-11)</p>
             <ul>
-              <li>新增设备离线通知功能</li>
-              <li>优化了仪表盘加载速度</li>
-              <li>修复了场景模式保存问题</li>
+              <li>新增智能机器人模块</li>
+              <li>优化了页面适配</li>
+              <li>修复了设备相应问题</li>
             </ul>
           </div>
         </div>
@@ -250,98 +250,102 @@ export default {
         support: false
       },
       teamIntro: {
-        description: "AtmoTech智能家居研发团队",
-        established: "2023年1月",
-        memberCount: 8,
-        details: "我们是一支专注于智能家居解决方案的跨职能团队，由资深工程师和设计师组成，致力于打造安全、易用、高效的智能家居控制系统。团队成员来自国内外知名高校，拥有丰富的物联网和软件开发经验。"
+        description: "Yatmosphere软工小组",
+        established: "2025年5月",
+        memberCount: 10,
+        details: "我们是一支专注于智能家居解决方案的跨职能团队，由中山大学计算机学院学生组成，致力于打造安全、易用、高效、先进的智能家居控制系统。"
       },
       teamMembers: {
         management: [
           {
             name: "马岱",
             role: "项目总经理",
-            email: "madai@atmotch.com",
-            description: "负责项目整体规划、团队管理以及参与模块协作设计"
+            email: "madai@mail2.sysu.edu.cn",
+            description: "Keep your head up in failure, and your head down in success."
           }
         ],
         frontend: [
           {
-            name: "张管文",
+            name: "张管文Ambition",
             role: "前端开发工程师",
-            email: "zhangguanwen@atmotch.com",
+            email: "zhanggw26@mail2.sysu.edu.cn",
             description: "疯狂星期四vme50"
           },
           {
             name: "谢泽中",
             role: "前端开发工程师",
-            email: "xiezezhong@atmotch.com",
-            description: "负责阿巴阿巴"
+            email: "xiezzh5@mail2.sysu.edu.cn",
+            description: "敬请期待"
           },
           {
             name: "汪丁宇洋",
             role: "前端开发工程师",
-            email: "wangdingyuyang@atmotch.com",
-            description: "负责阿巴阿巴"
+            email: "1173573823@qq.com",
+            description: "XX，启动！"
           }
         ],
         backend: [
           {
             name: "庄云皓",
             role: "后端开发工程师",
-            email: "zhuangyunhao@atmotch.com",
-            description: "负责阿巴阿巴"
+            email: "zhuangyh9@mail2.sysu.edu.cn",
+            description: "这片星空，只有流星划过"
           },
           {
             name: "金鹏飞",
             role: "后端开发工程师",
-            email: "jinpengfei@atmotch.com",
-            description: "负责阿巴阿巴"
+            email: "jinpf5@mail2.sysu.edu.cn",
+            description: "我有一个小可爱"
           }
         ],
         device: [
           {
             name: "潘文磊",
             role: "设备开发工程师",
-            email: "panwenlei@atmotch.com",
-            description: "负责阿巴阿巴"
+            email: "panwlei@mail2.sysu.edu.cn",
+            description: "请输入文本"
           },
           {
             name: "张贞蔚",
             role: "设备开发工程师",
-            email: "zhangzhenwei@atmotch.com",
-            description: "负责阿巴阿巴"
+            email: "zhangzhw58@mail2.sysu.edu.cn",
+            description: "对的"
           }
         ],
         design: [
           {
             name: "潘致远",
             role: "UI/UX设计师",
-            email: "panzhiyuan@atmotch.com",
-            description: "负责阿巴阿巴"
+            email: "1525522950@qq.com",
+            description: "哈基咪哈基，哈基咪摸南北绿多，阿西噶哈雅酷奶农，哈基咪曼波亚不亚不有待有待哦吗吉利曼波"
           }
         ],
         others: [
           {
-            name: "黄集瑞",
-            role: "安全工程师",
-            email: "huangjirui@atmotch.com",
-            description: "负责阿巴阿巴"
-          }
+            name: "黄集瑞（hjr）",
+            role: "全能开发工程师",
+            email: "huang17359686189@163.com",
+            description: "王不见王"
+           },
         ]
       },
       activeFAQ: null,
       faqs: [
         {
           question: "如何添加新设备到系统?",
-          answer: "进入设备管理页面，点击右上角的'+'按钮，选择设备类型并按照向导完成添加流程。"
+          answer: "进入设备管理页面，点击的\"添加设备\"按钮，选择设备类型并按照向导完成添加流程。"
         },
         {
-          question: "忘记登录密码怎么办?",
-          answer: "在登录页面点击'忘记密码'链接，输入注册邮箱接收重置链接，按照邮件指引重置密码。"
+          question: "如何创建智能场景?",
+          answer: "进入主界面智能场景，点击的\"自定义场景\"按钮，选择设备类型并按照向导完成添加流程。"
         },
         {
           question: "如何与家人共享设备控制权?",
-          answer: "在'家庭管理'页面添加家庭成员，为每个成员分配相应的设备权限。"
+          answer: "在家庭管理页面添加家庭成员，为每个成员分配相应的设备权限。"
+        },
+        {
+          question: "我还有其他问题",
+          answer: "可以进入智能助手页面，询问智能助手相关问题。"
         }
       ]
     }
