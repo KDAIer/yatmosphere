@@ -100,7 +100,8 @@
 }
 
 .member-card {
-  background: white;
+  background-color:var(--color-device-card-bg);
+  color: var(--color-text); /* 使用主题文字颜色 */
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -117,21 +118,21 @@
 
 .card-header {
   padding: 1.25rem 1.5rem;
-  background-color: #f8f9fa;
+  background-color:var(--color-device-card-bg);
   flex-shrink: 0;
 }
 
 .member-name {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-text); /* 使用主题文字颜色 */
   margin: 0 0 0.25rem;
 }
 
 .member-role {
   display: block;
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: var(--color-text); /* 使用主题文字颜色 */
   margin-bottom: 0;
 }
 
@@ -151,13 +152,13 @@
 .member-desc {
   font-size: 0.95rem;
   line-height: 1.5;
-  color: #34495e;
+  color: var(--color-text); /* 使用主题文字颜色 */
   margin: 0;
 }
 
 .card-footer {
   padding: 1rem 1.5rem;
-  background-color: #f8f9fa;
+  background-color:var(--color-device-card-bg);
   border-top: 1px solid #eee;
   flex-shrink: 0;
 }
