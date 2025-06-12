@@ -269,7 +269,15 @@ export default {
             name: "张管文Ambition",
             role: "前端开发工程师",
             email: "zhanggw26@mail2.sysu.edu.cn",
-            description: "疯狂星期四vme50"
+            description:`Today is Crazy Thursday, send me ¥50 for Original Recipe Chicken!
+            今日はクレイジーサーズデー、50元送ってオリジナルチキンを食べよう
+            오늘은 미친 목요일, 50원 주시면 오리지널 치킨 먹을게요
+            Сегодня Безумный Четверг, пришлите 50 юаней на оригинальную курочку
+            Heute ist Verrückter Donnerstag, schick mir ¥50 für Original Chicken
+            Aujourd'hui jeudi fou, envoyez-moi 50¥ pour du poulet original
+            Hoy es Jueves Loco, envíame 50¥ para el pollo original
+            今日係瘋狂星期四，V我50蚊食原味雞
+            今天是疯狂星期四，v我50吃吮指原味鸡`,
           },
           {
             name: "谢泽中",
