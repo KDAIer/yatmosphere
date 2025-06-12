@@ -147,7 +147,7 @@
 
       <!-- 其他职能 -->
       <div class="team-category">
-        <h3 class="category-title">其他职能</h3>
+        <h3 class="category-title">系统安全</h3>
         <div class="member-cards">
           <div class="member-card" v-for="member in teamMembers.others" :key="member.name">
             <div class="card-header">
