@@ -4,6 +4,7 @@ import Dashboard from '@/views/Dashboard.vue'
 import Profile from '@/views/Profile.vue'
 import Devices from '@/views/Devices.vue'
 import Chat from '@/views/Chat.vue'    // 新增
+import AboutView from '../views/AboutView.vue'
 
 const routes = [
   { path: '/login', component: Login },
@@ -14,7 +15,14 @@ const routes = [
       keepAlive: true // 添加此元标记
     }
   },
-
+  {
+    path: '/about',
+    name: 'about',
+    component: AboutView,
+    meta: {
+      title: '关于系统'
+    }
+  },
   { path: '/profile', component: Profile },
   { path: '/devices', component: Devices },
   { path: '/chat', component: Chat },   // 智能问答
