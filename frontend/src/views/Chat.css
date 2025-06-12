@@ -265,3 +265,10 @@
         opacity: 1;
     }
 }
+
+.mobile-layout .chat-page {
+    width: 90%;
+}
+.mobile-layout .bubble {
+    max-width: 80%;
+}
