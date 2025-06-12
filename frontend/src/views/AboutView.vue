@@ -13,10 +13,12 @@
           应用简介
         </h2>
         <div v-show="expandedSections.about" class="section-content">
-          <p><strong>Yatmosphere</strong>智能家居控制系统，是一款集中管理智能设备的平台。</p>
+          <p><strong>Yatmosphere</strong>智能家居控制系统，是一款集中管理智能设备的平台。 
+            Yatmosphere旨在满足日益增长的智能家居需求，提供一个统一、可扩展且安全的平台。用户可以通过该平台轻松管理各种智能设备，提升生活品质、安全性和便利性。
+            项目名称结合了中山大学的“Yat”和“atmosphere”，意在构建智能的环境氛围，汇聚智慧和实现便捷控制。</p>
           <br>
           <div class="developer-info">
-            <h3>开发团队：Yatmosphere软工小组</h3>
+            <h3>开发团队：Yatmosphere团队</h3>
             <h3>启动时间：2025年5月</h3>
             <h3>团队规模：10人</h3>
             <!-- <p>{{ teamIntro.description }}</p> -->
@@ -205,7 +207,7 @@
             <li><a @click="openPolicy('terms')">服务条款</a></li>
             <li><a @click="openPolicy('license')">开源许可证</a></li>
           </ul>
-          <p class="copyright">© 2025 Yatmosphere软工小组. 保留所有权利。</p>
+          <p class="copyright">© 2025 Yatmosphere软工小组. 保留所有权利</p>
         </div>
       </section>
 
@@ -253,12 +255,12 @@ export default {
         description: "Yatmosphere软工小组",
         established: "2025年5月",
         memberCount: 10,
-        details: "我们是一支专注于智能家居解决方案的跨职能团队，由中山大学计算机学院学生组成，致力于打造安全、易用、高效、先进的智能家居控制系统。"
+        details: "我们是一支来自中山大学计算机学院的跨职能学生团队，专注于智能家居系统的设计与开发。团队成员覆盖前端、后端、设备开发、UI/UX设计与系统安全多个方向，具备扎实的软件工程基础与丰富的项目实践经验。我们的目标是打造一套安全、便捷、高效、可扩展的智能家居控制解决方案，满足用户在家庭自动化、设备管理和智能场景等方面的需求。通过持续的技术创新与用户反馈，我们致力于提升智能家居体验，推动智能家居行业的发展。",
       },
       teamMembers: {
         management: [
           {
-            name: "马岱",
+            name: "马岱-KDAIer",
             role: "项目总经理",
             email: "madai@mail2.sysu.edu.cn",
             description: "Keep your head up in failure, and your head down in success."
@@ -330,8 +332,8 @@ export default {
         ],
         others: [
           {
-            name: "黄集瑞（hjr）",
-            role: "全能开发工程师",
+            name: "黄集瑞",
+            role: "安全工程师",
             email: "huang17359686189@163.com",
             description: "王不见王"
            },
@@ -358,23 +360,22 @@ export default {
       ]
     }
   },
-  methods: {
-
-    toggleSection(section) {
-      this.expandedSections[section] = !this.expandedSections[section]
-    },
-    toggleFAQ(index) {
-      this.activeFAQ = this.activeFAQ === index ? null : index
-    },
-    openFeedback() {
-      // 打开反馈对话框
-      this.$router.push('/feedback')
-    },
-    openPolicy(type) {
-      // 打开对应政策页面
-      window.open(`/policies/${type}.html`, '_blank')
-    }
+methods: {
+  toggleSection(section) {
+    this.expandedSections[section] = !this.expandedSections[section]
+  },
+  toggleFAQ(index) {
+    this.activeFAQ = this.activeFAQ === index ? null : index
+  },
+  openFeedback() {
+    this.$router.push({ name: 'feedback' })
+  },
+  openPolicy(type) {
+    // SPA 内跳转到 PolicyView
+    this.$router.push({ name: 'policy', params: { type } })
   }
+}
+
 }
 </script>
 

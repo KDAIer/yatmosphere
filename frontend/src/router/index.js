@@ -5,6 +5,8 @@ import Profile from '@/views/Profile.vue'
 import Devices from '@/views/Devices.vue'
 import Chat from '@/views/Chat.vue'    // 新增
 import AboutView from '../views/AboutView.vue'
+import PolicyView from '@/views/PolicyView.vue'
+import FeedbackView from '@/views/FeedbackView.vue'
 
 const routes = [
   { path: '/login', component: Login },
@@ -22,6 +24,17 @@ const routes = [
     meta: {
       title: '关于系统'
     }
+  },
+  {
+    path: '/policies/:type',
+    name: 'policy',
+    component: PolicyView,
+    props: true
+  },
+  {
+    path: '/feedback',
+    name: 'feedback',
+    component: FeedbackView
   },
   { path: '/profile', component: Profile },
   { path: '/devices', component: Devices },
