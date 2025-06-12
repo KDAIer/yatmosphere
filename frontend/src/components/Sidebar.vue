@@ -62,7 +62,17 @@
                         <span v-if="isActive('/chat')" class="active-bar"></span>
                     </router-link>
                 </li>
-            </ul>
+                <li>
+                    <router-link to="/about" class="nav-link" :class="{ active: isActive('/about') }"
+                        :title="collapsed ? '关于系统' : ''">
+                        <span class="icon">ℹ️</span>
+                        <transition name="fade">
+                            <span v-if="!collapsed" class="label">关于系统</span>
+                        </transition>
+                        <span v-if="isActive('/about')" class="active-bar"></span>
+                    </router-link>
+                </li>
+                </ul>
         </nav>
 
         <!-- 额外控制面板：仅在未折叠时显示 -->
