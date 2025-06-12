@@ -3,7 +3,7 @@
     text-align: center;
     font-size: 30px;
     color: var(--color-text);
-    background-color:var(--color-device-card-bg); 
+    background-color:var(--color-device-card-bg);
     padding: 12px 0;
     border-radius: 0px;
     border: 0px;
@@ -11,7 +11,11 @@
     width: 60%;
     margin: 0 auto;
 }
+.mobile-layout .banner {
+padding: 0 0;
+    width: 100%;
 
+}
 /* 渐变文本样式 */
 .gradient-text {
   background: linear-gradient(120deg, #e929e2, #1242e2); /* 渐变从左到右，颜色可调整 */
@@ -42,9 +46,19 @@
     position: relative;
     overflow: hidden;
     margin: 0 auto; /* 水平居中 */
-    
-}
 
+}
+.mobile-layout .card {
+    width: 100%;
+    background-color:var(--color-device-card-bg);
+    border-radius: 0px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 0px;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto; /* 水平居中 */
+
+}
 /* ---------- 待办事项样式 ---------- */
 /* 合并后的待办卡片 */
 .todo-card.card {
@@ -56,16 +70,33 @@
   display: flex;
   flex-direction: column;
   gap: 20px; /* 两个部分之间的间距 */
+  width: 60%;
 }
-
+.mobile-layout .todo-card.card {
+  background: var(--color-device-card-bg); /* 使用主题背景 */
+  border: 2px  #4851f293;
+  border-radius: 2px;
+  padding: 0px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 两个部分之间的间距 */
+  width: 100%;
+}
 /* 个人待办录入部分 */
 .todo-input-section {
   display: flex;
   flex-direction: column;
   gap: 12px; /* 标题与输入框之间的间距 */
-  
-}
 
+}
+.mobile-layout .todo-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 标题与输入框之间的间距 */
+
+
+}
 .section-title {
     margin: 0 0 12px;
     font-size: 20px;
@@ -388,7 +419,14 @@
   right: -35%;
   animation: rotate 10s linear infinite; /* 旋转动画，10秒一圈 */
 }
-
+.mobile-layout .sun {
+  position: absolute;
+  font-size: 200px; /* 太阳稍大 */
+  color: #ffd700; /* 金色，适配白天模式 */
+  top: -50%;
+  right: -35%;
+  animation: rotate 10s linear infinite; /* 旋转动画，10秒一圈 */
+}
 /* 旋转动画（太阳） */
 @keyframes rotate {
   0% {
@@ -420,8 +458,8 @@
  padding: 15px 0; /* 上下各 15px 内边距，左右保持 0 */
 }
 
-.profile-info { 
-   
+.profile-info {
+
     flex: 1;
 }
 
