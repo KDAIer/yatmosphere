@@ -154,6 +154,7 @@
   line-height: 1.5;
   color: var(--color-text); /* 使用主题文字颜色 */
   margin: 0;
+  white-space: pre-line;
 }
 
 .card-footer {
