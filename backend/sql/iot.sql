@@ -258,8 +258,8 @@ CREATE TABLE `light` (
                          `light` BOOLEAN DEFAULT 1,
                          `brightness` INT DEFAULT 80,
                          `color_temp` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '自然',
-                         FOREIGN KEY (id) REFERENCES device(id) ON DELETE CASCADE
-#                          FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE
+                         FOREIGN KEY (device_id) REFERENCES device(device_id) ON DELETE CASCADE,
+                         UNIQUE KEY (`device_id`)
 );
 
 
