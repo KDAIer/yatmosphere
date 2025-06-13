@@ -235,7 +235,7 @@
   padding: 0.8rem;
   margin-top: 1.5rem;
   background: var(--accent-color);
-  color: white;
+  color: var(--color-text);
   border: none;
   border-radius: 6px;
   font-weight: 500;

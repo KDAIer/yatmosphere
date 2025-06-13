@@ -101,7 +101,8 @@ export default {
   font-size: 0.9rem;
   background: none;
   border: none;
-  color: var(--primary-color);
+  /* color: var(--primary-color); */
+  color: rgb(59, 180, 255);
   cursor: pointer;
   padding: 6px 10px;
   border-radius: 6px;
@@ -135,7 +136,7 @@ h1 {
   width: 100%;
   padding: 16px 12px 4px; /* 上部留给 label */
   background-color: var(--input-bg);
-  border: 1px solid var(--border-color);
+  border: 2px solid rgba(19, 157, 243, 0.47);
   border-radius: 8px;
   color: var(--text-color);
   font-size: 1rem;
@@ -179,7 +180,7 @@ h1 {
   outline: none;
   background-color: var(--input-bg-focus);
   border-color: var(--primary-focus);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0);
 }
 
 /* placeholder 隐藏（内容为空时保持 placeholder-shown 状态配合浮动）*/
@@ -192,7 +193,7 @@ h1 {
 button[type="submit"] {
   display: inline-block;
   background-color: var(--primary-color);
-  color: #fff;
+  color: var(--text-color);
   font-size: 1rem;
   padding: 14px 28px;
   border: none;
