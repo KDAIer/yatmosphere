@@ -1,5 +1,5 @@
 {
-    "name": "Yatmosphere",
+    "name": "Yatmosphere Codespace",
     "dockerComposeFile": "docker-compose.yml",
     "service": "workspace",
     "workspaceFolder": "/workspace",

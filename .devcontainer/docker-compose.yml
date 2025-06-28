@@ -5,7 +5,6 @@ services:
     volumes:
       - ..:/workspace:cached
     command: sleep infinity
-    workspaceFolder: /workspace
 
   emqx:
     image: emqx/emqx:latest
@@ -15,4 +14,3 @@ services:
       test: ["CMD", "emqx", "ctl", "status"]
       interval: 30s
       retries: 5
-

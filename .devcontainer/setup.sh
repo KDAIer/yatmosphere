@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# 1. 安装 Python 依赖
+# 1. 安装 Python 依赖（网关）
 cd /workspace/gateway
 python -m venv venv
 source venv/bin/activate
