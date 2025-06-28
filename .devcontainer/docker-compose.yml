@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  workspace:
+    image: mcr.microsoft.com/devcontainers/universal:2
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    workspaceFolder: /workspace
+
+  emqx:
+    image: emqx/emqx:latest
+    ports:
+      - 1883:1883
+    healthcheck:
+      test: ["CMD", "emqx", "ctl", "status"]
+      interval: 30s
+      retries: 5
+
